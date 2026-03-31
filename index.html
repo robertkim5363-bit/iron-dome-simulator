@@ -519,9 +519,9 @@ function countCoverage(px, py, zones) {
   return count;
 }
 function buildSatUrl(w, h) {
-  // 텔아비브~아슈켈론 해안 — 아이언돔 실제 배치 도시 지역
+  // 텔아비브 도심 — 해안선 + 도시 건물 + 아이언돔 배치 지역
   return 'https://services.arcgisonline.com/arcgis/rest/services/World_Imagery/MapServer/export'
-    + '?bbox=34.52,31.55,34.82,31.82&bboxSR=4326&size=' + w + ',' + h
+    + '?bbox=34.70,32.00,34.88,32.14&bboxSR=4326&size=' + w + ',' + h
     + '&imageSR=4326&format=jpg&f=image';
 }
 /** 취약 지점 그리드 계산 — 레이더 커버 안 되는 곳 */
@@ -559,7 +559,7 @@ function TopBar(props) {
       createVNode('span', { class: 'dot' }, []),
       createTextVNode('IRON DOME SIM')
     ]),
-    createVNode('span', { class: 'topbar-loc' }, [createTextVNode('Israel · Tel Aviv–Ashkelon Coast · Iron Dome')]),
+    createVNode('span', { class: 'topbar-loc' }, [createTextVNode('Israel · Tel Aviv · Iron Dome Defense Sector')]),
   ].concat(modeEl).concat([
     createVNode('div', { class: 'topbar-tabs' }, [
       createVNode('button', { class: 'tab-btn' + (props.activeView === 'sim' ? ' active' : ''), 'data-action': 'view-sim' }, [createTextVNode('Simulation')]),
