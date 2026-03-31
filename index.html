@@ -1,0 +1,1074 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Iron Dome Defense Simulator v2</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;500;700&family=Roboto:wght@300;400;500;700&display=swap');
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --surface:rgba(12,18,12,.88);--surface2:rgba(18,28,18,.92);
+  --text:#c8e6c9;--text2:#81c784;--text3:#4a6a4a;
+  --border:rgba(0,255,65,.12);--border2:rgba(0,255,65,.22);
+  --radar-green:#00ff41;--radar-dim:rgba(0,255,65,.08);
+  --alert-red:#ff4444;--drone-blue:#00e5ff;--missile-orange:#ff9100;
+  --radius:8px;--radius-lg:20px;
+  --mono:'Roboto Mono',monospace;--sans:'Roboto',system-ui,sans-serif;
+}
+html,body{width:100%;height:100%;overflow:hidden;font-family:var(--sans);background:#080c08;color:var(--text)}
+
+/* ═══ TOP BAR ═══ */
+.topbar{
+  position:fixed;top:0;left:0;right:0;z-index:100;height:52px;
+  display:flex;align-items:center;gap:16px;padding:0 20px;
+  background:var(--surface2);border-bottom:1px solid var(--border);
+  backdrop-filter:blur(16px);
+}
+.topbar-logo{font:700 13px var(--mono);color:var(--radar-green);letter-spacing:.08em;display:flex;align-items:center;gap:8px}
+.topbar-logo .dot{width:8px;height:8px;border-radius:50%;background:var(--radar-green);animation:pulse-dot 2s ease infinite}
+@keyframes pulse-dot{0%,100%{opacity:1;box-shadow:0 0 4px var(--radar-green)}50%{opacity:.4;box-shadow:0 0 12px var(--radar-green)}}
+.topbar-loc{font:400 11px var(--mono);color:var(--text3);margin-left:4px}
+.topbar-tabs{display:flex;gap:2px;margin-left:auto;background:rgba(0,0,0,.3);border-radius:var(--radius);padding:3px;border:1px solid var(--border)}
+.tab-btn{
+  padding:5px 14px;border:none;border-radius:6px;font:500 11px var(--sans);
+  color:var(--text3);background:transparent;cursor:pointer;transition:all .2s;
+}
+.tab-btn.active{background:rgba(0,255,65,.12);color:var(--radar-green)}
+.tab-btn:hover:not(.active){color:var(--text2)}
+.topbar-mode{
+  padding:4px 12px;border-radius:var(--radius);font:600 10px var(--mono);
+  letter-spacing:.06em;text-transform:uppercase;
+}
+.topbar-mode.mode-draw{background:rgba(255,200,0,.12);border:1px solid rgba(255,200,0,.3);color:#ffe38a}
+.topbar-mode.mode-target{background:rgba(255,145,0,.12);border:1px solid rgba(255,145,0,.3);color:var(--missile-orange)}
+.topbar-mode.mode-fly{background:rgba(0,229,255,.12);border:1px solid rgba(0,229,255,.3);color:var(--drone-blue)}
+
+/* ═══ SIM VIEW ═══ */
+.sim-view{position:fixed;inset:52px 0 44px 0;background:#0a1208 center/cover no-repeat;overflow:hidden}
+.sim-view.drawing-mode{cursor:crosshair}
+.sim-view.target-mode{cursor:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24'%3E%3Ccircle cx='12' cy='12' r='10' fill='none' stroke='%23ff4444' stroke-width='2'/%3E%3Cline x1='12' y1='2' x2='12' y2='22' stroke='%23ff4444' stroke-width='1'/%3E%3Cline x1='2' y1='12' x2='22' y2='12' stroke='%23ff4444' stroke-width='1'/%3E%3C/svg%3E") 12 12, crosshair}
+
+/* ═══ RADAR / SVG ═══ */
+.radar-svg{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:10}
+.radar-zone{animation:radar-pulse 3s ease-in-out infinite}
+@keyframes radar-pulse{0%,100%{opacity:.7}50%{opacity:1}}
+
+/* ═══ DRONE ═══ */
+.drone{
+  position:absolute;z-index:25;width:28px;height:28px;
+  transform:translate(-50%,-50%);transition:opacity .15s;
+}
+.drone.dead{opacity:0;pointer-events:none}
+.drone-body{width:28px;height:28px;position:relative}
+.drone-body::before{
+  content:'';position:absolute;top:50%;left:50%;
+  width:20px;height:20px;transform:translate(-50%,-50%);
+  background:var(--drone-blue);clip-path:polygon(50% 0%,100% 70%,80% 100%,20% 100%,0% 70%);
+  filter:drop-shadow(0 0 8px var(--drone-blue));
+}
+.drone-body::after{
+  content:'';position:absolute;top:50%;left:50%;
+  width:36px;height:36px;transform:translate(-50%,-50%);
+  border:1.5px solid rgba(0,229,255,.3);border-radius:50%;
+  animation:drone-ring 2s ease infinite;
+}
+@keyframes drone-ring{0%,100%{transform:translate(-50%,-50%) scale(1);opacity:.5}50%{transform:translate(-50%,-50%) scale(1.3);opacity:0}}
+
+/* ═══ MISSILES ═══ */
+.missile{
+  position:absolute;z-index:22;width:8px;height:8px;border-radius:50%;
+  background:var(--missile-orange);
+  box-shadow:0 0 6px var(--missile-orange),0 0 12px rgba(255,145,0,.4);
+  transform:translate(-50%,-50%);pointer-events:none;
+}
+.missile.intercepted{
+  background:var(--radar-green);
+  box-shadow:0 0 10px var(--radar-green);
+  animation:intercept-pop .4s ease forwards;
+}
+@keyframes intercept-pop{0%{transform:translate(-50%,-50%) scale(1);opacity:1}100%{transform:translate(-50%,-50%) scale(2.5);opacity:0}}
+
+/* ═══ BREACH DOTS ═══ */
+.breach-dot{
+  position:absolute;z-index:20;width:10px;height:10px;border-radius:50%;
+  background:var(--alert-red);
+  box-shadow:0 0 8px var(--alert-red),0 0 20px rgba(255,68,68,.3);
+  transform:translate(-50%,-50%);pointer-events:none;
+  animation:breach-pulse 1.5s ease infinite;
+}
+@keyframes breach-pulse{0%,100%{opacity:1;transform:translate(-50%,-50%) scale(1)}50%{opacity:.5;transform:translate(-50%,-50%) scale(1.4)}}
+
+/* ═══ VULNERABLE GRID ═══ */
+.vuln-dot{
+  position:absolute;z-index:5;width:4px;height:4px;border-radius:50%;
+  background:rgba(255,68,68,.25);transform:translate(-50%,-50%);pointer-events:none;
+}
+
+/* ═══ TARGET MARKER ═══ */
+.target-marker{
+  position:absolute;z-index:21;width:20px;height:20px;
+  transform:translate(-50%,-50%);pointer-events:none;
+}
+.target-marker::before,.target-marker::after{
+  content:'';position:absolute;background:var(--alert-red);
+}
+.target-marker::before{width:20px;height:2px;top:9px;left:0}
+.target-marker::after{width:2px;height:20px;top:0;left:9px}
+
+/* ═══ DRAW PREVIEW ═══ */
+.draw-hint{
+  position:fixed;top:62px;left:50%;transform:translateX(-50%);z-index:90;
+  padding:8px 20px;border-radius:var(--radius-lg);
+  background:rgba(255,200,0,.12);border:1px solid rgba(255,200,0,.3);
+  font:500 12px var(--sans);color:#ffe38a;pointer-events:none;
+}
+.ratio-warn{
+  position:fixed;top:62px;left:50%;transform:translateX(-50%);z-index:91;
+  padding:8px 20px;border-radius:var(--radius-lg);
+  background:rgba(255,68,68,.15);border:1px solid rgba(255,68,68,.35);
+  font:500 12px var(--sans);color:#ff8a8a;pointer-events:none;
+}
+
+/* ═══ STATUS BAR ═══ */
+.statusbar{
+  position:fixed;bottom:0;left:0;right:0;z-index:100;height:44px;
+  display:flex;align-items:center;gap:12px;padding:0 16px;
+  background:var(--surface2);border-top:1px solid var(--border);
+  backdrop-filter:blur(16px);
+}
+.status-item{font:400 11px var(--mono);color:var(--text2);display:flex;align-items:center;gap:5px;white-space:nowrap}
+.indicator{width:6px;height:6px;border-radius:50%}
+.indicator.green{background:var(--radar-green);box-shadow:0 0 6px var(--radar-green)}
+.indicator.red{background:var(--alert-red);box-shadow:0 0 6px var(--alert-red)}
+.indicator.orange{background:var(--missile-orange);box-shadow:0 0 6px var(--missile-orange)}
+.status-btn{
+  padding:5px 12px;border:1px solid var(--border);border-radius:var(--radius);
+  background:rgba(0,255,65,.06);color:var(--text2);font:500 10px var(--sans);
+  cursor:pointer;transition:all .2s;white-space:nowrap;
+}
+.status-btn:hover{background:rgba(0,255,65,.14);border-color:var(--border2);color:var(--radar-green)}
+.status-btn.active{background:rgba(255,200,0,.12);border-color:rgba(255,200,0,.3);color:#ffe38a}
+.status-btn.target-active{background:rgba(255,145,0,.12);border-color:rgba(255,145,0,.3);color:var(--missile-orange)}
+.status-btn.respawn{background:rgba(0,229,255,.1);border-color:rgba(0,229,255,.3);color:var(--drone-blue)}
+.status-btn.clear{background:rgba(255,68,68,.08);border-color:rgba(255,68,68,.2);color:#ff8a8a}
+.status-spacer{flex:1}
+.status-area{font:400 10px var(--mono);color:var(--text3)}
+
+/* ═══ RIGHT PANEL ═══ */
+.info-panel{
+  position:fixed;top:60px;right:12px;z-index:50;width:220px;
+  background:var(--surface2);border:1px solid var(--border);
+  border-radius:12px;padding:14px;backdrop-filter:blur(16px);
+  font:400 11px var(--mono);color:var(--text2);
+  display:flex;flex-direction:column;gap:10px;
+}
+.info-panel.hidden{display:none}
+.info-section{display:flex;flex-direction:column;gap:4px}
+.info-label{font:600 9px var(--mono);color:var(--text3);letter-spacing:.1em;text-transform:uppercase}
+.info-value{font:500 13px var(--mono);color:var(--text)}
+.info-bar{height:4px;border-radius:2px;background:rgba(255,255,255,.08);overflow:hidden}
+.info-bar-fill{height:100%;border-radius:2px;transition:width .3s}
+.info-bar-fill.green{background:var(--radar-green)}
+.info-bar-fill.red{background:var(--alert-red)}
+.info-bar-fill.orange{background:var(--missile-orange)}
+.zone-list{max-height:200px;overflow-y:auto;display:flex;flex-direction:column;gap:4px}
+.zone-chip{
+  padding:4px 8px;border-radius:4px;font:400 10px var(--mono);
+  background:rgba(0,255,65,.06);border:1px solid var(--border);
+  display:flex;justify-content:space-between;align-items:center;
+}
+.zone-chip .cap{color:var(--radar-green)}
+.zone-chip .cap.low{color:var(--missile-orange)}
+.zone-chip .cap.empty{color:var(--alert-red)}
+
+/* ═══ TEST VIEW ═══ */
+.test-view{position:fixed;inset:52px 0 44px 0;background:var(--surface);overflow-y:auto;padding:32px;display:none}
+.test-view.show{display:block}
+.sim-view.hidden{display:none}
+.test-title{font:700 20px var(--mono);color:var(--radar-green);margin-bottom:8px}
+.test-subtitle{font:400 13px var(--sans);color:var(--text3);margin-bottom:28px}
+.test-card{
+  padding:14px 18px;margin-bottom:8px;border-radius:var(--radius);
+  border:1px solid var(--border);background:rgba(0,255,65,.03);
+  display:flex;align-items:center;gap:14px;transition:all .2s;
+}
+.test-card:hover{background:rgba(0,255,65,.06);border-color:var(--border2)}
+.test-badge{
+  width:56px;height:26px;border-radius:4px;display:flex;align-items:center;justify-content:center;
+  font:700 10px var(--mono);letter-spacing:.04em;flex-shrink:0;
+}
+.test-badge.pass{background:rgba(0,255,65,.14);color:var(--radar-green);border:1px solid rgba(0,255,65,.3)}
+.test-badge.fail{background:rgba(255,68,68,.14);color:var(--alert-red);border:1px solid rgba(255,68,68,.3)}
+.test-name{font:500 13px var(--sans);color:var(--text);flex:1}
+.test-detail{font:400 11px var(--mono);color:var(--text3)}
+.test-type-badge{
+  padding:2px 8px;border-radius:4px;font:600 9px var(--mono);letter-spacing:.06em;
+  background:rgba(0,229,255,.1);color:var(--drone-blue);border:1px solid rgba(0,229,255,.2);
+}
+
+/* ═══ CONTROLS HELP ═══ */
+.controls-help{
+  position:fixed;bottom:54px;right:12px;z-index:50;
+  padding:8px 14px;border-radius:var(--radius);
+  background:var(--surface2);border:1px solid var(--border);
+  backdrop-filter:blur(12px);font:400 10px var(--mono);color:var(--text3);line-height:1.8;
+}
+.controls-help .key{
+  display:inline-block;padding:0px 5px;border:1px solid var(--border2);
+  border-radius:3px;background:rgba(255,255,255,.05);color:var(--text2);
+  font-size:9px;min-width:16px;text-align:center;
+}
+
+/* ═══ INTERCEPT MSG ═══ */
+.intercept-msg{
+  position:absolute;z-index:30;font:700 12px var(--mono);color:var(--alert-red);
+  text-shadow:0 0 12px var(--alert-red);pointer-events:none;
+  transform:translate(-50%,-50%);animation:intercept-fade 1.5s ease forwards;
+}
+@keyframes intercept-fade{0%{opacity:1;transform:translate(-50%,-50%) scale(1)}100%{opacity:0;transform:translate(-50%,-80%) scale(1.3)}}
+</style>
+</head>
+<body>
+<div id="root"></div>
+
+<script>
+'use strict';
+
+// ══════════════════════════════════════════════════════════
+// SECTION 1: VIRTUAL DOM CORE  (Week 3)
+// ══════════════════════════════════════════════════════════
+
+function createVNode(type, props, children) {
+  return { type: type, props: props || {}, children: children || [] };
+}
+function createTextVNode(value) {
+  return { type: 'TEXT_NODE', props: {}, children: [], value: String(value) };
+}
+
+var SVG_TAGS = ['svg','polygon','polyline','circle','rect','line','path','g','text','defs','clipPath','use','ellipse'];
+var SVG_NS = 'http://www.w3.org/2000/svg';
+
+function renderVNode(vnode) {
+  if (!vnode) return document.createTextNode('');
+  if (vnode.type === 'TEXT_NODE') return document.createTextNode(vnode.value);
+  var el;
+  if (SVG_TAGS.indexOf(vnode.type) >= 0) {
+    el = document.createElementNS(SVG_NS, vnode.type);
+  } else {
+    el = document.createElement(vnode.type);
+  }
+  var keys = Object.keys(vnode.props);
+  for (var i = 0; i < keys.length; i++) el.setAttribute(keys[i], vnode.props[keys[i]]);
+  for (var j = 0; j < vnode.children.length; j++) {
+    var child = renderVNode(vnode.children[j]);
+    if (child) el.appendChild(child);
+  }
+  return el;
+}
+
+function cloneVNode(vnode) {
+  if (!vnode) return null;
+  if (vnode.type === 'TEXT_NODE') return createTextVNode(vnode.value);
+  return createVNode(vnode.type, JSON.parse(JSON.stringify(vnode.props)), vnode.children.map(cloneVNode).filter(Boolean));
+}
+
+// ══════════════════════════════════════════════════════════
+// SECTION 2: DIFF ALGORITHM  (Week 3)
+// ══════════════════════════════════════════════════════════
+
+var CREATE = 'CREATE', REMOVE = 'REMOVE', REPLACE = 'REPLACE', UPDATE = 'UPDATE';
+
+function diff(oldV, newV) {
+  if (!oldV && newV) return { type: CREATE, newVNode: newV };
+  if (oldV && !newV) return { type: REMOVE };
+  if (!oldV && !newV) return null;
+  if (oldV.type !== newV.type) return { type: REPLACE, newVNode: newV };
+  if (oldV.type === 'TEXT_NODE') {
+    return oldV.value !== newV.value ? { type: REPLACE, newVNode: newV } : null;
+  }
+  var propPatches = diffProps(oldV.props, newV.props);
+  var childPatches = diffChildren(oldV.children, newV.children);
+  if (!propPatches.length && !childPatches.length) return null;
+  return { type: UPDATE, propPatches: propPatches, childPatches: childPatches };
+}
+function diffProps(oldP, newP) {
+  var patches = [];
+  var nk = Object.keys(newP);
+  for (var i = 0; i < nk.length; i++) {
+    if (oldP[nk[i]] !== newP[nk[i]]) patches.push({ action: 'SET', key: nk[i], value: newP[nk[i]] });
+  }
+  var ok = Object.keys(oldP);
+  for (var j = 0; j < ok.length; j++) {
+    if (!(ok[j] in newP)) patches.push({ action: 'REMOVE', key: ok[j] });
+  }
+  return patches;
+}
+function diffChildren(oldC, newC) {
+  var patches = [];
+  var max = Math.max(oldC.length, newC.length);
+  for (var i = 0; i < max; i++) {
+    var p = diff(i < oldC.length ? oldC[i] : null, i < newC.length ? newC[i] : null);
+    if (p) patches.push({ index: i, patch: p });
+  }
+  return patches;
+}
+
+// ══════════════════════════════════════════════════════════
+// SECTION 3: PATCH SYSTEM  (Week 3)
+// ══════════════════════════════════════════════════════════
+
+function realChildren(parent) {
+  var result = [];
+  for (var i = 0; i < parent.childNodes.length; i++) {
+    var c = parent.childNodes[i];
+    if (c.nodeType === Node.TEXT_NODE && c.textContent.trim() === '') continue;
+    result.push(c);
+  }
+  return result;
+}
+function applyPatch(parent, node, patch) {
+  if (!patch) return;
+  switch (patch.type) {
+    case CREATE: parent.appendChild(renderVNode(patch.newVNode)); break;
+    case REMOVE: if (node && node.parentNode) node.parentNode.removeChild(node); break;
+    case REPLACE:
+      var ne = renderVNode(patch.newVNode);
+      if (node && node.parentNode) node.parentNode.replaceChild(ne, node);
+      else parent.appendChild(ne);
+      break;
+    case UPDATE:
+      if (patch.propPatches) {
+        for (var i = 0; i < patch.propPatches.length; i++) {
+          var pp = patch.propPatches[i];
+          if (pp.action === 'SET') {
+            node.setAttribute(pp.key, pp.value);
+            if (pp.key === 'style') node.style.cssText = pp.value;
+            if (pp.key === 'class') node.className = pp.value;
+          } else node.removeAttribute(pp.key);
+        }
+      }
+      if (patch.childPatches && patch.childPatches.length > 0) applyChildPatches(node, patch.childPatches);
+      break;
+  }
+}
+function applyChildPatches(parent, childPatches) {
+  var sorted = childPatches.slice().sort(function(a, b) { return b.index - a.index; });
+  for (var i = 0; i < sorted.length; i++) {
+    if (sorted[i].patch.type === REMOVE) {
+      var kids = realChildren(parent);
+      if (kids[sorted[i].index]) parent.removeChild(kids[sorted[i].index]);
+    }
+  }
+  var others = childPatches.filter(function(cp) { return cp.patch.type !== REMOVE; });
+  others.sort(function(a, b) { return a.index - b.index; });
+  for (var j = 0; j < others.length; j++) {
+    var cp = others[j];
+    var ch = realChildren(parent);
+    if (cp.patch.type === CREATE) {
+      var nn = renderVNode(cp.patch.newVNode);
+      if (cp.index >= ch.length) parent.appendChild(nn);
+      else parent.insertBefore(nn, ch[cp.index]);
+    } else {
+      if (ch[cp.index]) applyPatch(parent, ch[cp.index], cp.patch);
+    }
+  }
+}
+
+// ══════════════════════════════════════════════════════════
+// SECTION 4: MINI REACT FRAMEWORK  (Week 4)
+// ══════════════════════════════════════════════════════════
+
+var currentComponent = null;
+
+class FunctionComponent {
+  constructor(fn, props) {
+    this.fn = fn; this.props = props || {};
+    this.hooks = []; this.hookIndex = 0;
+    this.vdom = null; this.container = null; this.rootEl = null;
+    this.isMounted = false; this._updateScheduled = false;
+    this._patchLog = [];
+  }
+  mount(container) {
+    this.container = container;
+    currentComponent = this; this.hookIndex = 0;
+    this.vdom = this.fn(this.props);
+    this.rootEl = renderVNode(this.vdom);
+    container.appendChild(this.rootEl);
+    this.isMounted = true;
+    this._runEffects();
+    currentComponent = null;
+  }
+  update() {
+    if (this._updateScheduled) return;
+    this._updateScheduled = true;
+    var self = this;
+    requestAnimationFrame(function() {
+      self._updateScheduled = false;
+      currentComponent = self; self.hookIndex = 0;
+      var newVdom = self.fn(self.props);
+      var patch = diff(self.vdom, newVdom);
+      if (patch) {
+        self._patchLog.push({ ts: Date.now(), patch: patch });
+        if (self._patchLog.length > 50) self._patchLog.shift();
+        applyPatch(self.container, self.rootEl, patch);
+        if (patch.type === REPLACE) self.rootEl = realChildren(self.container)[0];
+      }
+      self.vdom = newVdom;
+      self._runEffects();
+      currentComponent = null;
+    });
+  }
+  _runEffects() {
+    for (var i = 0; i < this.hooks.length; i++) {
+      var h = this.hooks[i];
+      if (h._type === 'effect' && h._needsRun) {
+        if (typeof h._cleanup === 'function') h._cleanup();
+        h._cleanup = h._callback() || null;
+        h._needsRun = false;
+      }
+    }
+  }
+}
+
+// ══════════════════════════════════════════════════════════
+// SECTION 5: HOOKS  (Week 4)
+// ══════════════════════════════════════════════════════════
+
+function useState(init) {
+  var comp = currentComponent, idx = comp.hookIndex++;
+  if (idx >= comp.hooks.length) comp.hooks.push({ _type: 'state', _value: init });
+  var hook = comp.hooks[idx];
+  var setState = function(v) {
+    var nv = typeof v === 'function' ? v(hook._value) : v;
+    if (nv === hook._value) return;
+    hook._value = nv;
+    comp.update();
+  };
+  return [hook._value, setState];
+}
+
+function useEffect(callback, deps) {
+  var comp = currentComponent, idx = comp.hookIndex++;
+  var hasDeps = arguments.length >= 2;
+  if (idx >= comp.hooks.length) {
+    comp.hooks.push({ _type: 'effect', _callback: callback, _deps: hasDeps ? (deps || []).slice() : undefined, _cleanup: null, _needsRun: true });
+  } else {
+    var h = comp.hooks[idx];
+    h._callback = callback;
+    if (!hasDeps) { h._needsRun = true; }
+    else { var nd = (deps || []).slice(); if (!_depsEq(h._deps, nd)) { h._needsRun = true; h._deps = nd; } }
+  }
+}
+
+function useMemo(factory, deps) {
+  var comp = currentComponent, idx = comp.hookIndex++;
+  if (idx >= comp.hooks.length) {
+    comp.hooks.push({ _type: 'memo', _value: factory(), _deps: deps ? deps.slice() : null });
+  } else {
+    var h = comp.hooks[idx];
+    if (!_depsEq(h._deps, deps)) { h._value = factory(); h._deps = deps ? deps.slice() : null; }
+  }
+  return comp.hooks[idx]._value;
+}
+
+function _depsEq(a, b) {
+  if (!a || !b) return false;
+  if (a.length !== b.length) return false;
+  for (var i = 0; i < a.length; i++) { if (a[i] !== b[i]) return false; }
+  return true;
+}
+
+// ══════════════════════════════════════════════════════════
+// SECTION 6: UTILITIES
+// ══════════════════════════════════════════════════════════
+
+function pointInPolygon(px, py, poly) {
+  var inside = false;
+  for (var i = 0, j = poly.length - 1; i < poly.length; j = i++) {
+    var xi = poly[i].x, yi = poly[i].y, xj = poly[j].x, yj = poly[j].y;
+    if (((yi > py) !== (yj > py)) && (px < (xj - xi) * (py - yi) / (yj - yi) + xi)) inside = !inside;
+  }
+  return inside;
+}
+function polygonArea(pts) {
+  var a = 0;
+  for (var i = 0, j = pts.length - 1; i < pts.length; j = i++) {
+    a += (pts[j].x + pts[i].x) * (pts[j].y - pts[i].y);
+  }
+  return Math.abs(a / 2);
+}
+/** 비례율(종횡비) 체크 — ratio > limit이면 너무 길쭉 */
+function aspectRatioOk(pts, limit) {
+  var minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
+  for (var i = 0; i < pts.length; i++) {
+    if (pts[i].x < minX) minX = pts[i].x; if (pts[i].x > maxX) maxX = pts[i].x;
+    if (pts[i].y < minY) minY = pts[i].y; if (pts[i].y > maxY) maxY = pts[i].y;
+  }
+  var w = maxX - minX, h = maxY - minY;
+  if (w < 30 || h < 30) return false; // 너무 작음
+  var ratio = Math.max(w, h) / Math.max(1, Math.min(w, h));
+  return ratio <= (limit || 4);
+}
+/** 포인트가 어떤 zone 내부에 있는지 검사 — 겹치는 zone 수 반환 */
+function countCoverage(px, py, zones) {
+  var count = 0;
+  for (var i = 0; i < zones.length; i++) {
+    if (pointInPolygon(px, py, zones[i].points)) count++;
+  }
+  return count;
+}
+function buildSatUrl(w, h) {
+  return 'https://services.arcgisonline.com/arcgis/rest/services/World_Imagery/MapServer/export'
+    + '?bbox=34.50,31.20,34.72,31.38&bboxSR=4326&size=' + w + ',' + h
+    + '&imageSR=4326&format=jpg&f=image';
+}
+/** 취약 지점 그리드 계산 — 레이더 커버 안 되는 곳 */
+function computeVulnerableGrid(zones, w, h, step) {
+  var pts = [];
+  for (var x = step; x < w; x += step) {
+    for (var y = step + 52; y < h - 44; y += step) {
+      if (countCoverage(x, y, zones) === 0) pts.push({ x: x, y: y });
+    }
+  }
+  return pts;
+}
+function randomEdgePos(targetX, targetY, w, h) {
+  var edge = Math.floor(Math.random() * 4);
+  switch (edge) {
+    case 0: return { x: Math.random() * w, y: 52 }; // top
+    case 1: return { x: Math.random() * w, y: h - 44 }; // bottom
+    case 2: return { x: 0, y: 52 + Math.random() * (h - 96) }; // left
+    case 3: return { x: w, y: 52 + Math.random() * (h - 96) }; // right
+  }
+}
+
+// ══════════════════════════════════════════════════════════
+// SECTION 7: CHILD COMPONENTS (Stateless)
+// ══════════════════════════════════════════════════════════
+
+function TopBar(props) {
+  var modeEl = [];
+  if (props.isDrawing) modeEl.push(createVNode('span', { class: 'topbar-mode mode-draw' }, [createTextVNode('DRAW MODE')]));
+  else if (props.targetMode) modeEl.push(createVNode('span', { class: 'topbar-mode mode-target' }, [createTextVNode('TARGET MODE')]));
+  else modeEl.push(createVNode('span', { class: 'topbar-mode mode-fly' }, [createTextVNode('FLY MODE')]));
+
+  return createVNode('div', { class: 'topbar' }, [
+    createVNode('div', { class: 'topbar-logo' }, [
+      createVNode('span', { class: 'dot' }, []),
+      createTextVNode('IRON DOME SIM')
+    ]),
+    createVNode('span', { class: 'topbar-loc' }, [createTextVNode('Israel · Negev · Iron Dome')]),
+  ].concat(modeEl).concat([
+    createVNode('div', { class: 'topbar-tabs' }, [
+      createVNode('button', { class: 'tab-btn' + (props.activeView === 'sim' ? ' active' : ''), 'data-action': 'view-sim' }, [createTextVNode('Simulation')]),
+      createVNode('button', { class: 'tab-btn' + (props.activeView === 'test' ? ' active' : ''), 'data-action': 'view-test' }, [createTextVNode('VDom Tests')])
+    ])
+  ]));
+}
+
+function SimView(props) {
+  var satStyle = 'background-image:url(' + buildSatUrl(window.innerWidth, window.innerHeight) + ')';
+  var cls = 'sim-view';
+  if (props.isDrawing) cls += ' drawing-mode';
+  else if (props.targetMode) cls += ' target-mode';
+  if (!props.visible) cls += ' hidden';
+
+  // Radar zones SVG
+  var zoneEls = [];
+  for (var zi = 0; zi < props.radarZones.length; zi++) {
+    var zone = props.radarZones[zi];
+    var pts = zone.points.map(function(p) { return p.x + ',' + p.y; }).join(' ');
+    var capPct = Math.round((zone.capacity / 100) * 100);
+    var capColor = capPct > 50 ? 'rgba(0,255,65,' : (capPct > 20 ? 'rgba(255,145,0,' : 'rgba(255,68,68,');
+    zoneEls.push(createVNode('g', {}, [
+      createVNode('polygon', { points: pts, fill: capColor + '0.08)', stroke: capColor + '0.5)', 'stroke-width': '2', 'stroke-dasharray': '10,5', class: 'radar-zone' }, []),
+      createVNode('text', { x: String(zone.center.x), y: String(zone.center.y - 8), fill: capColor + '0.7)', 'font-size': '9', 'font-family': 'Roboto Mono', 'text-anchor': 'middle' }, [createTextVNode('RADAR ' + zone.id)]),
+      createVNode('text', { x: String(zone.center.x), y: String(zone.center.y + 6), fill: capColor + '0.9)', 'font-size': '11', 'font-family': 'Roboto Mono', 'font-weight': '700', 'text-anchor': 'middle' }, [createTextVNode(zone.capacity + '/100')])
+    ]));
+  }
+
+  // Draw preview
+  if (props.drawPoints.length > 1) {
+    var dpts = props.drawPoints.map(function(p) { return p.x + ',' + p.y; }).join(' ');
+    zoneEls.push(createVNode('polyline', { points: dpts, fill: 'none', stroke: 'rgba(255,200,0,0.7)', 'stroke-width': '2', 'stroke-dasharray': '6,4' }, []));
+  }
+
+  var svgEl = createVNode('svg', { class: 'radar-svg', xmlns: SVG_NS }, zoneEls);
+
+  // Drone
+  var droneStyle = 'left:' + props.dronePos.x + 'px;top:' + props.dronePos.y + 'px;transform:translate(-50%,-50%) rotate(' + props.droneAngle + 'deg)';
+  var droneEl = createVNode('div', { class: 'drone' + (props.droneAlive ? '' : ' dead'), style: droneStyle }, [
+    createVNode('div', { class: 'drone-body' }, [])
+  ]);
+
+  // Missiles
+  var missileEls = [];
+  for (var mi = 0; mi < props.missiles.length; mi++) {
+    var m = props.missiles[mi];
+    if (!m.active && !m.intercepted) continue;
+    var mcls = 'missile' + (m.intercepted ? ' intercepted' : '');
+    missileEls.push(createVNode('div', { class: mcls, style: 'left:' + Math.round(m.x) + 'px;top:' + Math.round(m.y) + 'px' }, []));
+  }
+
+  // Breach dots
+  var breachEls = [];
+  for (var bi = 0; bi < props.breaches.length; bi++) {
+    var b = props.breaches[bi];
+    breachEls.push(createVNode('div', { class: 'breach-dot', style: 'left:' + b.x + 'px;top:' + b.y + 'px' }, []));
+  }
+
+  // Vulnerable grid
+  var vulnEls = [];
+  for (var vi = 0; vi < props.vulnPoints.length; vi++) {
+    var vp = props.vulnPoints[vi];
+    vulnEls.push(createVNode('div', { class: 'vuln-dot', style: 'left:' + vp.x + 'px;top:' + vp.y + 'px' }, []));
+  }
+
+  // Target markers
+  var targetEls = [];
+  for (var ti = 0; ti < props.targets.length; ti++) {
+    var t = props.targets[ti];
+    targetEls.push(createVNode('div', { class: 'target-marker', style: 'left:' + t.x + 'px;top:' + t.y + 'px' }, []));
+  }
+
+  // Intercept messages
+  var msgEls = [];
+  if (props.interceptPos) {
+    msgEls.push(createVNode('div', { class: 'intercept-msg', style: 'left:' + props.interceptPos.x + 'px;top:' + props.interceptPos.y + 'px' }, [createTextVNode('INTERCEPTED')]));
+  }
+
+  return createVNode('div', { class: cls, style: satStyle, 'data-sim': 'true' },
+    [svgEl, droneEl].concat(missileEls).concat(breachEls).concat(vulnEls).concat(targetEls).concat(msgEls));
+}
+
+function InfoPanel(props) {
+  if (props.activeView !== 'sim') return createVNode('div', { class: 'info-panel hidden' }, []);
+
+  var totalCap = 0;
+  var zoneChips = [];
+  for (var i = 0; i < props.radarZones.length; i++) {
+    var z = props.radarZones[i];
+    totalCap += z.capacity;
+    var capCls = z.capacity > 50 ? 'cap' : (z.capacity > 20 ? 'cap low' : 'cap empty');
+    zoneChips.push(createVNode('div', { class: 'zone-chip' }, [
+      createTextVNode('Zone ' + z.id),
+      createVNode('span', { class: capCls }, [createTextVNode(z.capacity + '/100')])
+    ]));
+  }
+
+  return createVNode('div', { class: 'info-panel' }, [
+    createVNode('div', { class: 'info-section' }, [
+      createVNode('div', { class: 'info-label' }, [createTextVNode('TOTAL CAPACITY')]),
+      createVNode('div', { class: 'info-value' }, [createTextVNode(totalCap + ' intercepts')]),
+      createVNode('div', { class: 'info-bar' }, [
+        createVNode('div', { class: 'info-bar-fill green', style: 'width:' + Math.min(100, totalCap / 3) + '%' }, [])
+      ])
+    ]),
+    createVNode('div', { class: 'info-section' }, [
+      createVNode('div', { class: 'info-label' }, [createTextVNode('BREACHES')]),
+      createVNode('div', { class: 'info-value', style: props.breachCount > 0 ? 'color:var(--alert-red)' : '' }, [
+        createTextVNode(props.breachCount + ' hits')
+      ])
+    ]),
+    createVNode('div', { class: 'info-section' }, [
+      createVNode('div', { class: 'info-label' }, [createTextVNode('RADAR ZONES (' + props.radarZones.length + ')')]),
+      createVNode('div', { class: 'zone-list' }, zoneChips)
+    ])
+  ]);
+}
+
+function StatusBar(props) {
+  var items = [
+    createVNode('span', { class: 'status-item' }, [
+      createVNode('span', { class: 'indicator ' + (props.droneAlive ? 'green' : 'red') }, []),
+      createTextVNode('Drone:' + (props.droneAlive ? 'ON' : 'OFF'))
+    ]),
+    createVNode('span', { class: 'status-item' }, [
+      createVNode('span', { class: 'indicator green' }, []),
+      createTextVNode('Zones:' + props.zoneCount)
+    ])
+  ];
+
+  if (props.activeMissiles > 0) {
+    items.push(createVNode('span', { class: 'status-item' }, [
+      createVNode('span', { class: 'indicator orange' }, []),
+      createTextVNode('Missiles:' + props.activeMissiles)
+    ]));
+  }
+
+  if (props.activeView === 'sim') {
+    items.push(createVNode('button', { class: 'status-btn' + (props.isDrawing ? ' active' : ''), 'data-action': 'toggle-draw' }, [
+      createTextVNode(props.isDrawing ? '✓ Drawing' : '📡 Radar')
+    ]));
+    items.push(createVNode('button', { class: 'status-btn' + (props.targetMode ? ' target-active' : ''), 'data-action': 'toggle-target' }, [
+      createTextVNode(props.targetMode ? '✓ Target' : '🎯 Target')
+    ]));
+
+    if (!props.droneAlive) {
+      items.push(createVNode('button', { class: 'status-btn respawn', 'data-action': 'respawn' }, [createTextVNode('↻ Respawn')]));
+    }
+    if (props.zoneCount > 0) {
+      items.push(createVNode('button', { class: 'status-btn clear', 'data-action': 'clear-all' }, [createTextVNode('✕ Clear')]));
+    }
+  }
+
+  items.push(createVNode('span', { class: 'status-spacer' }, []));
+  if (props.totalArea > 0) {
+    items.push(createVNode('span', { class: 'status-area' }, [createTextVNode(Math.round(props.totalArea).toLocaleString() + 'px²')]));
+  }
+
+  return createVNode('div', { class: 'statusbar' }, items);
+}
+
+function ControlsHelp(props) {
+  if (props.activeView !== 'sim') return createVNode('div', { style: 'display:none' }, []);
+  return createVNode('div', { class: 'controls-help' }, [
+    createVNode('div', {}, [
+      createVNode('span', { class: 'key' }, [createTextVNode('↑↓←→')]),
+      createTextVNode(' Fly drone')
+    ]),
+    createVNode('div', {}, [
+      createTextVNode('🎯 Click map to launch missile swarm')
+    ]),
+    createVNode('div', {}, [
+      createTextVNode('📡 Draw to create radar zone (100/zone)')
+    ])
+  ]);
+}
+
+function DrawHint(props) {
+  if (props.ratioWarn) return createVNode('div', { class: 'ratio-warn' }, [createTextVNode('Shape too elongated — draw wider')]);
+  if (!props.isDrawing || props.activeView !== 'sim') return createVNode('div', { style: 'display:none' }, []);
+  return createVNode('div', { class: 'draw-hint' }, [createTextVNode('Click & drag to draw radar zone — release to confirm')]);
+}
+
+function TestView(props) {
+  var cards = props.results.map(function(r) {
+    return createVNode('div', { class: 'test-card' }, [
+      createVNode('div', { class: 'test-badge ' + (r.pass ? 'pass' : 'fail') }, [createTextVNode(r.pass ? 'PASS' : 'FAIL')]),
+      createVNode('span', { class: 'test-name' }, [createTextVNode(r.name)]),
+      createVNode('span', { class: 'test-type-badge' }, [createTextVNode(r.expected)]),
+      createVNode('span', { class: 'test-detail' }, [createTextVNode(r.detail)])
+    ]);
+  });
+  var pc = props.results.filter(function(r) { return r.pass; }).length;
+  return createVNode('div', { class: 'test-view' + (props.visible ? ' show' : '') }, [
+    createVNode('div', { class: 'test-title' }, [createTextVNode('Virtual DOM Test Suite')]),
+    createVNode('div', { class: 'test-subtitle' }, [createTextVNode(pc + '/' + props.results.length + ' passed — Diff 5 cases + No-op + Undo/Redo')])
+  ].concat(cards));
+}
+
+// ══════════════════════════════════════════════════════════
+// SECTION 8: TEST SUITE
+// ══════════════════════════════════════════════════════════
+
+function runVDomTests() {
+  var R = [];
+  var o1 = createVNode('div', { class: 'status' }, [createTextVNode('Active')]);
+  var n1 = createVNode('div', { class: 'status' }, [createTextVNode('Active')]);
+  var p1 = diff(o1, n1);
+  R.push({ name: 'No-op Patch', expected: 'NULL', pass: p1 === null, detail: p1 === null ? 'No patch' : 'Unexpected' });
+
+  var o2 = createVNode('span', {}, [createTextVNode('ACTIVE')]);
+  var n2 = createVNode('span', {}, [createTextVNode('DESTROYED')]);
+  var p2 = diff(o2, n2);
+  R.push({ name: 'Text Node Change', expected: 'UPDATE', pass: p2 !== null && p2.type === UPDATE, detail: p2 ? p2.type : 'none' });
+
+  var o3 = createVNode('div', { style: 'left:100px' }, []);
+  var n3 = createVNode('div', { style: 'left:300px' }, []);
+  var p3 = diff(o3, n3);
+  R.push({ name: 'Attribute Update', expected: 'UPDATE', pass: p3 !== null && p3.type === UPDATE && p3.propPatches.length > 0, detail: p3 ? p3.propPatches.length + ' props' : 'none' });
+
+  var p4 = diffChildren([createVNode('div', { id: 'r1' }, [])], [createVNode('div', { id: 'r1' }, []), createVNode('div', { id: 'r2' }, [])]);
+  R.push({ name: 'Node Create', expected: 'CREATE', pass: p4.length > 0 && p4[p4.length - 1].patch.type === CREATE, detail: p4.length ? p4[p4.length - 1].patch.type : 'none' });
+
+  var p5 = diffChildren([createVNode('div', {}, []), createVNode('div', {}, [])], [createVNode('div', {}, [])]);
+  R.push({ name: 'Node Remove', expected: 'REMOVE', pass: p5.length > 0 && p5[p5.length - 1].patch.type === REMOVE, detail: p5.length ? p5[p5.length - 1].patch.type : 'none' });
+
+  var p6 = diff(createVNode('h3', {}, []), createVNode('h2', {}, []));
+  R.push({ name: 'Element Replace', expected: 'REPLACE', pass: p6 !== null && p6.type === REPLACE, detail: p6 ? 'h3→h2' : 'none' });
+
+  var box = document.createElement('div');
+  var ov = createVNode('div', { class: 'a' }, [createTextVNode('X')]);
+  box.appendChild(renderVNode(ov));
+  var oH = box.innerHTML;
+  var mv = createVNode('div', { class: 'b' }, [createTextVNode('Y')]);
+  applyPatch(box, box.firstChild, diff(ov, mv));
+  var mH = box.innerHTML;
+  applyPatch(box, box.firstChild, diff(mv, ov));
+  var uOk = box.innerHTML === oH;
+  applyPatch(box, box.firstChild, diff(ov, mv));
+  var rOk = box.innerHTML === mH;
+  R.push({ name: 'Undo / Redo', expected: 'PASS', pass: uOk && rOk, detail: 'Undo=' + (uOk ? 'OK' : 'FAIL') + ' Redo=' + (rOk ? 'OK' : 'FAIL') });
+
+  return R;
+}
+
+// ══════════════════════════════════════════════════════════
+// SECTION 9: ROOT COMPONENT — App
+// ══════════════════════════════════════════════════════════
+
+var _droneAlive = true, _isDrawing = false, _targetMode = false;
+var _pressedKeys = {}, _radarZones = [], _zoneId = 1;
+var _missiles = [], _missileId = 1;
+
+function App() {
+  var _s = function(v) { var r = useState(v); return r; };
+
+  var s1 = useState('sim');        var activeView = s1[0], setActiveView = s1[1];
+  var s2 = useState({ x: 0, y: 0 }); var dronePos = s2[0], setDronePos = s2[1];
+  var s3 = useState(true);         var droneAlive = s3[0], setDroneAlive = s3[1];
+  var s4 = useState(0);            var droneAngle = s4[0], setDroneAngle = s4[1];
+  var s5 = useState([]);           var radarZones = s5[0], setRadarZones = s5[1];
+  var s6 = useState(false);        var isDrawing = s6[0], setIsDrawing = s6[1];
+  var s7 = useState([]);           var drawPoints = s7[0], setDrawPoints = s7[1];
+  var s8 = useState(null);         var interceptPos = s8[0], setInterceptPos = s8[1];
+  var s9 = useState(false);        var targetMode = s9[0], setTargetMode = s9[1];
+  var s10 = useState([]);          var missiles = s10[0], setMissiles = s10[1];
+  var s11 = useState([]);          var breaches = s11[0], setBreaches = s11[1];
+  var s12 = useState([]);          var targets = s12[0], setTargets = s12[1];
+  var s13 = useState(false);       var ratioWarn = s13[0], setRatioWarn = s13[1];
+
+  _droneAlive = droneAlive; _isDrawing = isDrawing; _targetMode = targetMode; _radarZones = radarZones;
+
+  var testResults = useMemo(function() { return runVDomTests(); }, []);
+
+  var totalArea = useMemo(function() {
+    return radarZones.reduce(function(s, z) { return s + polygonArea(z.points); }, 0);
+  }, [radarZones]);
+
+  // 취약 지점 계산 (레이더 없는 곳 빨간점)
+  var vulnPoints = useMemo(function() {
+    if (radarZones.length === 0) return [];
+    return computeVulnerableGrid(radarZones, window.innerWidth, window.innerHeight, 60);
+  }, [radarZones]);
+
+  // 초기 위치
+  useEffect(function() {
+    setDronePos({ x: Math.round(window.innerWidth / 2), y: Math.round(window.innerHeight / 2) });
+  }, []);
+
+  // 키보드 + 게임루프
+  useEffect(function() {
+    function onKD(e) {
+      _pressedKeys[e.key] = true;
+      if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].indexOf(e.key) >= 0) e.preventDefault();
+    }
+    function onKU(e) { _pressedKeys[e.key] = false; }
+    document.addEventListener('keydown', onKD);
+    document.addEventListener('keyup', onKU);
+
+    var speed = 4, animId;
+    function loop() {
+      animId = requestAnimationFrame(loop);
+      if (!_droneAlive || _isDrawing) return;
+      var dx = 0, dy = 0;
+      if (_pressedKeys['ArrowUp']) dy -= speed;
+      if (_pressedKeys['ArrowDown']) dy += speed;
+      if (_pressedKeys['ArrowLeft']) dx -= speed;
+      if (_pressedKeys['ArrowRight']) dx += speed;
+      if (dx !== 0 || dy !== 0) {
+        setDroneAngle(Math.atan2(dy, dx) * 180 / Math.PI + 90);
+        setDronePos(function(p) {
+          var nx = Math.max(20, Math.min(window.innerWidth - 20, p.x + dx));
+          var ny = Math.max(62, Math.min(window.innerHeight - 54, p.y + dy));
+          return (nx === p.x && ny === p.y) ? p : { x: nx, y: ny };
+        });
+      }
+    }
+    animId = requestAnimationFrame(loop);
+    return function() { document.removeEventListener('keydown', onKD); document.removeEventListener('keyup', onKU); cancelAnimationFrame(animId); };
+  }, []);
+
+  // 드론 충돌 감지
+  useEffect(function() {
+    if (!droneAlive || radarZones.length === 0) return;
+    for (var i = 0; i < radarZones.length; i++) {
+      if (radarZones[i].capacity > 0 && pointInPolygon(dronePos.x, dronePos.y, radarZones[i].points)) {
+        setDroneAlive(false);
+        setInterceptPos({ x: dronePos.x, y: dronePos.y });
+        // 해당 존 capacity 감소
+        setRadarZones(function(prev) {
+          return prev.map(function(z) {
+            return z.id === radarZones[i].id ? Object.assign({}, z, { capacity: z.capacity - 1 }) : z;
+          });
+        });
+        setTimeout(function() { setInterceptPos(null); }, 1500);
+        break;
+      }
+    }
+  }, [dronePos, radarZones, droneAlive]);
+
+  // 미사일 시뮬레이션 루프
+  useEffect(function() {
+    var animId;
+    var mSpeed = 3;
+    function missileLoop() {
+      animId = requestAnimationFrame(missileLoop);
+      setMissiles(function(prev) {
+        if (prev.length === 0) return prev;
+        var changed = false;
+        var newBreaches = [];
+        var zoneUpdates = {};
+        var newMissiles = prev.map(function(m) {
+          if (!m.active || m.intercepted) return m;
+          // 이동
+          var dx = m.targetX - m.x, dy = m.targetY - m.y;
+          var dist = Math.sqrt(dx * dx + dy * dy);
+          if (dist < 5) {
+            // 도착 — breach!
+            changed = true;
+            newBreaches.push({ x: m.targetX, y: m.targetY });
+            return Object.assign({}, m, { active: false });
+          }
+          var nx = m.x + (dx / dist) * mSpeed;
+          var ny = m.y + (dy / dist) * mSpeed;
+          // 레이더 체크
+          for (var zi = 0; zi < _radarZones.length; zi++) {
+            var z = _radarZones[zi];
+            if (z.capacity > 0 && pointInPolygon(nx, ny, z.points)) {
+              changed = true;
+              if (!zoneUpdates[z.id]) zoneUpdates[z.id] = 0;
+              zoneUpdates[z.id]++;
+              return Object.assign({}, m, { x: nx, y: ny, active: false, intercepted: true });
+            }
+          }
+          changed = true;
+          return Object.assign({}, m, { x: nx, y: ny });
+        });
+
+        // zone capacity 업데이트
+        var zIds = Object.keys(zoneUpdates);
+        if (zIds.length > 0) {
+          setRadarZones(function(zp) {
+            return zp.map(function(z) {
+              return zoneUpdates[z.id] ? Object.assign({}, z, { capacity: Math.max(0, z.capacity - zoneUpdates[z.id]) }) : z;
+            });
+          });
+        }
+        // breach 추가
+        if (newBreaches.length > 0) {
+          setBreaches(function(bp) { return bp.concat(newBreaches); });
+        }
+
+        // 끝난 미사일 제거 (intercepted 애니메이션 후)
+        var now = Date.now();
+        newMissiles = newMissiles.filter(function(m) {
+          if (m.intercepted && now - (m.interceptTime || now) > 500) return false;
+          if (!m.active && !m.intercepted) return false;
+          return true;
+        });
+
+        return changed ? newMissiles : prev;
+      });
+    }
+    animId = requestAnimationFrame(missileLoop);
+    return function() { cancelAnimationFrame(animId); };
+  }, []);
+
+  // 클릭 위임
+  useEffect(function() {
+    function handleClick(e) {
+      var a = e.target.closest('[data-action]');
+      if (!a) return;
+      switch (a.getAttribute('data-action')) {
+        case 'view-sim': setActiveView('sim'); break;
+        case 'view-test': setActiveView('test'); break;
+        case 'toggle-draw':
+          setIsDrawing(function(p) { return !p; }); setTargetMode(false); setDrawPoints([]); break;
+        case 'toggle-target':
+          setTargetMode(function(p) { return !p; }); setIsDrawing(false); setDrawPoints([]); break;
+        case 'respawn':
+          setDroneAlive(true); setDronePos({ x: Math.round(window.innerWidth / 2), y: Math.round(window.innerHeight / 2) }); setDroneAngle(0); break;
+        case 'clear-all':
+          setRadarZones([]); setBreaches([]); setTargets([]); setMissiles([]); break;
+      }
+    }
+    document.addEventListener('click', handleClick);
+    return function() { document.removeEventListener('click', handleClick); };
+  }, []);
+
+  // 레이더 그리기
+  useEffect(function() {
+    if (!isDrawing) return;
+    var drawing = false, pts = [];
+    function onDown(e) { if (!e.target.closest('[data-sim]')) return; drawing = true; pts = [{ x: e.clientX, y: e.clientY }]; setDrawPoints(pts.slice()); }
+    function onMove(e) { if (!drawing) return; pts.push({ x: e.clientX, y: e.clientY }); if (pts.length % 3 === 0) setDrawPoints(pts.slice()); }
+    function onUp() {
+      if (!drawing) return; drawing = false;
+      if (pts.length > 10) {
+        if (!aspectRatioOk(pts, 4)) {
+          setRatioWarn(true);
+          setTimeout(function() { setRatioWarn(false); }, 2000);
+        } else {
+          var cx = 0, cy = 0;
+          for (var i = 0; i < pts.length; i++) { cx += pts[i].x; cy += pts[i].y; }
+          cx = Math.round(cx / pts.length); cy = Math.round(cy / pts.length);
+          var newZ = { id: _zoneId++, points: pts.slice(), center: { x: cx, y: cy }, capacity: 100 };
+          setRadarZones(function(p) { return p.concat([newZ]); });
+        }
+      }
+      setDrawPoints([]); setIsDrawing(false);
+    }
+    document.addEventListener('mousedown', onDown);
+    document.addEventListener('mousemove', onMove);
+    document.addEventListener('mouseup', onUp);
+    return function() { document.removeEventListener('mousedown', onDown); document.removeEventListener('mousemove', onMove); document.removeEventListener('mouseup', onUp); };
+  }, [isDrawing]);
+
+  // 타겟 모드 — 클릭으로 미사일 발사
+  useEffect(function() {
+    if (!targetMode) return;
+    function onClick(e) {
+      if (e.target.closest('[data-action]')) return; // 버튼 클릭 무시
+      if (!e.target.closest('[data-sim]')) return;
+      var tx = e.clientX, ty = e.clientY;
+      setTargets(function(p) { return p.concat([{ x: tx, y: ty }]); });
+      // 미사일 20발 생성 (한 번에 소량씩, 빠르게 반복 클릭 가능)
+      var newMs = [];
+      for (var i = 0; i < 20; i++) {
+        var sp = randomEdgePos(tx, ty, window.innerWidth, window.innerHeight);
+        newMs.push({ id: _missileId++, x: sp.x, y: sp.y, targetX: tx, targetY: ty, active: true, intercepted: false });
+      }
+      setMissiles(function(p) { return p.concat(newMs); });
+    }
+    document.addEventListener('click', onClick);
+    return function() { document.removeEventListener('click', onClick); };
+  }, [targetMode]);
+
+  // 활성 미사일 수
+  var activeMissiles = useMemo(function() {
+    return missiles.filter(function(m) { return m.active && !m.intercepted; }).length;
+  }, [missiles]);
+
+  // VNode 트리
+  return createVNode('div', { class: 'app' }, [
+    TopBar({ activeView: activeView, isDrawing: isDrawing, targetMode: targetMode }),
+    SimView({
+      dronePos: dronePos, droneAlive: droneAlive, droneAngle: droneAngle,
+      radarZones: radarZones, isDrawing: isDrawing, drawPoints: drawPoints,
+      interceptPos: interceptPos, visible: activeView === 'sim',
+      missiles: missiles, breaches: breaches, targets: targets,
+      vulnPoints: vulnPoints, targetMode: targetMode
+    }),
+    TestView({ results: testResults, visible: activeView === 'test' }),
+    InfoPanel({ activeView: activeView, radarZones: radarZones, breachCount: breaches.length }),
+    StatusBar({
+      droneAlive: droneAlive, zoneCount: radarZones.length, isDrawing: isDrawing,
+      targetMode: targetMode, totalArea: totalArea, activeView: activeView,
+      activeMissiles: activeMissiles
+    }),
+    DrawHint({ isDrawing: isDrawing, activeView: activeView, ratioWarn: ratioWarn }),
+    ControlsHelp({ activeView: activeView })
+  ]);
+}
+
+// ══════════════════════════════════════════════════════════
+// SECTION 10: INIT
+// ══════════════════════════════════════════════════════════
+var root = new FunctionComponent(App, {});
+root.mount(document.getElementById('root'));
+</script>
+</body>
+</html>
