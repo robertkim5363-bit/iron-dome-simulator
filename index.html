@@ -519,9 +519,9 @@ function countCoverage(px, py, zones) {
   return count;
 }
 function buildSatUrl(w, h) {
-  // 텔아비브 도심 — 해안선 + 도시 건물 + 아이언돔 배치 지역
+  // 텔아비브 시내 중심 (3QGP+VF = 32.077°N, 34.786°E)
   return 'https://services.arcgisonline.com/arcgis/rest/services/World_Imagery/MapServer/export'
-    + '?bbox=34.70,32.00,34.88,32.14&bboxSR=4326&size=' + w + ',' + h
+    + '?bbox=34.74,32.04,34.83,32.11&bboxSR=4326&size=' + w + ',' + h
     + '&imageSR=4326&format=jpg&f=image';
 }
 /** 취약 지점 그리드 계산 — 레이더 커버 안 되는 곳 */
