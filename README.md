@@ -15,7 +15,7 @@ flowchart LR
     A["FunctionComponent<br/>컴포넌트 실행, hook 순서를 유지"] --> B["useState / useEffect / useMemo<br/>상태 저장·효과·계산 관리"]
     B --> C["createVNode<br/>가상 화면 생성"]
     C --> D["diff<br/>이전 화면과 비교"]
-    D --> E["applyPatch<br/>바뀐 DOM만 반영"]
+    D --> E["applyPatch<br/>바뀐 부분만 실제 DOM에 반영"]
     E --> F["Simulator UI<br/>National / Sector / 3D / Tests"]
 ```
 
