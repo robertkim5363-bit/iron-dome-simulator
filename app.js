@@ -1,5 +1,7 @@
 let currentComponent = null;
 
+// 루트 함수형 컴포넌트를 감싸는 작은 런타임 객체입니다.
+// hooks 배열, 렌더링, effect 실행 시점을 여기서 관리합니다.
 class FunctionComponent {
   constructor(renderFn, props, container) {
     this.renderFn = renderFn;
@@ -16,6 +18,7 @@ class FunctionComponent {
       hookSnapshot: [],
       lastPatchSummary: [],
       lastEffectCount: 0,
+      totalEffectCount: 0,
       previousVNodeLabel: '없음',
       currentVNodeLabel: '없음'
     };
@@ -32,6 +35,7 @@ class FunctionComponent {
 
     this.isUpdateScheduled = true;
 
+    // 같은 이벤트 루프 안에서 여러 setState가 호출돼도 update는 한 번만 실행되게 합니다.
     queueMicrotask(() => {
       this.isUpdateScheduled = false;
       this.update();
@@ -43,10 +47,12 @@ class FunctionComponent {
     this.hookIndex = 0;
     this.pendingEffects = [];
 
+    // 훅은 "지금 어떤 컴포넌트가 렌더 중인지" 알아야 하므로 전역 포인터를 잠시 연결합니다.
     currentComponent = this;
     const nextVNode = this.renderFn(this.props);
     currentComponent = null;
 
+    // 새 VDOM을 만들고 이전 VDOM과 비교한 뒤, 실제 DOM에는 필요한 patch만 반영합니다.
     const patches = diff(previousVNode, nextVNode, this.container, this.container.firstChild);
     patch(patches);
 
@@ -63,6 +69,7 @@ class FunctionComponent {
   flushEffects() {
     let effectCount = 0;
 
+    // useEffect는 render 중이 아니라 patch 이후에 실행되어야 하므로 여기서 처리합니다.
     this.pendingEffects.forEach((effectJob) => {
       const previousCleanup = this.cleanupEffects[effectJob.index];
 
@@ -76,6 +83,7 @@ class FunctionComponent {
     });
 
     this.debug.lastEffectCount = effectCount;
+    this.debug.totalEffectCount += effectCount;
   }
 }
 
@@ -85,6 +93,8 @@ function assertRootHook(hookName) {
   }
 }
 
+// useState는 hooks[index]에 상태값과 setState를 저장합니다.
+// 컴포넌트 함수는 다시 실행되지만 hooks 배열은 유지되므로 상태가 이어집니다.
 function useState(initialValue) {
   assertRootHook('useState');
 
@@ -106,6 +116,7 @@ function useState(initialValue) {
       }
 
       hook.value = resolvedValue;
+      // 상태 변경 후 자동 재렌더가 일어나도록 update를 예약합니다.
       component.scheduleUpdate();
     };
 
@@ -117,6 +128,7 @@ function useState(initialValue) {
   return [currentHook.value, currentHook.setState];
 }
 
+// useMemo는 deps가 바뀌지 않으면 이전 계산 결과를 재사용합니다.
 function useMemo(factory, deps) {
   assertRootHook('useMemo');
 
@@ -137,6 +149,7 @@ function useMemo(factory, deps) {
   return currentHook.value;
 }
 
+// useEffect는 이 렌더에서 "실행 예약"만 하고, 실제 실행은 patch 뒤 flushEffects에서 합니다.
 function useEffect(effect, deps) {
   assertRootHook('useEffect');
 
@@ -178,6 +191,7 @@ function areHookDepsSame(previousDeps, nextDeps) {
   return true;
 }
 
+// 런타임 디버그 창에서 hooks 배열을 읽기 쉬운 문자열로 바꾸기 위한 함수입니다.
 function snapshotHooks(hooks) {
   return hooks.map(function (hook, index) {
     if (hook.kind === 'state') {
@@ -185,6 +199,17 @@ function snapshotHooks(hooks) {
     }
 
     if (hook.kind === 'memo') {
+      if (hook.value && typeof hook.value === 'object') {
+        const keys = Object.keys(hook.value);
+        const hasFunctionValue = keys.some(function (key) {
+          return typeof hook.value[key] === 'function';
+        });
+
+        if (hasFunctionValue) {
+          return 'hook[' + index + '] memo = actionHandlers(' + keys.join(', ') + ')';
+        }
+      }
+
       return 'hook[' + index + '] memo = ' + JSON.stringify(hook.value);
     }
 
@@ -208,6 +233,7 @@ function summarizeVNode(vNode) {
   return '<' + vNode.type + '> child:' + ((vNode.children || []).length);
 }
 
+// patch 목록을 길게 노출하는 대신, 디버그용 짧은 설명 문자열로 바꿉니다.
 function describePatch(patchItem) {
   if (patchItem.type === 'create') {
     return 'create ' + summarizeVNode(patchItem.vNode);
@@ -232,60 +258,68 @@ function describePatch(patchItem) {
   return patchItem.type;
 }
 
+// App은 루트 컴포넌트입니다.
+// 과제 제약에 맞춰 state와 hook은 이 컴포넌트에서만 사용합니다.
 function App() {
   const [beanState, setBeanState] = useState(createInitialBeanState);
 
+  // growth 값으로부터 현재 성장 단계를 계산합니다.
   const stageInfo = useMemo(function () {
     return getStageInfo(beanState);
   }, [beanState.growth]);
 
+  // 수분/햇빛/영양 값으로부터 건강 상태 문구를 계산합니다.
   const healthSummary = useMemo(function () {
     return getHealthSummary(beanState);
   }, [beanState.water, beanState.sunlight, beanState.nutrition]);
 
-  function handleWater() {
-    setBeanState(function (previousState) {
-      return applyBeanAction(previousState, 'water');
-    });
-  }
-
-  function handleSunlight() {
-    setBeanState(function (previousState) {
-      return applyBeanAction(previousState, 'sunlight');
-    });
-  }
-
-  function handleNutrition() {
-    setBeanState(function (previousState) {
-      return applyBeanAction(previousState, 'nutrition');
-    });
-  }
-
-  function handleDay() {
-    setBeanState(function (previousState) {
-      return applyBeanAction(previousState, 'day');
-    });
-  }
-
-  function handleHarvest() {
-    setBeanState(function (previousState) {
-      return applyBeanAction(previousState, 'harvest');
-    });
-  }
-
-  function handleProbe() {
-    setBeanState(function (previousState) {
-      return applyBeanAction(previousState, 'probe');
-    });
-  }
+  // 버튼 핸들러를 객체 하나로 memo해 두면 매 렌더마다 onClick 참조가 바뀌는 일을 줄일 수 있습니다.
+  const actionHandlers = useMemo(function () {
+    return {
+      water: function () {
+        setBeanState(function (previousState) {
+          return applyBeanAction(previousState, 'water');
+        });
+      },
+      sunlight: function () {
+        setBeanState(function (previousState) {
+          return applyBeanAction(previousState, 'sunlight');
+        });
+      },
+      nutrition: function () {
+        setBeanState(function (previousState) {
+          return applyBeanAction(previousState, 'nutrition');
+        });
+      },
+      day: function () {
+        setBeanState(function (previousState) {
+          return applyBeanAction(previousState, 'day');
+        });
+      },
+      harvest: function () {
+        setBeanState(function (previousState) {
+          return applyBeanAction(previousState, 'harvest');
+        });
+      },
+      probe: function () {
+        setBeanState(function (previousState) {
+          return applyBeanAction(previousState, 'probe');
+        });
+      }
+    };
+  }, []);
 
   useEffect(function () {
     document.title = 'Day ' + beanState.day + ' · ' + stageInfo.name + ' · Bean Lab';
   }, [beanState.day, stageInfo.name]);
 
   const runtimeDebug = currentComponent.debug;
+  // effect는 patch 뒤 실행되지만, 디버그 화면에는 이번 렌더에서 예정된 effect 수를 바로 보여줍니다.
+  const scheduledEffectCount = currentComponent.pendingEffects.length;
   const runtimeDebugView = Object.assign({}, runtimeDebug, {
-    hookSnapshot: snapshotHooks(currentComponent.hooks)
+    hookSnapshot: snapshotHooks(currentComponent.hooks),
+    lastEffectCount: scheduledEffectCount,
+    totalEffectCount: runtimeDebug.totalEffectCount + scheduledEffectCount
   });
   const checks = buildWhiteBoxChecks(beanState, runtimeDebugView, stageInfo, healthSummary);
 
@@ -366,12 +400,12 @@ function App() {
     h(
       'footer',
       { className: 'action-bar' },
-      h(ActionButton, { label: '물 주기 💧', variant: 'water', onClick: handleWater }),
-      h(ActionButton, { label: '햇빛 쬐기 ☀️', variant: 'sunlight', onClick: handleSunlight }),
-      h(ActionButton, { label: '영양 공급 🌿', variant: 'nutrition', onClick: handleNutrition }),
-      h(ActionButton, { label: '하루 보내기 📆', variant: 'day', onClick: handleDay }),
-      h(ActionButton, { label: '수확하기 🧺', variant: 'harvest', onClick: handleHarvest }),
-      h(ActionButton, { label: '테스트하기 🧪', variant: 'probe', onClick: handleProbe })
+      h(ActionButton, { label: '물 주기 💧', variant: 'water', onClick: actionHandlers.water }),
+      h(ActionButton, { label: '햇빛 쬐기 ☀️', variant: 'sunlight', onClick: actionHandlers.sunlight }),
+      h(ActionButton, { label: '영양 공급 🌿', variant: 'nutrition', onClick: actionHandlers.nutrition }),
+      h(ActionButton, { label: '하루 보내기 📆', variant: 'day', onClick: actionHandlers.day }),
+      h(ActionButton, { label: '수확하기 🧺', variant: 'harvest', onClick: actionHandlers.harvest }),
+      h(ActionButton, { label: '테스트하기 🧪', variant: 'probe', onClick: actionHandlers.probe })
     )
   );
 }

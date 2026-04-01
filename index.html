@@ -106,8 +106,9 @@
     }
 
     .test-panel {
-      min-height: 220px;
-      max-height: 280px;
+      height: 260px;
+      min-height: 260px;
+      max-height: 260px;
     }
 
     .panel {
@@ -162,6 +163,13 @@
     .test-stack {
       display: grid;
       gap: 12px;
+    }
+
+    .test-stack {
+      height: 100%;
+      min-height: 0;
+      overflow: auto;
+      align-content: start;
     }
 
     .runtime-card,

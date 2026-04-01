@@ -18,6 +18,8 @@ function flattenChildren(children, result) {
   });
 }
 
+// JSX 대신 쓰는 VNode 생성 함수입니다.
+// type이 문자열이면 DOM 노드, 함수면 함수형 컴포넌트로 취급합니다.
 function h(type, props) {
   const children = [];
   const rawChildren = Array.prototype.slice.call(arguments, 2);
@@ -25,6 +27,7 @@ function h(type, props) {
   flattenChildren(rawChildren, children);
 
   if (typeof type === 'function') {
+    // 자식 컴포넌트는 props만 받아 순수하게 VNode를 반환합니다.
     return type(Object.assign({}, props || {}, { children: children }));
   }
 
@@ -35,6 +38,7 @@ function h(type, props) {
   };
 }
 
+// VNode를 실제 DOM 노드로 바꾸는 단계입니다.
 function createNode(vNode) {
   if (typeof vNode === 'string') {
     return document.createTextNode(vNode);
@@ -50,6 +54,7 @@ function createNode(vNode) {
   return el;
 }
 
+// 이전 props와 새 props를 비교해 실제 DOM 속성과 이벤트를 동기화합니다.
 function applyPropsToElement(el, oldProps, newProps) {
   const previous = oldProps || {};
   const next = newProps || {};
@@ -95,6 +100,7 @@ function setProp(el, key, value, oldValue) {
   if (isEventProp(key)) {
     const eventName = key.slice(2).toLowerCase();
 
+    // 이벤트는 VNode props로 전달되지만 실제 등록/해제는 DOM patch 단계에서 처리합니다.
     if (typeof oldValue === 'function') {
       el.removeEventListener(eventName, oldValue);
     }

@@ -1,3 +1,4 @@
+// diff는 이전 VDOM과 새 VDOM을 비교해 실제 DOM에 어떤 변경이 필요한지 목록으로 만듭니다.
 function diff(oldNode, newNode, parentEl, existingEl) {
   const patches = [];
 
@@ -70,6 +71,7 @@ function diff(oldNode, newNode, parentEl, existingEl) {
   const maxLength = Math.max(oldChildren.length, newChildren.length);
 
   for (let index = 0; index < maxLength; index += 1) {
+    // 자식 노드도 같은 방식으로 재귀 비교합니다.
     const childPatches = diff(
       oldChildren[index],
       newChildren[index],
@@ -103,6 +105,7 @@ function arePropsSame(oldProps, newProps) {
   return true;
 }
 
+// patch는 diff가 만든 변경 목록을 실제 DOM에 적용하는 단계입니다.
 function patch(patches) {
   patches.forEach(function (patchItem) {
     switch (patchItem.type) {

@@ -31,6 +31,8 @@ const STAGE_DEFINITIONS = [
   }
 ];
 
+// 모든 상태는 루트 App의 useState 하나에 모아 관리합니다.
+// 이 객체가 강낭콩 서비스의 단일 진실 공급원 역할을 합니다.
 function createInitialBeanState() {
   return {
     day: 1,
@@ -51,6 +53,7 @@ function clamp(value, min, max) {
   return Math.max(min, Math.min(max, value));
 }
 
+// growth 값만 보고 현재 강낭콩이 어느 성장 단계인지 계산합니다.
 function getStageInfo(beanState) {
   let selected = STAGE_DEFINITIONS[0];
 
@@ -63,6 +66,7 @@ function getStageInfo(beanState) {
   return selected;
 }
 
+// 세 자원을 평균 내서 건강 상태 문구를 계산합니다.
 function getHealthSummary(beanState) {
   const average = Math.round((beanState.water + beanState.sunlight + beanState.nutrition) / 3);
 
@@ -90,6 +94,8 @@ function appendLog(beanState, message) {
   return beanState.log.concat('Day ' + beanState.day + ': ' + message).slice(-6);
 }
 
+// 사용자의 액션을 받아 "다음 상태"를 계산하는 순수 함수입니다.
+// 자식 컴포넌트는 상태를 바꾸지 않고, 루트에서만 이 함수를 통해 state를 갱신합니다.
 function applyBeanAction(beanState, actionType) {
   if (actionType === 'water') {
     return Object.assign({}, beanState, {
@@ -120,6 +126,8 @@ function applyBeanAction(beanState, actionType) {
   }
 
   if (actionType === 'day') {
+    // 성장도는 하루가 지날 때만 증가합니다.
+    // 물/햇빛/영양은 성장량을 결정하는 조건으로만 사용합니다.
     const growthGain =
       (beanState.water >= 45 ? 7 : 2) +
       (beanState.sunlight >= 45 ? 7 : 2) +
@@ -166,6 +174,8 @@ function applyBeanAction(beanState, actionType) {
   return beanState;
 }
 
+// 화이트박스 테스트는 완전 자동 테스트 프레임워크라기보다,
+// 현재 런타임이 과제 핵심 조건을 어떻게 만족하는지 보여주는 검증 패널입니다.
 function buildWhiteBoxChecks(beanState, runtimeDebug, stageInfo, healthSummary) {
   return [
     {
@@ -195,12 +205,14 @@ function buildWhiteBoxChecks(beanState, runtimeDebug, stageInfo, healthSummary) 
     },
     {
       title: 'useEffect 활용',
-      pass: runtimeDebug.lastEffectCount >= 1 || beanState.day >= 1,
-      detail: '문서 제목은 patch 이후 useEffect에서 갱신됩니다.'
+      pass: runtimeDebug.totalEffectCount >= 1,
+      detail: '문서 제목은 patch 이후 useEffect에서 갱신되며, 누적 effect 실행 수는 ' + runtimeDebug.totalEffectCount + '회입니다.'
     }
   ];
 }
 
+// 아래부터는 전부 props-only 자식 컴포넌트입니다.
+// state와 hook 없이, 부모가 넘긴 props만 받아 화면을 그립니다.
 function ActionButton(props) {
   return h(
     'button',
@@ -312,7 +324,8 @@ function RuntimePanel(props) {
         { className: 'plain-list' },
         h('li', null, 'renderCount: ' + props.runtimeDebug.renderCount),
         h('li', null, 'hookCount: ' + props.runtimeDebug.hookSnapshot.length),
-        h('li', null, 'lastEffectCount: ' + props.runtimeDebug.lastEffectCount)
+        h('li', null, 'lastEffectCount: ' + props.runtimeDebug.lastEffectCount),
+        h('li', null, 'totalEffectCount: ' + props.runtimeDebug.totalEffectCount)
       )
     ),
     h(
