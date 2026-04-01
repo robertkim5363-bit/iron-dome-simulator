@@ -5,56 +5,56 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>National Air Defense Command Console</title>
 <style>
-@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=IBM+Plex+Sans:wght@300;400;500;600;700&family=Rajdhani:wght@500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap');
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
 :root{
-  --surface:rgba(12,18,12,.88);--surface2:rgba(18,28,18,.92);
-  --text:#c8e6c9;--text2:#81c784;--text3:#4a6a4a;
-  --border:rgba(0,255,65,.12);--border2:rgba(0,255,65,.22);
-  --radar-green:#00ff41;--radar-dim:rgba(0,255,65,.08);
-  --alert-red:#ff4444;--drone-blue:#00e5ff;--missile-orange:#ff9100;
-  --radius:8px;--radius-lg:20px;
-  --mono:'IBM Plex Mono',monospace;--sans:'IBM Plex Sans',system-ui,sans-serif;--display:'Rajdhani',var(--sans);
+  --bg:#0b0f14;
+  --surface:rgba(11,15,20,.94);--surface2:rgba(15,21,29,.98);
+  --text:#e5e7eb;--text2:#cbd5e1;--text3:#94a3b8;
+  --border:rgba(148,163,184,.18);--border2:rgba(148,163,184,.3);
+  --radar-green:#b8c8dc;--radar-dim:rgba(148,163,184,.08);
+  --alert-red:#f87171;--drone-blue:#7dd3fc;--missile-orange:#f59e0b;
+  --radius:10px;--radius-lg:14px;
+  --mono:'IBM Plex Mono',ui-monospace,SFMono-Regular,Menlo,monospace;
+  --sans:'IBM Plex Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  --display:var(--sans);
 }
-html,body{width:100%;height:100%;overflow:hidden;font-family:var(--sans);background:#080c08;color:var(--text)}
+html,body{width:100%;height:100%;overflow:hidden;font-family:var(--sans);background:var(--bg);color:var(--text)}
 
-/* ═══ TOP BAR ═══ */
+/* Top bar */
 .topbar{
   position:fixed;top:0;left:0;right:0;z-index:100;height:52px;
-  display:flex;align-items:center;gap:16px;padding:0 20px;
+  display:flex;align-items:center;gap:14px;padding:0 18px;
   background:var(--surface2);border-bottom:1px solid var(--border);
-  backdrop-filter:blur(16px);
 }
-.topbar-logo{font:700 15px var(--display);color:var(--radar-green);letter-spacing:.14em;display:flex;align-items:center;gap:8px;text-transform:uppercase}
-.topbar-logo .dot{width:8px;height:8px;border-radius:50%;background:var(--radar-green);animation:pulse-dot 2s ease infinite}
-@keyframes pulse-dot{0%,100%{opacity:1;box-shadow:0 0 4px var(--radar-green)}50%{opacity:.4;box-shadow:0 0 12px var(--radar-green)}}
-.topbar-loc{font:400 11px var(--mono);color:var(--text3);margin-left:4px}
-.topbar-tabs{display:flex;gap:2px;margin-left:auto;background:rgba(0,0,0,.3);border-radius:var(--radius);padding:3px;border:1px solid var(--border)}
+.topbar-logo{font:600 14px var(--sans);color:var(--text);letter-spacing:.02em;display:flex;align-items:center;gap:10px}
+.topbar-logo .dot{width:7px;height:7px;border-radius:50%;background:var(--text3)}
+.topbar-loc{font:500 11px var(--mono);color:var(--text3);margin-left:2px}
+.topbar-tabs{display:flex;gap:6px;margin-left:auto;padding:3px;border:1px solid var(--border);border-radius:var(--radius);background:rgba(255,255,255,.02)}
 .tab-btn{
-  padding:5px 14px;border:none;border-radius:6px;font:600 12px var(--display);
-  letter-spacing:.08em;text-transform:uppercase;color:var(--text3);background:transparent;cursor:pointer;transition:all .2s;
+  padding:6px 12px;border:1px solid transparent;border-radius:8px;font:600 12px var(--sans);
+  letter-spacing:.01em;color:var(--text3);background:transparent;cursor:pointer;transition:background .18s,border-color .18s,color .18s;
 }
-.tab-btn.active{background:rgba(0,255,65,.12);color:var(--radar-green)}
-.tab-btn:hover:not(.active){color:var(--text2)}
+.tab-btn.active{background:rgba(148,163,184,.1);border-color:var(--border);color:var(--text)}
+.tab-btn:hover:not(.active){background:rgba(148,163,184,.06);color:var(--text2)}
 .topbar-mode{
-  padding:4px 12px;border-radius:var(--radius);font:600 10px var(--mono);
-  letter-spacing:.06em;text-transform:uppercase;
+  padding:5px 10px;border-radius:999px;font:500 10px var(--mono);
+  letter-spacing:.02em;border:1px solid var(--border);background:rgba(148,163,184,.06);color:var(--text2);
 }
-.topbar-mode.mode-draw{background:rgba(255,200,0,.12);border:1px solid rgba(255,200,0,.3);color:#ffe38a}
-.topbar-mode.mode-target{background:rgba(255,145,0,.12);border:1px solid rgba(255,145,0,.3);color:var(--missile-orange)}
-.topbar-mode.mode-fly{background:rgba(0,229,255,.12);border:1px solid rgba(0,229,255,.3);color:var(--drone-blue)}
+.topbar-mode.mode-draw{background:rgba(245,158,11,.08);border-color:rgba(245,158,11,.25);color:#fbbf24}
+.topbar-mode.mode-target{background:rgba(248,113,113,.08);border-color:rgba(248,113,113,.25);color:#fca5a5}
+.topbar-mode.mode-fly{background:rgba(125,211,252,.08);border-color:rgba(125,211,252,.24);color:#bae6fd}
 
-/* ═══ SIM VIEW ═══ */
-.sim-view{position:fixed;inset:52px 0 44px 0;background:#0a1208 no-repeat;background-size:100% 100%;overflow:hidden}
+/* Sim view */
+.sim-view{position:fixed;inset:52px 0 44px 0;background:#0d1218 no-repeat;background-size:100% 100%;overflow:hidden}
 .sim-view.drawing-mode{cursor:crosshair}
-.sim-view.target-mode{cursor:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24'%3E%3Ccircle cx='12' cy='12' r='10' fill='none' stroke='%23ff4444' stroke-width='2'/%3E%3Cline x1='12' y1='2' x2='12' y2='22' stroke='%23ff4444' stroke-width='1'/%3E%3Cline x1='2' y1='12' x2='22' y2='12' stroke='%23ff4444' stroke-width='1'/%3E%3C/svg%3E") 12 12, crosshair}
+.sim-view.target-mode{cursor:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24'%3E%3Ccircle cx='12' cy='12' r='10' fill='none' stroke='%23f87171' stroke-width='2'/%3E%3Cline x1='12' y1='2' x2='12' y2='22' stroke='%23f87171' stroke-width='1'/%3E%3Cline x1='2' y1='12' x2='22' y2='12' stroke='%23f87171' stroke-width='1'/%3E%3C/svg%3E") 12 12, crosshair}
 
-/* ═══ RADAR / SVG ═══ */
+/* Radar / SVG */
 .radar-svg{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:10}
-.radar-zone{animation:radar-pulse 3s ease-in-out infinite}
-@keyframes radar-pulse{0%,100%{opacity:.7}50%{opacity:1}}
+.radar-zone{opacity:.92}
 
-/* ═══ DRONE ═══ */
+/* Drone */
 .drone{
   position:absolute;z-index:25;width:28px;height:28px;
   transform:translate(-50%,-50%);transition:opacity .15s;
@@ -65,33 +65,28 @@ html,body{width:100%;height:100%;overflow:hidden;font-family:var(--sans);backgro
   content:'';position:absolute;top:50%;left:50%;
   width:20px;height:20px;transform:translate(-50%,-50%);
   background:var(--drone-blue);clip-path:polygon(50% 0%,100% 70%,80% 100%,20% 100%,0% 70%);
-  filter:drop-shadow(0 0 8px var(--drone-blue));
+  opacity:.9;
 }
 .drone-body::after{
   content:'';position:absolute;top:50%;left:50%;
-  width:36px;height:36px;transform:translate(-50%,-50%);
-  border:1.5px solid rgba(0,229,255,.3);border-radius:50%;
-  animation:drone-ring 2s ease infinite;
+  width:34px;height:34px;transform:translate(-50%,-50%);
+  border:1px solid rgba(125,211,252,.22);border-radius:50%;
 }
-@keyframes drone-ring{0%,100%{transform:translate(-50%,-50%) scale(1);opacity:.5}50%{transform:translate(-50%,-50%) scale(1.3);opacity:0}}
 
-/* ═══ MISSILES ═══ */
+/* Missiles */
 .missile{
   position:absolute;z-index:22;width:8px;height:8px;border-radius:50%;
-  background:var(--missile-orange);
-  box-shadow:0 0 6px var(--missile-orange),0 0 12px rgba(255,145,0,.4);
+  background:var(--missile-orange);border:1px solid rgba(0,0,0,.32);
   transform:translate(-50%,-50%);pointer-events:none;
 }
 .missile.intercepted{
   background:var(--radar-green);
-  box-shadow:0 0 10px var(--radar-green);
-  animation:intercept-pop .4s ease forwards;
+  animation:intercept-pop .3s ease forwards;
 }
-@keyframes intercept-pop{0%{transform:translate(-50%,-50%) scale(1);opacity:1}100%{transform:translate(-50%,-50%) scale(2.5);opacity:0}}
+@keyframes intercept-pop{0%{transform:translate(-50%,-50%) scale(1);opacity:1}100%{transform:translate(-50%,-50%) scale(2);opacity:0}}
 .interceptor-missile{
   position:absolute;z-index:23;width:7px;height:7px;border-radius:50%;
-  background:var(--radar-green);
-  box-shadow:0 0 8px var(--radar-green),0 0 18px rgba(0,255,65,.45);
+  background:var(--radar-green);border:1px solid rgba(0,0,0,.22);
   transform:translate(-50%,-50%);pointer-events:none;
   animation:interceptor-flight var(--flight-ms,260ms) linear forwards;
 }
@@ -100,23 +95,20 @@ html,body{width:100%;height:100%;overflow:hidden;font-family:var(--sans);backgro
   to{transform:translate(-50%,-50%) translate(var(--dx),var(--dy)) scale(1)}
 }
 
-/* ═══ BREACH DOTS ═══ */
+/* Breach dots */
 .breach-dot{
   position:absolute;z-index:20;width:10px;height:10px;border-radius:50%;
-  background:var(--alert-red);
-  box-shadow:0 0 8px var(--alert-red),0 0 20px rgba(255,68,68,.3);
+  background:var(--alert-red);border:2px solid rgba(255,255,255,.18);
   transform:translate(-50%,-50%);pointer-events:none;
-  animation:breach-pulse 1.5s ease infinite;
 }
-@keyframes breach-pulse{0%,100%{opacity:1;transform:translate(-50%,-50%) scale(1)}50%{opacity:.5;transform:translate(-50%,-50%) scale(1.4)}}
 
-/* ═══ VULNERABLE GRID ═══ */
+/* Vulnerable grid */
 .vuln-dot{
   position:absolute;z-index:5;width:4px;height:4px;border-radius:50%;
-  background:rgba(255,68,68,.25);transform:translate(-50%,-50%);pointer-events:none;
+  background:rgba(248,113,113,.22);transform:translate(-50%,-50%);pointer-events:none;
 }
 
-/* ═══ TARGET MARKER ═══ */
+/* Target marker */
 .target-marker{
   position:absolute;z-index:21;width:20px;height:20px;
   transform:translate(-50%,-50%);pointer-events:none;
@@ -127,73 +119,72 @@ html,body{width:100%;height:100%;overflow:hidden;font-family:var(--sans);backgro
 .target-marker::before{width:20px;height:2px;top:9px;left:0}
 .target-marker::after{width:2px;height:20px;top:0;left:9px}
 
-/* ═══ DRAW PREVIEW ═══ */
+/* Draw preview */
 .draw-hint{
   position:fixed;top:62px;left:50%;transform:translateX(-50%);z-index:90;
-  padding:8px 20px;border-radius:var(--radius-lg);
-  background:rgba(255,200,0,.12);border:1px solid rgba(255,200,0,.3);
-  font:600 12px var(--display);letter-spacing:.08em;text-transform:uppercase;color:#ffe38a;pointer-events:none;
+  padding:8px 16px;border-radius:999px;
+  background:rgba(245,158,11,.12);border:1px solid rgba(245,158,11,.24);
+  font:600 12px var(--sans);color:#fbbf24;pointer-events:none;
 }
 .ratio-warn{
   position:fixed;top:62px;left:50%;transform:translateX(-50%);z-index:91;
-  padding:8px 20px;border-radius:var(--radius-lg);
-  background:rgba(255,68,68,.15);border:1px solid rgba(255,68,68,.35);
-  font:600 12px var(--display);letter-spacing:.08em;text-transform:uppercase;color:#ff8a8a;pointer-events:none;
+  padding:8px 16px;border-radius:999px;
+  background:rgba(248,113,113,.12);border:1px solid rgba(248,113,113,.26);
+  font:600 12px var(--sans);color:#fca5a5;pointer-events:none;
 }
 
-/* ═══ STATUS BAR ═══ */
+/* Status bar */
 .statusbar{
   position:fixed;bottom:0;left:0;right:0;z-index:100;height:44px;
   display:flex;align-items:center;gap:12px;padding:0 16px;
   background:var(--surface2);border-top:1px solid var(--border);
-  backdrop-filter:blur(16px);
 }
-.status-item{font:400 11px var(--mono);color:var(--text2);display:flex;align-items:center;gap:5px;white-space:nowrap}
+.status-item{font:500 11px var(--mono);color:var(--text2);display:flex;align-items:center;gap:6px;white-space:nowrap}
 .indicator{width:6px;height:6px;border-radius:50%}
-.indicator.green{background:var(--radar-green);box-shadow:0 0 6px var(--radar-green)}
-.indicator.red{background:var(--alert-red);box-shadow:0 0 6px var(--alert-red)}
-.indicator.orange{background:var(--missile-orange);box-shadow:0 0 6px var(--missile-orange)}
+.indicator.green{background:var(--radar-green)}
+.indicator.red{background:var(--alert-red)}
+.indicator.orange{background:var(--missile-orange)}
 .status-btn{
-  padding:5px 12px;border:1px solid var(--border);border-radius:var(--radius);
-  background:rgba(0,255,65,.06);color:var(--text2);font:600 11px var(--display);
-  letter-spacing:.08em;text-transform:uppercase;cursor:pointer;transition:all .2s;white-space:nowrap;
+  padding:6px 12px;border:1px solid var(--border);border-radius:8px;
+  background:rgba(148,163,184,.06);color:var(--text2);font:600 11px var(--sans);
+  cursor:pointer;transition:background .18s,border-color .18s,color .18s;white-space:nowrap;
 }
-.status-btn:hover{background:rgba(0,255,65,.14);border-color:var(--border2);color:var(--radar-green)}
-.status-btn.active{background:rgba(255,200,0,.12);border-color:rgba(255,200,0,.3);color:#ffe38a}
-.status-btn.target-active{background:rgba(255,145,0,.12);border-color:rgba(255,145,0,.3);color:var(--missile-orange)}
-.status-btn.respawn{background:rgba(0,229,255,.1);border-color:rgba(0,229,255,.3);color:var(--drone-blue)}
-.status-btn.clear{background:rgba(255,68,68,.08);border-color:rgba(255,68,68,.2);color:#ff8a8a}
+.status-btn:hover{background:rgba(148,163,184,.12);border-color:var(--border2);color:var(--text)}
+.status-btn.active{background:rgba(245,158,11,.12);border-color:rgba(245,158,11,.28);color:#fbbf24}
+.status-btn.target-active{background:rgba(248,113,113,.12);border-color:rgba(248,113,113,.28);color:#fca5a5}
+.status-btn.respawn{background:rgba(125,211,252,.1);border-color:rgba(125,211,252,.25);color:#bae6fd}
+.status-btn.clear{background:rgba(248,113,113,.08);border-color:rgba(248,113,113,.2);color:#fecaca}
 .status-spacer{flex:1}
-.status-area{font:400 10px var(--mono);color:var(--text3)}
+.status-area{font:500 10px var(--mono);color:var(--text3)}
 
 .city-selector{
   position:fixed;top:60px;left:12px;z-index:52;max-width:430px;
   background:var(--surface2);border:1px solid var(--border);border-radius:12px;
-  padding:12px;backdrop-filter:blur(16px);display:flex;flex-direction:column;gap:8px;
+  padding:12px;display:flex;flex-direction:column;gap:8px;
 }
 .city-selector.hidden{display:none}
-.city-selector-title{font:600 9px var(--mono);color:var(--text3);letter-spacing:.1em;text-transform:uppercase}
+.city-selector-title{font:600 10px var(--mono);color:var(--text3);letter-spacing:.03em}
 .city-selector-row{display:flex;flex-wrap:wrap;gap:6px}
 .city-selector-btn{
-  padding:5px 10px;border:1px solid var(--border);border-radius:999px;
-  background:rgba(0,255,65,.06);color:var(--text2);font:600 10px var(--display);
-  letter-spacing:.08em;text-transform:uppercase;cursor:pointer;transition:all .2s;
+  padding:6px 10px;border:1px solid var(--border);border-radius:999px;
+  background:rgba(148,163,184,.06);color:var(--text2);font:600 10px var(--sans);
+  cursor:pointer;transition:background .18s,border-color .18s,color .18s;
 }
-.city-selector-btn:hover{background:rgba(0,255,65,.14);border-color:var(--border2);color:var(--radar-green)}
-.city-selector-btn.active{background:rgba(0,255,65,.18);border-color:rgba(0,255,65,.32);color:var(--radar-green)}
-.city-selector-caption{font:400 10px var(--mono);color:var(--text3)}
+.city-selector-btn:hover{background:rgba(148,163,184,.12);border-color:var(--border2);color:var(--text)}
+.city-selector-btn.active{background:rgba(148,163,184,.14);border-color:var(--border2);color:var(--text)}
+.city-selector-caption{font:500 10px var(--mono);color:var(--text3)}
 
-/* ═══ RIGHT PANEL ═══ */
+/* Right panel */
 .info-panel{
   position:fixed;top:60px;right:12px;z-index:50;width:220px;
   background:var(--surface2);border:1px solid var(--border);
-  border-radius:12px;padding:14px;backdrop-filter:blur(16px);
-  font:400 11px var(--mono);color:var(--text2);
+  border-radius:12px;padding:14px;
+  font:500 11px var(--mono);color:var(--text2);
   display:flex;flex-direction:column;gap:10px;
 }
 .info-panel.hidden{display:none}
 .info-section{display:flex;flex-direction:column;gap:4px}
-.info-label{font:600 9px var(--mono);color:var(--text3);letter-spacing:.1em;text-transform:uppercase}
+.info-label{font:600 9px var(--mono);color:var(--text3);letter-spacing:.03em}
 .info-value{font:500 13px var(--mono);color:var(--text)}
 .info-bar{height:4px;border-radius:2px;background:rgba(255,255,255,.08);overflow:hidden}
 .info-bar-fill{height:100%;border-radius:2px;transition:width .3s}
@@ -202,113 +193,113 @@ html,body{width:100%;height:100%;overflow:hidden;font-family:var(--sans);backgro
 .info-bar-fill.orange{background:var(--missile-orange)}
 .zone-list{max-height:200px;overflow-y:auto;display:flex;flex-direction:column;gap:4px}
 .zone-chip{
-  padding:4px 8px;border-radius:4px;font:400 10px var(--mono);
-  background:rgba(0,255,65,.06);border:1px solid var(--border);
+  padding:5px 8px;border-radius:6px;font:500 10px var(--mono);
+  background:rgba(148,163,184,.05);border:1px solid var(--border);
   display:flex;justify-content:space-between;align-items:center;
 }
-.zone-chip .cap{color:var(--radar-green)}
-.zone-chip .cap.low{color:var(--missile-orange)}
-.zone-chip .cap.empty{color:var(--alert-red)}
+.zone-chip .cap{color:var(--text)}
+.zone-chip .cap.low{color:#fbbf24}
+.zone-chip .cap.empty{color:#fca5a5}
 
-/* ═══ TEST VIEW ═══ */
-.test-view{position:fixed;inset:52px 0 44px 0;background:var(--surface);overflow-y:auto;padding:32px;display:none}
+/* Test view */
+.test-view{position:fixed;inset:52px 0 44px 0;background:var(--bg);overflow-y:auto;padding:32px;display:none}
 .test-view.show{display:block}
 .sim-view.hidden{display:none}
-.test-title{font:700 22px var(--display);color:var(--radar-green);letter-spacing:.12em;text-transform:uppercase;margin-bottom:8px}
-.test-subtitle{font:600 13px var(--display);color:var(--text3);letter-spacing:.08em;text-transform:uppercase;margin-bottom:28px}
+.test-title{font:600 22px var(--sans);color:var(--text);letter-spacing:.01em;margin-bottom:8px}
+.test-subtitle{font:500 12px var(--mono);color:var(--text3);margin-bottom:28px}
 .test-card{
-  padding:14px 18px;margin-bottom:8px;border-radius:var(--radius);
-  border:1px solid var(--border);background:rgba(0,255,65,.03);
-  display:flex;align-items:center;gap:14px;transition:all .2s;
+  padding:14px 18px;margin-bottom:8px;border-radius:10px;
+  border:1px solid var(--border);background:rgba(148,163,184,.04);
+  display:flex;align-items:center;gap:14px;transition:background .18s,border-color .18s;
 }
-.test-card:hover{background:rgba(0,255,65,.06);border-color:var(--border2)}
+.test-card:hover{background:rgba(148,163,184,.08);border-color:var(--border2)}
 .test-badge{
-  width:56px;height:26px;border-radius:4px;display:flex;align-items:center;justify-content:center;
-  font:700 10px var(--mono);letter-spacing:.04em;flex-shrink:0;
+  width:56px;height:26px;border-radius:6px;display:flex;align-items:center;justify-content:center;
+  font:700 10px var(--mono);letter-spacing:.02em;flex-shrink:0;
 }
-.test-badge.pass{background:rgba(0,255,65,.14);color:var(--radar-green);border:1px solid rgba(0,255,65,.3)}
-.test-badge.fail{background:rgba(255,68,68,.14);color:var(--alert-red);border:1px solid rgba(255,68,68,.3)}
-.test-name{font:600 14px var(--display);color:var(--text);letter-spacing:.05em;text-transform:uppercase;flex:1}
-.test-detail{font:400 11px var(--mono);color:var(--text3)}
+.test-badge.pass{background:rgba(184,200,220,.14);color:var(--text);border:1px solid rgba(184,200,220,.24)}
+.test-badge.fail{background:rgba(248,113,113,.12);color:#fecaca;border:1px solid rgba(248,113,113,.24)}
+.test-name{font:600 14px var(--sans);color:var(--text);flex:1}
+.test-detail{font:500 11px var(--mono);color:var(--text3)}
 .test-type-badge{
-  padding:2px 8px;border-radius:4px;font:600 9px var(--mono);letter-spacing:.06em;
-  background:rgba(0,229,255,.1);color:var(--drone-blue);border:1px solid rgba(0,229,255,.2);
+  padding:2px 8px;border-radius:6px;font:600 9px var(--mono);letter-spacing:.03em;
+  background:rgba(148,163,184,.1);color:var(--text2);border:1px solid var(--border);
 }
 
-/* ═══ CONTROLS HELP ═══ */
+/* Controls help */
 .controls-help{
   position:fixed;bottom:54px;right:12px;z-index:50;
-  padding:8px 14px;border-radius:var(--radius);
+  padding:8px 12px;border-radius:10px;
   background:var(--surface2);border:1px solid var(--border);
-  backdrop-filter:blur(12px);font:400 10px var(--mono);color:var(--text3);line-height:1.8;
+  font:500 10px var(--mono);color:var(--text3);line-height:1.8;
 }
 .controls-help .key{
-  display:inline-block;padding:0px 5px;border:1px solid var(--border2);
-  border-radius:3px;background:rgba(255,255,255,.05);color:var(--text2);
+  display:inline-block;padding:0 5px;border:1px solid var(--border2);
+  border-radius:4px;background:rgba(148,163,184,.08);color:var(--text2);
   font-size:9px;min-width:16px;text-align:center;
 }
 
-/* ═══ INTERCEPT MSG ═══ */
+/* Intercept message */
 .intercept-msg{
-  position:absolute;z-index:30;font:700 12px var(--mono);color:var(--alert-red);
-  text-shadow:0 0 12px var(--alert-red);pointer-events:none;
-  transform:translate(-50%,-50%);animation:intercept-fade 1.5s ease forwards;
+  position:absolute;z-index:30;font:600 12px var(--mono);color:#fecaca;
+  pointer-events:none;transform:translate(-50%,-50%);animation:intercept-fade 1.2s ease forwards;
 }
-@keyframes intercept-fade{0%{opacity:1;transform:translate(-50%,-50%) scale(1)}100%{opacity:0;transform:translate(-50%,-80%) scale(1.3)}}
+@keyframes intercept-fade{0%{opacity:1;transform:translate(-50%,-50%) scale(1)}100%{opacity:0;transform:translate(-50%,-70%) scale(1.08)}}
 
-/* ═══ NATIONAL VIEW ═══ */
-.national-view{position:fixed;inset:52px 0 44px 0;background:#080c08 no-repeat;background-size:100% 100%;overflow:hidden}
+/* National view */
+.national-view{position:fixed;inset:52px 0 44px 0;background:var(--bg) no-repeat;background-size:100% 100%;overflow:hidden}
 .national-view.hidden{display:none}
 .national-svg{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:10}
 .city-marker{cursor:pointer;pointer-events:all}
 .city-marker:hover .city-ring{stroke-width:3}
-.threat-label{font:600 9px var(--mono);fill:var(--alert-red);opacity:0.7}
-.city-label{font:600 10px var(--mono);fill:var(--radar-green)}
-.city-ring{stroke-width:2;fill-opacity:0.15}
-.missile-path{stroke-dasharray:8,6;animation:dash-flow 1s linear infinite}
-@keyframes dash-flow{to{stroke-dashoffset:-14}}
+.city-marker:hover .city-label-box{stroke-width:1.5}
+.city-marker:hover .city-label-link{opacity:.95}
+.threat-label{font:600 9px var(--mono);fill:var(--alert-red);opacity:.78}
+.city-label{font:700 14px var(--mono);fill:var(--text);letter-spacing:.02em;paint-order:stroke;stroke:rgba(11,15,20,.96);stroke-width:2px;stroke-linejoin:round}
+.city-label-box{fill:rgba(11,15,20,.92);stroke-width:1.2}
+.city-label-link{stroke:rgba(229,231,235,.34);stroke-width:1.4;opacity:.78}
+.city-label-dot{opacity:.98}
+.city-ring{stroke-width:2;fill-opacity:.15}
+.missile-path{stroke-dasharray:6,6;animation:dash-flow 1.8s linear infinite}
+@keyframes dash-flow{to{stroke-dashoffset:-12}}
 .alert-banner{
-  position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);z-index:50;
-  font:700 30px var(--display);letter-spacing:.12em;color:var(--alert-red);text-align:center;
-  text-shadow:0 0 30px var(--alert-red),0 0 60px rgba(255,68,68,.4);
-  animation:alert-flash .5s ease infinite alternate;pointer-events:none;
-  background:rgba(0,0,0,.6);padding:16px 40px;border:2px solid var(--alert-red);border-radius:var(--radius-lg);
+  position:absolute;top:16px;left:50%;transform:translateX(-50%);z-index:50;max-width:min(720px,calc(100% - 32px));
+  font:600 13px var(--sans);line-height:1.5;letter-spacing:.01em;color:var(--text);text-align:center;
+  background:rgba(20,27,36,.97);padding:12px 16px;border:1px solid rgba(248,113,113,.35);border-radius:12px;pointer-events:none;
 }
-@keyframes alert-flash{from{opacity:1}to{opacity:.4}}
 .national-hud{
   position:absolute;top:16px;left:16px;z-index:20;
-  font:500 11px var(--mono);color:var(--radar-green);
+  font:500 11px var(--mono);color:var(--text2);
   background:var(--surface);border:1px solid var(--border);
-  border-radius:var(--radius);padding:10px 14px;line-height:1.7;
+  border-radius:10px;padding:10px 14px;line-height:1.7;
 }
 .threat-origin{cursor:pointer;pointer-events:all}
 .threat-origin:hover .threat-ring{stroke-width:3}
-/* 다중 도시 3D 분할 */
-.multi-3d{position:fixed;inset:52px 0 44px 0;display:grid;gap:2px;background:#000;overflow:hidden}
+.multi-3d{position:fixed;inset:52px 0 44px 0;display:grid;gap:2px;background:#090d12;overflow:hidden}
 .multi-3d.hidden{display:none}
 .multi-3d.split-1{grid-template-columns:1fr}
 .multi-3d.split-2{grid-template-columns:1fr 1fr}
 .multi-3d.split-3{grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr}
 .multi-3d.split-4{grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr}
-.multi-3d-cell{position:relative;overflow:hidden;background:#080c08}
+.multi-3d-cell{position:relative;overflow:hidden;background:#0c1117}
 .multi-3d-cell canvas{display:block;width:100%;height:100%}
 .multi-3d-cell .city-3d-label{
   position:absolute;top:8px;left:8px;z-index:10;
-  font:700 11px var(--mono);color:var(--radar-green);
+  font:600 11px var(--mono);color:var(--text);
   background:var(--surface);border:1px solid var(--border);
-  border-radius:var(--radius);padding:4px 10px;
+  border-radius:8px;padding:5px 10px;
 }
 
-/* ═══ 3D VIEW ═══ */
-.view-3d{position:fixed;inset:52px 0 44px 0;background:#080c08;overflow:hidden}
+/* 3D view */
+.view-3d{position:fixed;inset:52px 0 44px 0;background:var(--bg);overflow:hidden}
 .view-3d canvas{display:block;width:100%;height:100%;cursor:grab}
 .view-3d.targeting canvas{cursor:crosshair}
 .view-3d.hidden{display:none}
 .view-3d-hud{
   position:absolute;top:16px;left:16px;z-index:10;
-  font:500 11px var(--mono);color:var(--radar-green);
+  font:500 11px var(--mono);color:var(--text2);
   background:var(--surface);border:1px solid var(--border);
-  border-radius:var(--radius);padding:10px 14px;
+  border-radius:10px;padding:10px 14px;
   pointer-events:none;line-height:1.6;
 }
 </style>
@@ -692,6 +683,13 @@ function cloneSimState(state) {
     totalAttacks: src.totalAttacks || 0
   };
 }
+function buildZoneSignature(zones) {
+  if (!zones || zones.length === 0) return 'none';
+  return zones.map(function(z) {
+    var pts = (z.points || []).map(function(p) { return Math.round(p.x) + ',' + Math.round(p.y); }).join(';');
+    return [z.id, z.capacity || 0, pts].join(':');
+  }).join('|');
+}
 /** clientY → sim-view 내부 좌표 변환 */
 function toSimY(clientY) { return clientY - SIM_TOP; }
 /** 취약 지점 그리드 계산 — 레이더 커버 안 되는 곳 */
@@ -791,12 +789,43 @@ var DEFENSE_CITIES = [
   { id: 'haifa', name: 'Haifa', lat: 32.79, lon: 34.99, bbox: '34.940,32.770,35.040,32.830' },
   { id: 'jerusalem', name: 'Jerusalem', lat: 31.77, lon: 35.23, bbox: '35.190,31.745,35.270,31.800' }
 ];
+function hasDefenseCityId(cityId) {
+  for (var i = 0; i < DEFENSE_CITIES.length; i++) {
+    if (DEFENSE_CITIES[i].id === cityId) return true;
+  }
+  return false;
+}
 function getDefenseCityById(cityId) {
   var wanted = cityId || DEFAULT_SIM_CITY_ID;
   for (var i = 0; i < DEFENSE_CITIES.length; i++) {
     if (DEFENSE_CITIES[i].id === wanted) return DEFENSE_CITIES[i];
   }
   return DEFENSE_CITIES[0] || null;
+}
+function sameIdList(a, b) {
+  if (a === b) return true;
+  if (!a || !b) return !a && !b;
+  if (a.length !== b.length) return false;
+  for (var i = 0; i < a.length; i++) {
+    if (a[i] !== b[i]) return false;
+  }
+  return true;
+}
+function buildCityFocusList(primaryIds, secondaryIds, limit) {
+  var result = [];
+  var max = limit || 4;
+  function append(list) {
+    if (!list) return;
+    for (var i = 0; i < list.length && result.length < max; i++) {
+      var cityId = list[i];
+      if (!cityId || result.indexOf(cityId) >= 0) continue;
+      if (!hasDefenseCityId(cityId)) continue;
+      result.push(cityId);
+    }
+  }
+  append(primaryIds);
+  append(secondaryIds);
+  return result;
 }
 
 /** 위협 출발지 데이터 */
@@ -852,28 +881,28 @@ var _natMissileId = 0;
 
 function TopBar(props) {
   var modeEl = [];
-  if (props.activeView === '3d' && props.targetMode) modeEl.push(createVNode('span', { class: 'topbar-mode mode-target' }, [createTextVNode('TARGET DESIGNATION')]));
-  else if (props.activeView === '3d') modeEl.push(createVNode('span', { class: 'topbar-mode mode-fly' }, [createTextVNode('TERMINAL TRACKING')]));
-  else if (props.isDrawing) modeEl.push(createVNode('span', { class: 'topbar-mode mode-draw' }, [createTextVNode('SECTOR CONFIGURATION')]));
-  else modeEl.push(createVNode('span', { class: 'topbar-mode mode-fly' }, [createTextVNode('MISSION SURVEILLANCE')]));
+  if (props.activeView === '3d' && props.targetMode) modeEl.push(createVNode('span', { class: 'topbar-mode mode-target' }, [createTextVNode('Target input')]));
+  else if (props.activeView === '3d') modeEl.push(createVNode('span', { class: 'topbar-mode mode-fly' }, [createTextVNode('Terminal view')]));
+  else if (props.isDrawing) modeEl.push(createVNode('span', { class: 'topbar-mode mode-draw' }, [createTextVNode('Sector edit')]));
+  else modeEl.push(createVNode('span', { class: 'topbar-mode mode-fly' }, [createTextVNode('Live view')]));
 
   return createVNode('div', { class: 'topbar' }, [
     createVNode('div', { class: 'topbar-logo' }, [
       createVNode('span', { class: 'dot' }, []),
-      createTextVNode('AIR DEFENSE COMMAND')
+      createTextVNode('Air Defense Console')
     ]),
     createVNode('span', { class: 'topbar-loc' }, [createTextVNode(
-      props.activeView === 'national' ? 'Israel · National Air Defense Command Center' :
-      props.activeView === 'multi3d' ? 'Israel · Terminal Intercept Tracking Grid' :
-      props.activeView === '3d' ? 'Israel · ' + props.simCityName + ' Terminal Intercept Tracking' :
-      'Israel · ' + props.simCityName + ' Urban Defense Sector Console'
+      props.activeView === 'national' ? 'Israel · National view' :
+      props.activeView === 'multi3d' ? 'Israel · Multi-city terminal view' :
+      props.activeView === '3d' ? 'Israel · ' + props.simCityName + ' terminal view' :
+      'Israel · ' + props.simCityName + ' sector view'
     )]),
   ].concat(modeEl).concat([
     createVNode('div', { class: 'topbar-tabs' }, [
-      createVNode('button', { class: 'tab-btn' + (props.activeView === 'national' ? ' active' : ''), 'data-action': 'view-national' }, [createTextVNode('Command Overview')]),
-      createVNode('button', { class: 'tab-btn' + (props.activeView === 'sim' ? ' active' : ''), 'data-action': 'view-sim' }, [createTextVNode('Sector Control')]),
-      createVNode('button', { class: 'tab-btn' + (props.activeView === '3d' || props.activeView === 'multi3d' ? ' active' : ''), 'data-action': 'view-3d' }, [createTextVNode('3D Tracking')]),
-      createVNode('button', { class: 'tab-btn' + (props.activeView === 'test' ? ' active' : ''), 'data-action': 'view-test' }, [createTextVNode('Systems Check')])
+      createVNode('button', { class: 'tab-btn' + (props.activeView === 'national' ? ' active' : ''), 'data-action': 'view-national' }, [createTextVNode('National')]),
+      createVNode('button', { class: 'tab-btn' + (props.activeView === 'sim' ? ' active' : ''), 'data-action': 'view-sim' }, [createTextVNode('Sector')]),
+      createVNode('button', { class: 'tab-btn' + (props.activeView === '3d' || props.activeView === 'multi3d' ? ' active' : ''), 'data-action': 'view-3d' }, [createTextVNode('3D View')]),
+      createVNode('button', { class: 'tab-btn' + (props.activeView === 'test' ? ' active' : ''), 'data-action': 'view-test' }, [createTextVNode('Tests')])
     ])
   ]));
 }
@@ -894,7 +923,7 @@ function SimView(props) {
     var capColor = capPct > 50 ? 'rgba(0,255,65,' : (capPct > 20 ? 'rgba(255,145,0,' : 'rgba(255,68,68,');
     zoneEls.push(createVNode('g', {}, [
       createVNode('polygon', { points: pts, fill: capColor + '0.25)', stroke: capColor + '0.85)', 'stroke-width': '3', 'stroke-dasharray': '10,5', class: 'radar-zone' }, []),
-      createVNode('text', { x: String(zone.center.x), y: String(zone.center.y - 8), fill: capColor + '0.7)', 'font-size': '9', 'font-family': 'IBM Plex Mono', 'text-anchor': 'middle' }, [createTextVNode('SECTOR ' + zone.id)]),
+      createVNode('text', { x: String(zone.center.x), y: String(zone.center.y - 8), fill: capColor + '0.7)', 'font-size': '9', 'font-family': 'IBM Plex Mono', 'text-anchor': 'middle' }, [createTextVNode('Sector ' + zone.id)]),
       createVNode('text', { x: String(zone.center.x), y: String(zone.center.y + 6), fill: capColor + '0.9)', 'font-size': '11', 'font-family': 'IBM Plex Mono', 'font-weight': '700', 'text-anchor': 'middle' }, [createTextVNode(zone.capacity + '/5000')])
     ]));
   }
@@ -966,7 +995,7 @@ function SimView(props) {
   // Intercept messages
   var msgEls = [];
   if (props.interceptPos) {
-    msgEls.push(createVNode('div', { class: 'intercept-msg', style: 'left:' + props.interceptPos.x + 'px;top:' + props.interceptPos.y + 'px' }, [createTextVNode('INTERCEPT CONFIRMED')]));
+    msgEls.push(createVNode('div', { class: 'intercept-msg', style: 'left:' + props.interceptPos.x + 'px;top:' + props.interceptPos.y + 'px' }, [createTextVNode('Intercept')]));
   }
 
   return createVNode('div', { class: cls, style: satStyle, 'data-sim': 'true' },
@@ -990,40 +1019,40 @@ function InfoPanel(props) {
 
   return createVNode('div', { class: 'info-panel' }, [
     createVNode('div', { class: 'info-section' }, [
-      createVNode('div', { class: 'info-label' }, [createTextVNode('DISPLAY MODE')]),
-      createVNode('div', { class: 'info-value' }, [createTextVNode(props.activeView === '3d' ? props.cityName + ' Terminal Intercept Tracking' : props.cityName + ' Urban Sector Control')])
+      createVNode('div', { class: 'info-label' }, [createTextVNode('Display mode')]),
+      createVNode('div', { class: 'info-value' }, [createTextVNode(props.activeView === '3d' ? props.cityName + ' terminal view' : props.cityName + ' sector view')])
     ]),
     createVNode('div', { class: 'info-section' }, [
-      createVNode('div', { class: 'info-label' }, [createTextVNode('CURRENT TIME')]),
+      createVNode('div', { class: 'info-label' }, [createTextVNode('Current time')]),
       createVNode('div', { class: 'info-value' }, [createTextVNode(props.currentTimeLabel)])
     ]),
     createVNode('div', { class: 'info-section' }, [
-      createVNode('div', { class: 'info-label' }, [createTextVNode('INTERCEPT CAPACITY')]),
+      createVNode('div', { class: 'info-label' }, [createTextVNode('Intercept capacity')]),
       createVNode('div', { class: 'info-value' }, [createTextVNode(totalCap + ' rounds available')]),
       createVNode('div', { class: 'info-bar' }, [
         createVNode('div', { class: 'info-bar-fill green', style: 'width:' + Math.min(100, totalCap / 3) + '%' }, [])
       ])
     ]),
     createVNode('div', { class: 'info-section' }, [
-      createVNode('div', { class: 'info-label' }, [createTextVNode('TOTAL THREAT TRACKS')]),
+      createVNode('div', { class: 'info-label' }, [createTextVNode('Total threat tracks')]),
       createVNode('div', { class: 'info-value', style: props.totalAttacks > 0 ? 'color:var(--missile-orange)' : '' }, [
         createTextVNode(props.totalAttacks + ' registered')
       ])
     ]),
     createVNode('div', { class: 'info-section' }, [
-      createVNode('div', { class: 'info-label' }, [createTextVNode('ACTIVE INBOUND TRACKS')]),
+      createVNode('div', { class: 'info-label' }, [createTextVNode('Active inbound tracks')]),
       createVNode('div', { class: 'info-value', style: props.activeMissiles > 0 ? 'color:var(--missile-orange)' : '' }, [
         createTextVNode(props.activeMissiles + ' inbound')
       ])
     ]),
     createVNode('div', { class: 'info-section' }, [
-      createVNode('div', { class: 'info-label' }, [createTextVNode('CONFIRMED PENETRATIONS')]),
+      createVNode('div', { class: 'info-label' }, [createTextVNode('Confirmed penetrations')]),
       createVNode('div', { class: 'info-value', style: props.breachCount > 0 ? 'color:var(--alert-red)' : '' }, [
         createTextVNode(props.breachCount + ' penetrations')
       ])
     ]),
     createVNode('div', { class: 'info-section' }, [
-      createVNode('div', { class: 'info-label' }, [createTextVNode('DEFENSE SECTORS (' + props.radarZones.length + ')')]),
+      createVNode('div', { class: 'info-label' }, [createTextVNode('Defense sectors (' + props.radarZones.length + ')')]),
       createVNode('div', { class: 'zone-list' }, zoneChips)
     ])
   ]);
@@ -1033,55 +1062,55 @@ function StatusBar(props) {
   var items = [
     createVNode('span', { class: 'status-item' }, [
       createVNode('span', { class: 'indicator ' + (props.droneAlive ? 'green' : 'red') }, []),
-      createTextVNode('UAV STATUS:' + (props.droneAlive ? 'ONLINE' : 'OFFLINE'))
+      createTextVNode('UAV ' + (props.droneAlive ? 'online' : 'offline'))
     ]),
     createVNode('span', { class: 'status-item' }, [
       createVNode('span', { class: 'indicator green' }, []),
-      createTextVNode('SECTORS:' + props.zoneCount)
+      createTextVNode('Sectors ' + props.zoneCount)
     ])
   ];
 
   if (props.activeView === 'sim' || props.activeView === '3d') {
     items.push(createVNode('span', { class: 'status-item' }, [
       createVNode('span', { class: 'indicator green' }, []),
-      createTextVNode('CITY:' + props.cityName.toUpperCase())
+      createTextVNode('City ' + props.cityName)
     ]));
   }
 
   items.push(createVNode('span', { class: 'status-item' }, [
     createVNode('span', { class: 'indicator green' }, []),
-    createTextVNode('LOCAL:' + props.currentTimeLabel)
+    createTextVNode('Time ' + props.currentTimeLabel)
   ]));
 
   items.push(createVNode('span', { class: 'status-item' }, [
     createVNode('span', { class: 'indicator orange' }, []),
-    createTextVNode('THREATS:' + props.totalAttacks)
+    createTextVNode('Threats ' + props.totalAttacks)
   ]));
 
   if (props.activeMissiles > 0) {
     items.push(createVNode('span', { class: 'status-item' }, [
       createVNode('span', { class: 'indicator orange' }, []),
-      createTextVNode('INBOUND:' + props.activeMissiles)
+      createTextVNode('Inbound ' + props.activeMissiles)
     ]));
   }
 
   if (props.activeView === 'sim') {
     items.push(createVNode('button', { class: 'status-btn' + (props.isDrawing ? ' active' : ''), 'data-action': 'toggle-draw' }, [
-      createTextVNode(props.isDrawing ? 'CONFIGURING' : 'ESTABLISH SECTOR')
+      createTextVNode(props.isDrawing ? 'Editing sectors' : 'Edit sectors')
     ]));
     if (!props.droneAlive) {
-      items.push(createVNode('button', { class: 'status-btn respawn', 'data-action': 'respawn' }, [createTextVNode('RESTORE UAV')]));
+      items.push(createVNode('button', { class: 'status-btn respawn', 'data-action': 'respawn' }, [createTextVNode('Reset UAV')]));
     }
     if (props.zoneCount > 0) {
-      items.push(createVNode('button', { class: 'status-btn clear', 'data-action': 'clear-all' }, [createTextVNode('CLEAR OVERLAY')]));
+      items.push(createVNode('button', { class: 'status-btn clear', 'data-action': 'clear-all' }, [createTextVNode('Reset city')]));
     }
   }
   if (props.activeView === '3d') {
     items.push(createVNode('button', { class: 'status-btn' + (props.targetMode ? ' target-active' : ''), 'data-action': 'toggle-target' }, [
-      createTextVNode(props.targetMode ? 'TARGET DESIGNATION ARMED' : 'DESIGNATE TARGET')
+      createTextVNode(props.targetMode ? 'Target input on' : 'Add target')
     ]));
     if (props.zoneCount > 0) {
-      items.push(createVNode('button', { class: 'status-btn clear', 'data-action': 'clear-all' }, [createTextVNode('CLEAR ANALYSIS')]));
+      items.push(createVNode('button', { class: 'status-btn clear', 'data-action': 'clear-all' }, [createTextVNode('Reset view')]));
     }
   }
 
@@ -1104,9 +1133,9 @@ function CitySelector(props) {
     }, [createTextVNode(city.name)]));
   }
   return createVNode('div', { class: 'city-selector' }, [
-    createVNode('div', { class: 'city-selector-title' }, [createTextVNode('Active City')]),
+    createVNode('div', { class: 'city-selector-title' }, [createTextVNode('City')]),
     createVNode('div', { class: 'city-selector-row' }, buttons),
-    createVNode('div', { class: 'city-selector-caption' }, [createTextVNode(props.cityName + ' sector loaded')])
+    createVNode('div', { class: 'city-selector-caption' }, [createTextVNode(props.cityName + ' loaded')])
   ]);
 }
 
@@ -1351,49 +1380,58 @@ function syncThreeZones(zones2d) {
     var z = zones2d[i];
     seen[z.id] = true;
     if (!_3dZoneMap[z.id]) {
-      var minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
-      for (var pi = 0; pi < z.points.length; pi++) {
-        if (z.points[pi].x < minX) minX = z.points[pi].x;
-        if (z.points[pi].x > maxX) maxX = z.points[pi].x;
-        if (z.points[pi].y < minY) minY = z.points[pi].y;
-        if (z.points[pi].y > maxY) maxY = z.points[pi].y;
-      }
       var center3d = to3D(z.center.x, z.center.y);
-      var sizeX = (maxX - minX) * _3dScaleX;
-      var sizeZ = (maxY - minY) * _3dScaleZ;
 
-      // 반투명 기둥
-      var pillarGeo = new THREE.BoxGeometry(sizeX, PILLAR_H, sizeZ);
+      // 2D 폴리곤 포인트 → THREE.Shape (그린 형태 그대로)
+      var shape = new THREE.Shape();
+      var p0 = to3D(z.points[0].x, z.points[0].y);
+      shape.moveTo(p0.x - center3d.x, -(p0.z - center3d.z));
+      for (var pi = 1; pi < z.points.length; pi++) {
+        var pp = to3D(z.points[pi].x, z.points[pi].y);
+        shape.lineTo(pp.x - center3d.x, -(pp.z - center3d.z));
+      }
+      shape.closePath();
+
+      // ExtrudeGeometry — 그린 형태를 위로 올림
+      var extSettings = { depth: PILLAR_H, bevelEnabled: false };
+      var extGeo = new THREE.ExtrudeGeometry(shape, extSettings);
+      // Extrude는 Z 방향으로 올라가므로 X축 -90° 회전 필요
       var pillarMat = new THREE.MeshBasicMaterial({ color: 0x00ff41, transparent: true, opacity: 0.08, side: THREE.DoubleSide });
-      var pillar = new THREE.Mesh(pillarGeo, pillarMat);
-      pillar.position.set(center3d.x, PILLAR_H / 2, center3d.z);
+      var pillar = new THREE.Mesh(extGeo, pillarMat);
+      pillar.rotation.x = -Math.PI / 2;
+      pillar.position.set(center3d.x, 0, center3d.z);
       _threeScene.add(pillar);
 
-      // 와이어프레임 기둥
-      var wireGeo = new THREE.BoxGeometry(sizeX, PILLAR_H, sizeZ);
-      var wireMat = new THREE.MeshBasicMaterial({ color: 0x00ff41, wireframe: true, transparent: true, opacity: 0.35 });
-      var wire = new THREE.Mesh(wireGeo, wireMat);
-      wire.position.set(center3d.x, PILLAR_H / 2, center3d.z);
+      // 와이어프레임
+      var wireMat = new THREE.MeshBasicMaterial({ color: 0x00ff41, wireframe: true, transparent: true, opacity: 0.3 });
+      var wire = new THREE.Mesh(extGeo.clone(), wireMat);
+      wire.rotation.x = -Math.PI / 2;
+      wire.position.set(center3d.x, 0, center3d.z);
       _threeScene.add(wire);
 
-      // 상단 면 강조
-      var topGeo = new THREE.PlaneGeometry(sizeX, sizeZ);
+      // 상단 면 (ShapeGeometry)
+      var topGeo = new THREE.ShapeGeometry(shape);
       var topMat = new THREE.MeshBasicMaterial({ color: 0x00ff41, transparent: true, opacity: 0.12, side: THREE.DoubleSide });
       var top = new THREE.Mesh(topGeo, topMat);
       top.rotation.x = -Math.PI / 2;
       top.position.set(center3d.x, PILLAR_H, center3d.z);
       _threeScene.add(top);
 
-      // 바닥 테두리
-      var edgeGeo = new THREE.EdgesGeometry(new THREE.BoxGeometry(sizeX, 1, sizeZ));
-      var edgeMat = new THREE.LineBasicMaterial({ color: 0x00ff41, transparent: true, opacity: 0.6 });
-      var edge = new THREE.LineSegments(edgeGeo, edgeMat);
-      edge.position.set(center3d.x, 0.5, center3d.z);
+      // 바닥 윤곽선 (LineLoop)
+      var linePoints = [];
+      for (var li = 0; li < z.points.length; li++) {
+        var lp = to3D(z.points[li].x, z.points[li].y);
+        linePoints.push(new THREE.Vector3(lp.x, 0.5, lp.z));
+      }
+      linePoints.push(linePoints[0].clone());
+      var lineGeo = new THREE.BufferGeometry().setFromPoints(linePoints);
+      var lineMat = new THREE.LineBasicMaterial({ color: 0x00ff41, transparent: true, opacity: 0.6 });
+      var edge = new THREE.Line(lineGeo, lineMat);
       _threeScene.add(edge);
 
       _3dZoneMap[z.id] = { pillar: pillar, wire: wire, top: top, edge: edge };
     }
-    // 용량에 따라 기둥 색상 변경
+    // 용량에 따라 색상 변경
     var zObj = _3dZoneMap[z.id];
     var capPct = z.capacity / 5000;
     var hx = capPct > 0.5 ? 0x00ff41 : (capPct > 0.2 ? 0xff9100 : 0xff4444);
@@ -1498,7 +1536,7 @@ function destroyThreeScene() {
 // ══════════════════════════════════════════════════════════
 // MULTI-3D: Per-city Three.js scenes
 // ══════════════════════════════════════════════════════════
-function initMulti3dScene(cityId, container) {
+function initMulti3dScene(cityId, container, zones2d) {
   if (_multi3dScenes[cityId]) return;
   var city = null;
   for (var i = 0; i < DEFENSE_CITIES.length; i++) {
@@ -1552,46 +1590,100 @@ function initMulti3dScene(cityId, container) {
   ground.rotation.x = -Math.PI / 2;
   scene.add(ground);
 
-  // ── 4개 방공망 배치 (도시별 Iron Dome 배터리) — 기둥형 ──
-  var CITY_PILLAR_H = 160;
-  var zonePositions = [
-    { x: -180, z: -120, w: 200, d: 180 }, // 북서
-    { x:  160, z: -100, w: 190, d: 170 }, // 북동
-    { x: -100, z:  180, w: 170, d: 160 }, // 남서
-    { x:  140, z:  160, w: 180, d: 170 }  // 남동
-  ];
+  // ── 도시별 2D 방공 구역을 그대로 3D로 세움 ──
+  var zoneSource = zones2d || [];
   var zoneData = [];
-  for (var zi = 0; zi < zonePositions.length; zi++) {
-    var zp = zonePositions[zi];
-    // 반투명 기둥
-    var pillarGeo = new THREE.BoxGeometry(zp.w, CITY_PILLAR_H, zp.d);
-    var pillarMat = new THREE.MeshBasicMaterial({ color: 0x00ff41, transparent: true, opacity: 0.06, side: THREE.DoubleSide });
-    var pillar = new THREE.Mesh(pillarGeo, pillarMat);
-    pillar.position.set(zp.x, CITY_PILLAR_H / 2, zp.z);
-    scene.add(pillar);
-    // 와이어프레임 기둥
-    var wireGeo2 = new THREE.BoxGeometry(zp.w, CITY_PILLAR_H, zp.d);
-    var wireMat2 = new THREE.MeshBasicMaterial({ color: 0x00ff41, wireframe: true, transparent: true, opacity: 0.3 });
-    var wire2 = new THREE.Mesh(wireGeo2, wireMat2);
-    wire2.position.set(zp.x, CITY_PILLAR_H / 2, zp.z);
-    scene.add(wire2);
-    // 상단 면
-    var topGeo2 = new THREE.PlaneGeometry(zp.w, zp.d);
-    var topMat2 = new THREE.MeshBasicMaterial({ color: 0x00ff41, transparent: true, opacity: 0.1, side: THREE.DoubleSide });
-    var top2 = new THREE.Mesh(topGeo2, topMat2);
-    top2.rotation.x = -Math.PI / 2; top2.position.set(zp.x, CITY_PILLAR_H, zp.z);
-    scene.add(top2);
-    // 바닥 테두리
-    var edgeGeo2 = new THREE.EdgesGeometry(new THREE.BoxGeometry(zp.w, 1, zp.d));
-    var edgeMat2 = new THREE.LineBasicMaterial({ color: 0x00ff41, transparent: true, opacity: 0.5 });
-    var edge2 = new THREE.LineSegments(edgeGeo2, edgeMat2);
-    edge2.position.set(zp.x, 0.5, zp.z);
-    scene.add(edge2);
-    // 방공 범위 = 기둥 내부 (반경 대신 w/2, d/2 사각형 판정)
-    zoneData.push({ cx: zp.x, cz: zp.z, hw: zp.w / 2, hd: zp.d / 2, cap: 500 });
+  var ZONE_HEIGHT = 180;
+
+  function _zoneColor(capacity) {
+    var capPct = (capacity || 0) / 5000;
+    return capPct > 0.5 ? 0x00ff41 : (capPct > 0.2 ? 0xff9100 : 0xff4444);
   }
 
-  // ── 미사일 생성: 70% 방공망 내부, 30% 방공망 밖 노림 ──
+  function _addExtrudedZone(zone) {
+    if (!zone || !zone.points || zone.points.length < 3) return;
+    var center3d = to3D(zone.center.x, zone.center.y);
+    var shape = new THREE.Shape();
+    var worldPoly = [];
+    var linePoints = [];
+    var minX = Infinity, maxX = -Infinity, minZ = Infinity, maxZ = -Infinity;
+
+    for (var pi = 0; pi < zone.points.length; pi++) {
+      var wp = to3D(zone.points[pi].x, zone.points[pi].y);
+      var localX = wp.x - center3d.x;
+      var localY = -(wp.z - center3d.z);
+      if (pi === 0) shape.moveTo(localX, localY);
+      else shape.lineTo(localX, localY);
+      worldPoly.push({ x: wp.x, y: wp.z });
+      linePoints.push(new THREE.Vector3(wp.x, 0.5, wp.z));
+      if (wp.x < minX) minX = wp.x;
+      if (wp.x > maxX) maxX = wp.x;
+      if (wp.z < minZ) minZ = wp.z;
+      if (wp.z > maxZ) maxZ = wp.z;
+    }
+    if (linePoints.length === 0) return;
+    linePoints.push(linePoints[0].clone());
+    shape.closePath();
+
+    var zoneColor = _zoneColor(zone.capacity || 5000);
+    var extGeo = new THREE.ExtrudeGeometry(shape, { depth: ZONE_HEIGHT, bevelEnabled: false });
+    var pillarMat = new THREE.MeshBasicMaterial({ color: zoneColor, transparent: true, opacity: 0.08, side: THREE.DoubleSide });
+    var pillar = new THREE.Mesh(extGeo, pillarMat);
+    pillar.rotation.x = -Math.PI / 2;
+    pillar.position.set(center3d.x, 0, center3d.z);
+    scene.add(pillar);
+
+    var wireMat = new THREE.MeshBasicMaterial({ color: zoneColor, wireframe: true, transparent: true, opacity: 0.32 });
+    var wire = new THREE.Mesh(extGeo.clone(), wireMat);
+    wire.rotation.x = -Math.PI / 2;
+    wire.position.set(center3d.x, 0, center3d.z);
+    scene.add(wire);
+
+    var topGeo = new THREE.ShapeGeometry(shape);
+    var topMat = new THREE.MeshBasicMaterial({ color: zoneColor, transparent: true, opacity: 0.12, side: THREE.DoubleSide });
+    var top = new THREE.Mesh(topGeo, topMat);
+    top.rotation.x = -Math.PI / 2;
+    top.position.set(center3d.x, ZONE_HEIGHT, center3d.z);
+    scene.add(top);
+
+    var edgeGeo = new THREE.BufferGeometry().setFromPoints(linePoints);
+    var edgeMat = new THREE.LineBasicMaterial({ color: zoneColor, transparent: true, opacity: 0.55 });
+    var edge = new THREE.Line(edgeGeo, edgeMat);
+    scene.add(edge);
+
+    zoneData.push({
+      id: zone.id,
+      cx: center3d.x,
+      cz: center3d.z,
+      poly: worldPoly,
+      bounds: { minX: minX, maxX: maxX, minZ: minZ, maxZ: maxZ },
+      cap: zone.capacity || 5000
+    });
+  }
+
+  function _pickPointInsideZone(zone) {
+    var spanX = Math.max(1, zone.bounds.maxX - zone.bounds.minX);
+    var spanZ = Math.max(1, zone.bounds.maxZ - zone.bounds.minZ);
+    var insetX = Math.min(24, spanX * 0.12);
+    var insetZ = Math.min(24, spanZ * 0.12);
+    for (var attempt = 0; attempt < 36; attempt++) {
+      var tx = randRange(zone.bounds.minX + insetX, zone.bounds.maxX - insetX);
+      var tz = randRange(zone.bounds.minZ + insetZ, zone.bounds.maxZ - insetZ);
+      if (pointInPolygon(tx, tz, zone.poly)) return { x: tx, z: tz };
+    }
+    return { x: zone.cx, z: zone.cz };
+  }
+
+  function _insideAnyZone(x, z) {
+    for (var zi = 0; zi < zoneData.length; zi++) {
+      if (pointInPolygon(x, z, zoneData[zi].poly)) return true;
+    }
+    return false;
+  }
+
+  for (var zi = 0; zi < zoneSource.length; zi++) _addExtrudedZone(zoneSource[zi]);
+
+  // ── 미사일 생성: 저장된 방공 구역 내부를 우선 노림 ──
   var cityMissiles = [];
   var cityExplosions = [];
   var breachMarkers = [];
@@ -1605,24 +1697,28 @@ function initMulti3dScene(cityId, container) {
     mm.y = 300 + Math.random() * 200;
     mm.z = Math.sin(spawnAngle) * spawnR;
 
-    if (Math.random() < 0.7) {
-      // 방공망 내부를 노리는 최종 종말 단계
+    if (zoneData.length > 0 && Math.random() < 0.7) {
+      // 저장된 방공 구역 내부를 직접 겨냥
       var zoneIdx = Math.floor(Math.random() * zoneData.length);
       var zone = zoneData[zoneIdx];
-      mm.tx = zone.cx + (Math.random() - 0.5) * zone.hw * 1.4;
-      mm.tz = zone.cz + (Math.random() - 0.5) * zone.hd * 1.4;
+      var target = _pickPointInsideZone(zone);
+      mm.tx = target.x;
+      mm.tz = target.z;
       mm.hitsZone = true;
     } else {
-      // 방공망 밖 — 도시 빈틈 노림
-      mm.tx = (Math.random() - 0.5) * 500;
-      mm.tz = (Math.random() - 0.5) * 500;
-      for (var zci = 0; zci < zoneData.length; zci++) {
-        var ddx = mm.tx - zoneData[zci].cx, ddz = mm.tz - zoneData[zci].cz;
-        if (Math.abs(ddx) < zoneData[zci].hw && Math.abs(ddz) < zoneData[zci].hd) {
-          mm.tx = mm.tx + (ddx > 0 ? 1 : -1) * zoneData[zci].hw * 1.2;
-          mm.tz = mm.tz + (ddz > 0 ? 1 : -1) * zoneData[zci].hd * 0.6;
+      // 방공 구역 밖 빈틈 노림
+      var safePoint = null;
+      for (var attempt = 0; attempt < 40; attempt++) {
+        var tx = (Math.random() - 0.5) * 500;
+        var tz = (Math.random() - 0.5) * 500;
+        if (!_insideAnyZone(tx, tz)) {
+          safePoint = { x: tx, z: tz };
+          break;
         }
       }
+      if (!safePoint) safePoint = { x: (Math.random() - 0.5) * 500, z: (Math.random() - 0.5) * 500 };
+      mm.tx = safePoint.x;
+      mm.tz = safePoint.z;
       mm.hitsZone = false;
     }
 
@@ -1696,8 +1792,7 @@ function initMulti3dScene(cityId, container) {
         // 방공망 요격 체크
         var intercepted = false;
         for (var zci = 0; zci < zoneData.length; zci++) {
-          var zdx = m.x - zoneData[zci].cx, zdz = m.z - zoneData[zci].cz;
-          if (Math.abs(zdx) < zoneData[zci].hw && Math.abs(zdz) < zoneData[zci].hd && zoneData[zci].cap > 0) {
+          if (zoneData[zci].cap > 0 && pointInPolygon(m.x, m.z, zoneData[zci].poly)) {
             intercepted = true; zoneData[zci].cap--;
             cityExplosions.push(_createExplosion(scene, m.x, m.y, m.z, 0x00ff41));
             break;
@@ -1739,7 +1834,15 @@ function initMulti3dScene(cityId, container) {
   }
   animId = requestAnimationFrame(animate);
 
-  _multi3dScenes[cityId] = { scene: scene, renderer: renderer, camera: camera, animId: animId, missiles: cityMissiles, explosions: cityExplosions };
+  _multi3dScenes[cityId] = {
+    scene: scene,
+    renderer: renderer,
+    camera: camera,
+    animId: animId,
+    missiles: cityMissiles,
+    explosions: cityExplosions,
+    zoneSignature: buildZoneSignature(zoneSource)
+  };
 }
 
 function destroyMulti3dScene(cityId) {
@@ -1765,22 +1868,102 @@ function NationalView(props) {
 
   // 도시 마커 SVG
   var cityEls = [];
+  var cityMeta = [];
+  var CITY_LABEL_OFFSETS = {
+    haifa: { dx: 34, dy: -36 },
+    telaviv: { dx: -142, dy: -10 },
+    jerusalem: { dx: 34, dy: 18 },
+    ashkelon: { dx: -150, dy: 22 },
+    sderot: { dx: -142, dy: 56 }
+  };
   for (var ci = 0; ci < DEFENSE_CITIES.length; ci++) {
     var c = DEFENSE_CITIES[ci];
     var cp = geoToScreen(c.lon, c.lat, w, h);
-    // 공격받는 도시는 빨간색, 아니면 초록색
     var isUnderAttack = false;
     for (var ai = 0; ai < props.natMissiles.length; ai++) {
       if (props.natMissiles[ai].targetCity === c.id && props.natMissiles[ai].active) { isUnderAttack = true; break; }
     }
-    var ringColor = isUnderAttack ? '#ff4444' : '#00ff41';
-    var ringAnim = isUnderAttack ? ';animation:alert-flash .3s ease infinite alternate' : '';
-    cityEls.push(createVNode('g', { class: 'city-marker', 'data-action': 'select-city-' + c.id }, [
-      createVNode('circle', { cx: String(cp.x), cy: String(cp.y), r: isUnderAttack ? '14' : '10', class: 'city-ring',
-        fill: ringColor, stroke: ringColor, 'fill-opacity': isUnderAttack ? '0.3' : '0.15', style: ringAnim }, []),
-      createVNode('circle', { cx: String(cp.x), cy: String(cp.y), r: '4', fill: ringColor }, []),
-      createVNode('text', { x: String(cp.x), y: String(cp.y - 18), class: 'city-label', 'text-anchor': 'middle', fill: ringColor }, [
-        createTextVNode(c.name)
+    var ringColor = isUnderAttack ? '#f87171' : '#b8c8dc';
+    var offset = CITY_LABEL_OFFSETS[c.id] || { dx: (cp.x < w / 2 ? 34 : -142), dy: -8 };
+    cityMeta.push({
+      city: c,
+      cp: cp,
+      isUnderAttack: isUnderAttack,
+      ringColor: ringColor,
+      offset: { dx: offset.dx, dy: offset.dy },
+      labelWidth: Math.max(116, c.name.length * 9 + 34)
+    });
+  }
+
+  function layoutCityLabels(entries) {
+    if (entries.length === 0) return;
+    var boxH = 30;
+    var minX = 12;
+    var maxX = w - 12;
+    var minY = 64;
+    var maxY = h - 18;
+
+    for (var li = 0; li < entries.length; li++) {
+      var entry = entries[li];
+      var rawX = entry.cp.x + entry.offset.dx;
+      var rawY = entry.cp.y + entry.offset.dy - boxH / 2;
+      entry.labelBox = {
+        x: Math.max(minX, Math.min(maxX - entry.labelWidth, rawX)),
+        y: Math.max(minY, Math.min(maxY - boxH, rawY)),
+        w: entry.labelWidth,
+        h: boxH
+      };
+    }
+
+    entries.sort(function(a, b) { return a.labelBox.y - b.labelBox.y; });
+    for (var fi = 1; fi < entries.length; fi++) {
+      var prev = entries[fi - 1].labelBox;
+      var cur = entries[fi].labelBox;
+      if (cur.y < prev.y + prev.h + 8) cur.y = prev.y + prev.h + 8;
+    }
+    for (var bi = entries.length - 1; bi >= 0; bi--) {
+      var box = entries[bi].labelBox;
+      if (box.y + box.h > maxY) box.y = maxY - box.h;
+      if (bi > 0) {
+        var prevBox = entries[bi - 1].labelBox;
+        if (prevBox.y + prevBox.h + 8 > box.y) prevBox.y = Math.max(minY, box.y - prevBox.h - 8);
+      }
+    }
+
+    for (var ai = 0; ai < entries.length; ai++) {
+      var item = entries[ai];
+      var boxX = item.labelBox.x;
+      var boxY = item.labelBox.y;
+      var boxW = item.labelBox.w;
+      var boxH2 = item.labelBox.h;
+      var anchorX = item.cp.x < boxX ? boxX : (item.cp.x > boxX + boxW ? boxX + boxW : item.cp.x);
+      var anchorY = Math.max(boxY + 7, Math.min(boxY + boxH2 - 7, item.cp.y));
+      item.labelPoint = { x: anchorX, y: anchorY };
+      item.textX = boxX + 12;
+      item.textY = boxY + 20;
+    }
+  }
+
+  layoutCityLabels(cityMeta);
+
+  for (var ci = 0; ci < cityMeta.length; ci++) {
+    var meta = cityMeta[ci];
+    cityEls.push(createVNode('g', { class: 'city-marker', 'data-action': 'select-city-' + meta.city.id }, [
+      createVNode('line', {
+        x1: String(meta.cp.x), y1: String(meta.cp.y),
+        x2: String(meta.labelPoint.x), y2: String(meta.labelPoint.y),
+        class: 'city-label-link', stroke: meta.ringColor
+      }, []),
+      createVNode('circle', { cx: String(meta.cp.x), cy: String(meta.cp.y), r: meta.isUnderAttack ? '14' : '10', class: 'city-ring',
+        fill: meta.ringColor, stroke: meta.ringColor, 'fill-opacity': meta.isUnderAttack ? '0.28' : '0.14' }, []),
+      createVNode('circle', { cx: String(meta.cp.x), cy: String(meta.cp.y), r: '4', fill: meta.ringColor }, []),
+      createVNode('rect', {
+        x: String(meta.labelBox.x), y: String(meta.labelBox.y), width: String(meta.labelBox.w), height: String(meta.labelBox.h),
+        rx: '8', ry: '8', class: 'city-label-box', stroke: meta.ringColor
+      }, []),
+      createVNode('circle', { cx: String(meta.labelPoint.x), cy: String(meta.labelPoint.y), r: '3.5', class: 'city-label-dot', fill: meta.ringColor }, []),
+      createVNode('text', { x: String(meta.textX), y: String(meta.textY), class: 'city-label', 'text-anchor': 'start' }, [
+        createTextVNode(meta.city.name)
       ])
     ]));
   }
@@ -1828,7 +2011,7 @@ function NationalView(props) {
   }
   if (attackCities.length > 0) {
     alertEl.push(createVNode('div', { class: 'alert-banner' }, [
-      createTextVNode('INBOUND THREAT CORRIDOR DETECTED'),
+      createTextVNode('Inbound threats detected'),
       createVNode('br', {}, []),
       createTextVNode(attackCities.join(' · '))
     ]));
@@ -1839,25 +2022,25 @@ function NationalView(props) {
   if (!props.scenarioRunning) {
     scenarioBtn.push(createVNode('div', { style: 'margin-top:8px' }, [
       createVNode('button', { class: 'status-btn target-active', 'data-action': 'run-scenario', style: 'font-size:10px;padding:4px 10px' }, [
-        createTextVNode('EXECUTE OPERATION TRUE PROMISE')
+        createTextVNode('Run sample scenario')
       ])
     ]));
   } else {
     scenarioBtn.push(createVNode('div', { style: 'margin-top:6px;color:var(--alert-red)' }, [
-      createTextVNode('SCENARIO EXECUTION ACTIVE')
+      createTextVNode('Scenario running')
     ]));
   }
 
   var hudEl = createVNode('div', { class: 'national-hud' }, [
-    createTextVNode('[ NATIONAL AIR DEFENSE COMMAND ]'),
+    createTextVNode('National view'),
     createVNode('br', {}, []),
-    createTextVNode('Protected cities: ' + DEFENSE_CITIES.length + '  Threat corridors: ' + THREAT_ORIGINS.length),
+    createTextVNode('Cities ' + DEFENSE_CITIES.length + '  Origins ' + THREAT_ORIGINS.length),
     createVNode('br', {}, []),
-    createTextVNode('Active threat tracks: ' + props.natMissiles.filter(function(m){return m.active;}).length),
+    createTextVNode('Active tracks ' + props.natMissiles.filter(function(m){return m.active;}).length),
     createVNode('br', {}, []),
-    createTextVNode('Select a launch corridor to initiate an inbound threat package'),
+    createTextVNode('Click an origin to add inbound tracks'),
     createVNode('br', {}, []),
-    createTextVNode('Select a city to open terminal intercept tracking')
+    createTextVNode('Click a city to open terminal view')
   ].concat(scenarioBtn));
 
   var svgEl = createVNode('svg', { class: 'national-svg', xmlns: SVG_NS }, cityEls.concat(threatEls).concat(missileEls));
@@ -1868,17 +2051,17 @@ function NationalView(props) {
 // 3D VNode 컴포넌트
 function View3D(props) {
   var cls = 'view-3d' + (props.visible ? '' : ' hidden') + (props.targetMode ? ' targeting' : '');
-  var stats = 'ATTACKS: ' + props.totalAttacks + '  MISSILES: ' + props.activeMissiles + '  ZONES: ' + props.radarZones.length + '  BREACHES: ' + props.breachCount;
+  var stats = 'Threats ' + props.totalAttacks + '  Inbound ' + props.activeMissiles + '  Sectors ' + props.radarZones.length + '  Breaches ' + props.breachCount;
   var hudChildren = [
-    createTextVNode('[ ' + props.cityName.toUpperCase() + ' TERMINAL INTERCEPT TRACKING ]'),
+    createTextVNode(props.cityName + ' terminal view'),
     createVNode('br', {}, []),
-    createTextVNode('TIME: ' + props.currentTimeLabel),
+    createTextVNode('Time ' + props.currentTimeLabel),
     createVNode('br', {}, []),
     createTextVNode(stats)
   ];
   if (props.targetMode) {
     hudChildren.push(createVNode('br', {}, []));
-    hudChildren.push(createTextVNode('[ Select an impact point to assign inbound threat tracks ]'));
+    hudChildren.push(createTextVNode('Click to place inbound tracks'));
   }
   return createVNode('div', { class: cls, 'data-3d': 'true' }, [
     createVNode('div', { class: 'view-3d-hud' }, hudChildren)
@@ -1896,8 +2079,8 @@ function TestView(props) {
   });
   var pc = props.results.filter(function(r) { return r.pass; }).length;
   return createVNode('div', { class: 'test-view' + (props.visible ? ' show' : '') }, [
-    createVNode('div', { class: 'test-title' }, [createTextVNode('Virtual DOM Systems Check Suite')]),
-    createVNode('div', { class: 'test-subtitle' }, [createTextVNode(pc + '/' + props.results.length + ' VERIFIED · DIFF ENGINE REGRESSION CHECKS')])
+    createVNode('div', { class: 'test-title' }, [createTextVNode('Validation')]),
+    createVNode('div', { class: 'test-subtitle' }, [createTextVNode(pc + '/' + props.results.length + ' passed · diff engine checks')])
   ].concat(cards));
 }
 
@@ -1967,6 +2150,11 @@ var _alertAudio = {
   lfo: null,
   lfoGainA: null,
   lfoGainB: null,
+  releaseSeconds: 1.8,
+  lowA: 240,
+  highA: 760,
+  lowB: 120,
+  highB: 380,
   armed: false,
   active: false,
   wanted: false
@@ -2023,10 +2211,10 @@ function startAlertSiren() {
   var oscB = ctx.createOscillator();
   var riseSeconds = 4.5;
   var sustainSeconds = 26.0;
-  var lowA = 240;
-  var highA = 760;
-  var lowB = 120;
-  var highB = 380;
+  var lowA = state.lowA;
+  var highA = state.highA;
+  var lowB = state.lowB;
+  var highB = state.highB;
 
   mix.gain.value = 0.18;
   oscA.type = 'triangle';
@@ -2068,15 +2256,32 @@ function stopAlertSiren() {
   state.wanted = false;
   if (!state.active || !state.ctx) return;
   var now = state.ctx.currentTime;
-  var stopAt = now + 0.45;
+  var releaseSeconds = state.releaseSeconds || 1.8;
+  var stopAt = now + releaseSeconds;
 
-  state.master.gain.cancelScheduledValues(now);
-  state.master.gain.setValueAtTime(Math.max(0.0001, state.master.gain.value || 0.0001), now);
+  function holdParam(param) {
+    if (!param) return;
+    if (typeof param.cancelAndHoldAtTime === 'function') param.cancelAndHoldAtTime(now);
+    else {
+      var current = param.value;
+      param.cancelScheduledValues(now);
+      param.setValueAtTime(current, now);
+    }
+  }
+
+  holdParam(state.master.gain);
+  holdParam(state.filter.frequency);
+  if (state.oscA) holdParam(state.oscA.frequency);
+  if (state.oscB) holdParam(state.oscB.frequency);
+
+  if (state.oscA) state.oscA.frequency.exponentialRampToValueAtTime(state.lowA, stopAt);
+  if (state.oscB) state.oscB.frequency.exponentialRampToValueAtTime(state.lowB, stopAt);
+  state.filter.frequency.linearRampToValueAtTime(1100, stopAt);
   state.master.gain.linearRampToValueAtTime(0.0001, stopAt);
 
-  try { state.oscA.stop(stopAt); } catch (e) {}
-  try { state.oscB.stop(stopAt); } catch (e) {}
-  try { state.lfo.stop(stopAt); } catch (e) {}
+  try { state.oscA.stop(stopAt + 0.05); } catch (e) {}
+  try { state.oscB.stop(stopAt + 0.05); } catch (e) {}
+  try { state.lfo.stop(stopAt + 0.05); } catch (e) {}
 
   state.active = false;
   state.mix = null;
@@ -2146,6 +2351,12 @@ function App() {
       next[cityId || selectedSimCityId] = snapshot;
       return next;
     });
+  }
+
+  function getMulti3dZonesForCity(cityId) {
+    if (cityId === selectedSimCityId) return radarZones;
+    var snapshot = simCityStore[cityId];
+    return snapshot && snapshot.radarZones ? snapshot.radarZones : [];
   }
 
   var totalArea = useMemo(function() {
@@ -2669,7 +2880,7 @@ function App() {
     return missiles.filter(function(m) { return m.active && !m.intercepted; }).length;
   }, [missiles]);
 
-  var imminentCities = useMemo(function() {
+  var trackedThreatCities = useMemo(function() {
     var cityEta = {};
     for (var i = 0; i < natMissiles.length; i++) {
       var m = natMissiles[i];
@@ -2677,26 +2888,53 @@ function App() {
       var dx = m.targetX - m.x, dy = m.targetY - m.y;
       var dist = Math.sqrt(dx * dx + dy * dy);
       var eta = dist / Math.max(1, m.speed || 1);
-      if (eta > NATIONAL_ZOOM_TRIGGER_SECONDS) continue;
       var existing = cityEta[m.targetCity];
       if (!existing || eta < existing.eta) cityEta[m.targetCity] = { id: m.targetCity, eta: eta };
     }
     return Object.keys(cityEta).map(function(cityId) { return cityEta[cityId]; })
-      .sort(function(a, b) { return a.eta - b.eta; })
-      .map(function(entry) { return entry.id; });
+      .sort(function(a, b) { return a.eta - b.eta; });
   }, [natMissiles]);
+
+  var trackedThreatCityIds = useMemo(function() {
+    return trackedThreatCities.map(function(entry) { return entry.id; });
+  }, [trackedThreatCities]);
+
+  var imminentCities = useMemo(function() {
+    var result = [];
+    for (var i = 0; i < trackedThreatCities.length; i++) {
+      if (trackedThreatCities[i].eta > NATIONAL_ZOOM_TRIGGER_SECONDS) continue;
+      result.push(trackedThreatCities[i].id);
+    }
+    return result;
+  }, [trackedThreatCities]);
 
   // ── National: 도시 타격 직전 먼저 multi3d 확대 ──
   useEffect(function() {
     if (activeView !== 'national' || imminentCities.length === 0) return;
     var delay = Math.max(0, multi3dCooldownUntil - Date.now());
     var tid = setTimeout(function() {
-      setMultiCities(imminentCities.slice(0, 4));
+      var focusCities = buildCityFocusList(imminentCities, trackedThreatCityIds, 4);
+      if (focusCities.length === 0) return;
+      setMultiCities(function(prev) {
+        var current = prev || [];
+        return sameIdList(current, focusCities) ? prev : focusCities;
+      });
       setActiveView('multi3d');
       setMulti3dSession(function(n) { return n + 1; });
     }, delay);
     return function() { clearTimeout(tid); };
-  }, [imminentCities, activeView, multi3dCooldownUntil]);
+  }, [imminentCities, trackedThreatCityIds, activeView, multi3dCooldownUntil]);
+
+  // ── Multi3D 중 다른 도시 위협이 붙으면 같은 분할 화면에 계속 추가 ──
+  useEffect(function() {
+    if (activeView !== 'multi3d') return;
+    var currentCities = multiCities || [];
+    var nextCities = buildCityFocusList(currentCities, trackedThreatCityIds, 4);
+    if (nextCities.length === 0 || sameIdList(currentCities, nextCities)) return;
+    var shouldExtendSession = multi3dSession > 0 && nextCities.length > currentCities.length;
+    setMultiCities(nextCities);
+    if (shouldExtendSession) setMulti3dSession(function(n) { return n + 1; });
+  }, [activeView, multiCities, trackedThreatCityIds, multi3dSession]);
 
   // ── Multi3D 체류 후 national 복귀 ──
   useEffect(function() {
@@ -2747,27 +2985,30 @@ function App() {
   // ── Multi3D 뷰 초기화/파괴 ──
   useEffect(function() {
     if (activeView !== 'multi3d' || !multiCities || multiCities.length === 0) {
-      // 정리
       var keys = Object.keys(_multi3dScenes);
       for (var i = 0; i < keys.length; i++) destroyMulti3dScene(keys[i]);
       return;
     }
-    // 약간의 딜레이 후 초기화 (DOM 생성 대기)
     var tid = setTimeout(function() {
+      var wanted = {};
+      for (var ci = 0; ci < multiCities.length; ci++) wanted[multiCities[ci]] = true;
+      var keys = Object.keys(_multi3dScenes);
+      for (var i = 0; i < keys.length; i++) {
+        if (!wanted[keys[i]]) destroyMulti3dScene(keys[i]);
+      }
       for (var ci = 0; ci < multiCities.length; ci++) {
         var cid = multiCities[ci];
         var el = document.querySelector('[data-multi3d-cell="' + cid + '"]');
-        if (el && !_multi3dScenes[cid]) {
-          initMulti3dScene(cid, el);
+        var cityZones = getMulti3dZonesForCity(cid);
+        var zoneSignature = buildZoneSignature(cityZones);
+        if (_multi3dScenes[cid] && _multi3dScenes[cid].zoneSignature !== zoneSignature) {
+          destroyMulti3dScene(cid);
         }
+        if (el && !_multi3dScenes[cid]) initMulti3dScene(cid, el, cityZones);
       }
     }, 100);
-    return function() {
-      clearTimeout(tid);
-      var keys = Object.keys(_multi3dScenes);
-      for (var i = 0; i < keys.length; i++) destroyMulti3dScene(keys[i]);
-    };
-  }, [activeView, multiCities]);
+    return function() { clearTimeout(tid); };
+  }, [activeView, multiCities, simCityStore, selectedSimCityId, radarZones]);
 
   // VNode 트리
   var multi3dCells = [];
