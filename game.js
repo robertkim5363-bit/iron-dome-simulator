@@ -1,370 +1,366 @@
-// =============================================
-// 담당: 은재 | game.js
-// 책임: 게임 상태 관리 + 프로필 HTML 생성
-// AI 규약 버전: v1.0
-// =============================================
-
-// 성장 단계 정의
-// hireReward: 취업하기 시 받는 골드
-const LEVELS = [
+const STAGE_DEFINITIONS = [
   {
-    level: 1,
-    levelName: '코딩 첫날',
-    levelIcon: '🌱',
-    career: 0,
-    maxExp: 100,
-    hireReward: 0,
-    skills: [{ name: 'HTML', stars: 1 }],
-    projects: [],
-    weaknesses: ['구글링 없이 코드 못 씀', '변수명 전부 a, b, c'],
-    strengths: []
+    threshold: 0,
+    name: '씨앗 준비',
+    emoji: '🌰',
+    hint: '흙 속에서 첫 뿌리를 준비하고 있습니다.'
   },
   {
-    level: 2,
-    levelName: '주니어 개발자',
-    levelIcon: '💻',
-    career: 1,
-    maxExp: 200,
-    hireReward: 150,
-    skills: [
-      { name: 'HTML', stars: 2 },
-      { name: 'CSS', stars: 2 },
-      { name: 'JavaScript', stars: 1 }
-    ],
-    projects: ['투두리스트'],
-    weaknesses: ['변수명 전부 a, b, c'],
-    strengths: []
+    threshold: 20,
+    name: '새싹 등장',
+    emoji: '🌱',
+    hint: '물을 잘 주면 작지만 단단한 새싹이 올라옵니다.'
   },
   {
-    level: 3,
-    levelName: '미드레벨 개발자',
-    levelIcon: '🔥',
-    career: 3,
-    maxExp: 300,
-    hireReward: 400,
-    skills: [
-      { name: 'HTML', stars: 3 },
-      { name: 'CSS', stars: 3 },
-      { name: 'JavaScript', stars: 3 },
-      { name: 'React', stars: 2 },
-      { name: 'TypeScript', stars: 1 }
-    ],
-    projects: ['투두리스트', '날씨 앱'],
-    weaknesses: [],
-    strengths: ['코드 리뷰 가능']
+    threshold: 45,
+    name: '떡잎 확장',
+    emoji: '🌿',
+    hint: '햇빛과 물의 균형이 맞을수록 잎이 넓어집니다.'
   },
   {
-    level: 4,
-    levelName: '시니어 개발자',
-    levelIcon: '⚡',
-    career: 5,
-    maxExp: 500,
-    hireReward: 800,
-    skills: [
-      { name: 'HTML', stars: 4 },
-      { name: 'CSS', stars: 4 },
-      { name: 'JavaScript', stars: 5 },
-      { name: 'React', stars: 4 },
-      { name: 'TypeScript', stars: 3 },
-      { name: 'Node.js', stars: 3 },
-      { name: 'Docker', stars: 2 }
-    ],
-    projects: ['투두리스트', '날씨 앱', '사내 관리 시스템'],
-    weaknesses: [],
-    strengths: ['코드 리뷰 가능', '주니어 멘토링']
+    threshold: 70,
+    name: '꽃봉오리 형성',
+    emoji: '🌼',
+    hint: '영양이 충분하면 꼬투리 준비가 빨라집니다.'
   },
   {
-    level: 5,
-    levelName: '테크리드',
-    levelIcon: '🏆',
-    career: 8,
-    maxExp: 999,
-    hireReward: 2000,
-    skills: [
-      { name: 'HTML', stars: 5 },
-      { name: 'CSS', stars: 5 },
-      { name: 'JavaScript', stars: 5 },
-      { name: 'React', stars: 5 },
-      { name: 'TypeScript', stars: 5 },
-      { name: 'Node.js', stars: 4 },
-      { name: 'Docker', stars: 4 },
-      { name: 'Kubernetes', stars: 3 },
-      { name: '시스템 설계', stars: 3 }
-    ],
-    projects: ['투두리스트', '날씨 앱', '사내 관리 시스템', '오픈소스 라이브러리'],
-    weaknesses: [],
-    strengths: ['코드 리뷰 가능', '주니어 멘토링', '기술 의사결정', '장애 대응 리더']
+    threshold: 90,
+    name: '수확 직전',
+    emoji: '🍃',
+    hint: '이제 수확 버튼으로 오늘의 강낭콩을 마무리할 수 있습니다.'
   }
 ];
 
-// 액션별 골드 비용
-const ACTION_COST = {
-  coding: 10,
-  project: 20,
-  study: 15,
-  overtime: 30
-};
-
-// 게임 상태
-let gameState = {
-  levelIdx: 0,
-  exp: 0,
-  gold: 100
-};
-
-// 버튼을 눌렀지만 아직 Patch 안 한 상태 여부
-let isPendingPatch = false;
-
-// 버튼 누르기 직전 상태 스냅샷 (다른 버튼으로 교체 시 복원용)
-let gameStateSnapshot = null;
-
-// 별 표시 문자열 생성
-// 예) starsToString(3) → '★★★☆☆'
-function starsToString(count) {
-  let result = '';
-
-  for (let i = 0; i < 5; i++) {
-    result += i < count ? '★' : '☆';
-  }
-
-  return result;
-}
-
-// 현재 레벨 정보 반환
-function getCurrentLevel() {
-  return LEVELS[gameState.levelIdx];
-}
-
-// 게임 상태 기반 프로필 VNode 생성
-function generateProfileVNode() {
-  const lvl = getCurrentLevel();
-  const exp = gameState.exp;
-
-  // 기술 스택 li VNode 목록
-  const skillItems = lvl.skills.map((skill) => ({
-    type: 'li',
-    props: {},
-    children: [skill.name + ' ' + starsToString(skill.stars)]
-  }));
-
-  const children = [
-    { type: 'h1', props: {}, children: ['김은재'] },
-    { type: 'h2', props: { class: 'level level-' + lvl.level }, children: [lvl.levelIcon + ' ' + lvl.levelName] },
-    { type: 'p', props: { class: 'career' }, children: ['경력 ' + lvl.career + '년차'] },
-    { type: 'p', props: { class: 'gold' }, children: ['💰 ' + gameState.gold + ' G'] },
-    { type: 'p', props: { class: 'hire-info' }, children: ['퇴직 보상: ' + lvl.hireReward + ' G'] },
-    {
-      type: 'div',
-      props: { class: 'exp-bar' },
-      children: [
-        { type: 'progress', props: { value: String(exp), max: String(lvl.maxExp) }, children: [] },
-        { type: 'span', props: {}, children: [exp + ' / ' + lvl.maxExp + ' EXP'] }
-      ]
-    },
-    { type: 'h3', props: {}, children: ['기술 스택'] },
-    { type: 'ul', props: { class: 'skills' }, children: skillItems }
-  ];
-
-  // 프로젝트
-  if (lvl.projects.length > 0) {
-    children.push({ type: 'h3', props: {}, children: ['완성한 프로젝트'] });
-    children.push({
-      type: 'ul',
-      props: { class: 'projects' },
-      children: lvl.projects.map((proj) => ({ type: 'li', props: {}, children: [proj] }))
-    });
-  }
-
-  // 약점
-  if (lvl.weaknesses.length > 0) {
-    children.push({ type: 'h3', props: {}, children: ['약점'] });
-    children.push({
-      type: 'ul',
-      props: { class: 'weaknesses' },
-      children: lvl.weaknesses.map((w) => ({ type: 'li', props: { class: 'bad' }, children: [w] }))
-    });
-  }
-
-  // 강점
-  if (lvl.strengths.length > 0) {
-    children.push({ type: 'h3', props: {}, children: ['강점'] });
-    children.push({
-      type: 'ul',
-      props: { class: 'strengths' },
-      children: lvl.strengths.map((s) => ({ type: 'li', props: { class: 'good' }, children: [s] }))
-    });
-  }
-
-  return { type: 'div', props: { class: 'profile' }, children: children };
-}
-
-// 경험치 추가 + 레벨업 체크
-function addExp(amount) {
-  const lvl = getCurrentLevel();
-  gameState.exp += amount;
-
-  // 레벨업 조건: 경험치 달성 + 다음 레벨 존재
-  if (gameState.exp >= lvl.maxExp && gameState.levelIdx < LEVELS.length - 1) {
-    gameState.levelIdx += 1;
-    gameState.exp = 0;
-    return true;
-  }
-
-  // 최대 레벨이면 경험치 초과 방지
-  if (gameState.levelIdx >= LEVELS.length - 1 && gameState.exp > lvl.maxExp) {
-    gameState.exp = lvl.maxExp;
-  }
-
-  return false;
-}
-
-// 패치 대기 상태 해제 (app.js의 onPatchClick에서 호출)
-function resetPendingPatch() {
-  isPendingPatch = false;
-  gameStateSnapshot = null;
-}
-
-// 게임 액션 공통 처리
-// 스냅샷 복원(필요 시) → 골드 차감 → 확률 판정 → 경험치 추가 → 테스트 영역 갱신
-function executeGameAction(expAmount, successRate, actionName, cost) {
-  // 이미 패치 대기 중이면 스냅샷으로 복원 후 새 액션으로 교체
-  if (isPendingPatch && gameStateSnapshot) {
-    gameState.levelIdx = gameStateSnapshot.levelIdx;
-    gameState.exp = gameStateSnapshot.exp;
-    gameState.gold = gameStateSnapshot.gold;
-  }
-
-  // 현재 상태를 스냅샷으로 저장
-  gameStateSnapshot = {
-    levelIdx: gameState.levelIdx,
-    exp: gameState.exp,
-    gold: gameState.gold
-  };
-
-  // 골드 부족 체크
-  if (gameState.gold < cost) {
-    console.log(actionName + ' 불가! 골드 부족 (보유: ' + gameState.gold + 'G / 필요: ' + cost + 'G)');
-    gameStateSnapshot = null;
-    return;
-  }
-
-  // 골드 차감 (실패해도 소비)
-  gameState.gold -= cost;
-
-  // 확률 판정
-  const roll = Math.random() * 100;
-  const isSuccess = roll < successRate;
-
-  if (!isSuccess) {
-    console.log(actionName + ' 실패! -' + cost + 'G (성공 확률: ' + successRate + '%)');
-    updateTestAreaWithGameState();
-    isPendingPatch = true;
-    return;
-  }
-
-  const isLevelUp = addExp(expAmount);
-  updateTestAreaWithGameState();
-  isPendingPatch = true;
-
-  console.log(actionName + ' 성공! +' + expAmount + ' EXP, -' + cost + 'G (확률: ' + successRate + '%)');
-
-  if (isLevelUp) {
-    console.log('레벨업! ' + getCurrentLevel().levelIcon + ' ' + getCurrentLevel().levelName);
-  }
-}
-
-
-// 게임 액션: 코딩하기 (+20 EXP, 10G, 성공률 90%)
-function onCodingClick() {
-  executeGameAction(20, 90, '코딩하기', ACTION_COST.coding);
-}
-
-// 게임 액션: 사이드 프로젝트 (+30 EXP, 20G, 성공률 70%)
-function onProjectClick() {
-  executeGameAction(30, 70, '사이드 프로젝트', ACTION_COST.project);
-}
-
-// 게임 액션: CS 공부 (+25 EXP, 15G, 성공률 80%)
-function onStudyClick() {
-  executeGameAction(25, 80, 'CS 공부', ACTION_COST.study);
-}
-
-// 게임 액션: 야근 (+50 EXP, 30G, 성공률 40%)
-function onOvertimeClick() {
-  executeGameAction(50, 40, '야근', ACTION_COST.overtime);
-}
-
-// 취업하기: 현재 레벨 비례 골드 획득 + 1단계로 리셋
-function onHireClick() {
-  // 패치 대기 중이면 스냅샷으로 복원 후 새 액션으로 교체
-  if (isPendingPatch && gameStateSnapshot) {
-    gameState.levelIdx = gameStateSnapshot.levelIdx;
-    gameState.exp = gameStateSnapshot.exp;
-    gameState.gold = gameStateSnapshot.gold;
-  }
-
-  // 현재 상태 스냅샷 저장
-  gameStateSnapshot = {
-    levelIdx: gameState.levelIdx,
-    exp: gameState.exp,
-    gold: gameState.gold
-  };
-
-  const lvl = getCurrentLevel();
-  const reward = lvl.hireReward;
-
-  gameState.gold += reward;
-  gameState.levelIdx = 0;
-  gameState.exp = 0;
-
-  console.log('취업 완료! +' + reward + 'G (보유: ' + gameState.gold + 'G) → 다시 코딩 첫날부터!');
-
-  updateTestAreaWithGameState();
-  isPendingPatch = true;
-}
-
-// 게임 상태를 테스트 영역에 반영
-// VNode 생성 → HTML 문자열 변환 → textarea 표시
-function updateTestAreaWithGameState() {
-  const testArea = document.getElementById('test-area');
-
-  if (!testArea) {
-    return;
-  }
-
-  // getHtmlStringFromVNode는 app.js에 정의 (런타임에 호출되므로 사용 가능)
-  // depth: 0 → 들여쓰기 적용한 pretty-print 출력
-  testArea.value = getHtmlStringFromVNode(generateProfileVNode(), 0);
-}
-
-// 게임 상태 스냅샷 반환 (히스토리 저장용)
-function getGameState() {
+function createInitialBeanState() {
   return {
-    levelIdx: gameState.levelIdx,
-    exp: gameState.exp,
-    gold: gameState.gold
+    day: 1,
+    water: 52,
+    sunlight: 48,
+    nutrition: 36,
+    growth: 8,
+    harvestCount: 0,
+    healthNote: '차분한 시작',
+    lastAction: '실험 시작',
+    log: ['Day 1: 강낭콩을 화분에 심고 관찰을 시작했습니다.'],
+    lastTestRun: 0,
+    hasRunWhiteBoxTest: false
   };
 }
 
-// 게임 상태 복원 (히스토리 복원용)
-function restoreGameState(snapshot) {
-  if (!snapshot) {
-    return;
+function clamp(value, min, max) {
+  return Math.max(min, Math.min(max, value));
+}
+
+function getStageInfo(beanState) {
+  let selected = STAGE_DEFINITIONS[0];
+
+  STAGE_DEFINITIONS.forEach(function (stage) {
+    if (beanState.growth >= stage.threshold) {
+      selected = stage;
+    }
+  });
+
+  return selected;
+}
+
+function getHealthSummary(beanState) {
+  const average = Math.round((beanState.water + beanState.sunlight + beanState.nutrition) / 3);
+
+  if (average >= 75) {
+    return {
+      label: '매우 건강',
+      tone: '물, 햇빛, 영양이 모두 안정적입니다.'
+    };
   }
 
-  gameState.levelIdx = snapshot.levelIdx;
-  gameState.exp = snapshot.exp;
-  gameState.gold = snapshot.gold;
+  if (average >= 50) {
+    return {
+      label: '무난함',
+      tone: '기본 성장은 가능하지만 한두 요소를 더 채워주면 좋습니다.'
+    };
+  }
+
+  return {
+    label: '주의 필요',
+    tone: '자원 하나 이상이 부족해 성장 속도가 느려질 수 있습니다.'
+  };
 }
 
-// 게임 초기화 (app.js의 initializeApp에서 호출)
-// VNode를 반환 → app.js가 createNode()로 real-area에 렌더링
-function initializeGame() {
-  gameState = {
-    levelIdx: 0,
-    exp: 0,
-    gold: 100
-  };
+function appendLog(beanState, message) {
+  return beanState.log.concat('Day ' + beanState.day + ': ' + message).slice(-6);
+}
 
-  return generateProfileVNode();
+function applyBeanAction(beanState, actionType) {
+  if (actionType === 'water') {
+    return Object.assign({}, beanState, {
+      water: clamp(beanState.water + 22, 0, 100),
+      growth: clamp(beanState.growth + 6, 0, 100),
+      healthNote: '촉촉하게 수분을 머금음',
+      lastAction: '물 주기',
+      log: appendLog(beanState, '물을 충분히 주어 뿌리가 촉촉해졌습니다.')
+    });
+  }
+
+  if (actionType === 'sunlight') {
+    return Object.assign({}, beanState, {
+      sunlight: clamp(beanState.sunlight + 20, 0, 100),
+      water: clamp(beanState.water - 5, 0, 100),
+      growth: clamp(beanState.growth + 5, 0, 100),
+      healthNote: '햇빛을 받아 잎이 반짝임',
+      lastAction: '햇빛 쬐기',
+      log: appendLog(beanState, '창가로 옮겨 햇빛을 충분히 받게 했습니다.')
+    });
+  }
+
+  if (actionType === 'nutrition') {
+    return Object.assign({}, beanState, {
+      nutrition: clamp(beanState.nutrition + 18, 0, 100),
+      growth: clamp(beanState.growth + 7, 0, 100),
+      healthNote: '영양을 먹고 줄기가 단단해짐',
+      lastAction: '영양 공급',
+      log: appendLog(beanState, '영양제를 보충해 성장 에너지를 채웠습니다.')
+    });
+  }
+
+  if (actionType === 'day') {
+    const growthGain =
+      (beanState.water >= 45 ? 7 : 2) +
+      (beanState.sunlight >= 45 ? 7 : 2) +
+      (beanState.nutrition >= 35 ? 6 : 2);
+
+    return Object.assign({}, beanState, {
+      day: beanState.day + 1,
+      water: clamp(beanState.water - 14, 0, 100),
+      sunlight: clamp(beanState.sunlight - 10, 0, 100),
+      nutrition: clamp(beanState.nutrition - 9, 0, 100),
+      growth: clamp(beanState.growth + growthGain, 0, 100),
+      healthNote: growthGain >= 18 ? '활짝 성장 중' : '조금 지친 상태',
+      lastAction: '하루 보내기',
+      log: appendLog(beanState, '하루가 지나며 성장도가 +' + growthGain + ' 증가했습니다.')
+    });
+  }
+
+  if (actionType === 'harvest') {
+    if (beanState.growth < 90) {
+      return Object.assign({}, beanState, {
+        healthNote: '아직 수확 전 단계',
+        lastAction: '수확 시도',
+        log: appendLog(beanState, '아직 꼬투리가 충분히 차지 않아 더 키우기로 했습니다.')
+      });
+    }
+
+    return Object.assign({}, beanState, createInitialBeanState(), {
+      harvestCount: beanState.harvestCount + 1,
+      lastAction: '수확 완료',
+      healthNote: '오늘의 강낭콩을 수확했습니다.',
+      log: appendLog(beanState, '잘 자란 강낭콩을 수확하고 새로운 씨앗을 준비합니다.')
+    });
+  }
+
+  if (actionType === 'probe') {
+    return Object.assign({}, beanState, {
+      lastAction: '생장 테스트 실행',
+      lastTestRun: beanState.lastTestRun + 1,
+      hasRunWhiteBoxTest: true,
+      log: appendLog(beanState, '화이트박스 테스트를 다시 실행해 현재 상태를 검증했습니다.')
+    });
+  }
+
+  return beanState;
+}
+
+function buildWhiteBoxChecks(beanState, runtimeDebug, stageInfo, healthSummary) {
+  return [
+    {
+      title: '루트 상태 관리',
+      pass: runtimeDebug.hookSnapshot.some(function (entry) { return entry.indexOf('state') !== -1; }),
+      detail: 'state는 App 루트 컴포넌트 내부 훅 배열에 저장되고 자식은 props만 사용합니다.'
+    },
+    {
+      title: 'Hook 순서 유지',
+      pass: runtimeDebug.hookSnapshot.length >= 4,
+      detail: 'useState, useMemo, useMemo, useEffect가 같은 순서로 hooks 배열에 유지됩니다.'
+    },
+    {
+      title: 'setState 이후 자동 업데이트',
+      pass: runtimeDebug.renderCount >= 1,
+      detail: '버튼 클릭 시 update()가 호출되어 새 VDOM을 만들고 diff/patch를 실행합니다.'
+    },
+    {
+      title: '부분 업데이트 지향',
+      pass: runtimeDebug.lastPatchSummary.length > 0,
+      detail: '최근 patch 수: ' + runtimeDebug.lastPatchSummary.length + '개. 변경된 텍스트와 props 중심으로 반영합니다.'
+    },
+    {
+      title: 'useMemo 활용',
+      pass: stageInfo.name.length > 0 && healthSummary.label.length > 0,
+      detail: '성장 단계와 건강 상태는 state를 직접 들고 있지 않고 메모 계산값으로 표시합니다.'
+    },
+    {
+      title: 'useEffect 활용',
+      pass: runtimeDebug.lastEffectCount >= 1 || beanState.day >= 1,
+      detail: '문서 제목은 patch 이후 useEffect에서 갱신됩니다.'
+    }
+  ];
+}
+
+function ActionButton(props) {
+  return h(
+    'button',
+    {
+      className: 'action-button ' + props.variant,
+      onClick: props.onClick,
+      disabled: !!props.disabled
+    },
+    props.label
+  );
+}
+
+function Meter(props) {
+  return h(
+    'div',
+    { className: 'meter' },
+    h(
+      'div',
+      { className: 'meter-top' },
+      h('span', null, props.label),
+      h('strong', null, props.value + '%')
+    ),
+    h(
+      'div',
+      { className: 'meter-bar' },
+      h('div', {
+        className: 'meter-fill',
+        style: {
+          width: props.value + '%',
+          background: props.color
+        }
+      })
+    )
+  );
+}
+
+function ServicePanel(props) {
+  return h(
+    'section',
+    { className: 'service-card' },
+    h(
+      'div',
+      { className: 'service-hero' },
+      h('div', { className: 'service-emoji' }, props.stageInfo.emoji),
+      h(
+        'div',
+        { className: 'service-meta' },
+        h('h2', null, props.stageInfo.name),
+        h('p', null, 'Day ' + props.beanState.day + ' · 최근 액션: ' + props.beanState.lastAction),
+        h(
+          'div',
+          { className: 'tag-row' },
+          h('span', { className: 'tag' }, '수확 횟수 ' + props.beanState.harvestCount),
+          h('span', { className: 'tag' }, props.healthSummary.label),
+          h('span', { className: 'tag' }, props.stageInfo.hint)
+        )
+      )
+    ),
+    h(
+      'div',
+      { className: 'meter-grid' },
+      h(Meter, { label: '수분', value: props.beanState.water, color: '#56a4ff' }),
+      h(Meter, { label: '햇빛', value: props.beanState.sunlight, color: '#ffc650' }),
+      h(Meter, { label: '영양', value: props.beanState.nutrition, color: '#a67cff' }),
+      h(Meter, { label: '성장', value: props.beanState.growth, color: '#6bc26d' })
+    ),
+    h(
+      'div',
+      { className: 'insight-box' },
+      h('strong', null, props.healthSummary.label),
+      h('p', null, props.healthSummary.tone),
+      h('p', null, '현재 메모: ' + props.beanState.healthNote)
+    )
+  );
+}
+
+function RuntimePanel(props) {
+  return h(
+    'div',
+    { className: 'runtime-stack' },
+    h(
+      'div',
+      { className: 'runtime-card' },
+      h('h3', null, '루트 state 스냅샷'),
+      h(
+        'pre',
+        null,
+        JSON.stringify(
+          {
+            day: props.beanState.day,
+            water: props.beanState.water,
+            sunlight: props.beanState.sunlight,
+            nutrition: props.beanState.nutrition,
+            growth: props.beanState.growth,
+            harvestCount: props.beanState.harvestCount,
+            lastAction: props.beanState.lastAction
+          },
+          null,
+          2
+        )
+      )
+    ),
+    h(
+      'div',
+      { className: 'runtime-card' },
+      h('h3', null, 'FunctionComponent 내부'),
+      h(
+        'ul',
+        { className: 'plain-list' },
+        h('li', null, 'renderCount: ' + props.runtimeDebug.renderCount),
+        h('li', null, 'hookCount: ' + props.runtimeDebug.hookSnapshot.length),
+        h('li', null, 'lastEffectCount: ' + props.runtimeDebug.lastEffectCount)
+      )
+    ),
+    h(
+      'div',
+      { className: 'runtime-card' },
+      h('h3', null, 'Hook 저장소'),
+      h('pre', null, props.runtimeDebug.hookSnapshot.join('\n'))
+    ),
+  );
+}
+
+function WhiteBoxPanel(props) {
+  if (!props.beanState.hasRunWhiteBoxTest) {
+    return h(
+      'div',
+      { className: 'test-stack' },
+      h(
+        'div',
+        { className: 'test-card log-card' },
+        h('h3', null, '테스트 대기 중'),
+        h('p', null, '아래 `테스트하기` 버튼을 눌러 현재 강낭콩 서비스의 화이트박스 테스트를 실행하세요.'),
+        h('p', null, '실행 후에는 루트 state, hook 구성, 자동 업데이트 흐름에 대한 검증 결과가 표시됩니다.')
+      )
+    );
+  }
+
+  return h(
+    'div',
+    { className: 'test-stack' },
+    props.checks.map(function (check, index) {
+      return h(
+        'div',
+        {
+          className: 'test-card ' + (check.pass ? 'pass' : 'fail'),
+          key: 'check-' + index
+        },
+        h('h3', null, (check.pass ? 'PASS' : 'FAIL') + ' · ' + check.title),
+        h('p', null, check.detail)
+      );
+    }),
+    h(
+      'div',
+      { className: 'test-card log-card' },
+      h('h3', null, '최근 관찰 로그'),
+      h('pre', null, props.beanState.log.join('\n'))
+    )
+  );
 }

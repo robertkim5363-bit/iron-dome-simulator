@@ -1,75 +1,150 @@
-// =============================================
-// 담당: 은재 | vdom.js
-// 책임: domToVNode(), createNode()
-// AI 규약 버전: v1.0
-// =============================================
+function flattenChildren(children, result) {
+  children.forEach(function (child) {
+    if (Array.isArray(child)) {
+      flattenChildren(child, result);
+      return;
+    }
 
-/**
- * 실제 DOM 노드 → VNode 변환
- * @param {Node} domNode
- * @returns {VNode | string | null}
- *
- * 예시)
- *   domToVNode(document.querySelector('div'))
- *   → { type: 'div', props: { class: 'wrap' }, children: [...] }
- *
- *   텍스트 노드일 경우 문자열 그대로 반환
- *   → '안녕하세요'
- */
-function domToVNode(domNode) {
-  // 텍스트 노드 처리 (nodeType 3)
-  if (domNode.nodeType === 3) {
-    const text = domNode.textContent.trim();
-    // 공백·줄바꿈만 있는 텍스트 노드는 무시
-    if (text === '') return null;
-    return text;
-  }
+    if (child === null || child === undefined || child === false) {
+      return;
+    }
 
-  // 엘리먼트 노드(nodeType 1)만 처리 — 주석 등 그 외 타입 무시
-  if (domNode.nodeType !== 1) return null;
+    if (typeof child === 'number') {
+      result.push(String(child));
+      return;
+    }
 
-  const type = domNode.tagName.toLowerCase();
-
-  // 속성(props) 수집
-  const props = {};
-  for (const attr of domNode.attributes) {
-    props[attr.name] = attr.value;
-  }
-
-  // 자식 노드 재귀 변환 후 null 제거
-  const children = Array.from(domNode.childNodes)
-    .map((child) => domToVNode(child))
-    .filter((child) => child !== null);
-
-  return { type, props, children };
+    result.push(child);
+  });
 }
 
-/**
- * VNode → 실제 DOM 노드 생성
- * @param {VNode | string} vNode
- * @returns {Node}
- *
- * 예시)
- *   createNode({ type: 'p', props: {}, children: ['내용'] })
- *   → <p>내용</p> (실제 DOM Element)
- */
+function h(type, props) {
+  const children = [];
+  const rawChildren = Array.prototype.slice.call(arguments, 2);
+
+  flattenChildren(rawChildren, children);
+
+  if (typeof type === 'function') {
+    return type(Object.assign({}, props || {}, { children: children }));
+  }
+
+  return {
+    type: type,
+    props: props || {},
+    children: children
+  };
+}
+
 function createNode(vNode) {
-  // 문자열이면 텍스트 노드 생성
   if (typeof vNode === 'string') {
     return document.createTextNode(vNode);
   }
 
   const el = document.createElement(vNode.type);
+  applyPropsToElement(el, {}, vNode.props || {});
 
-  // 속성(props) 적용
-  for (const [key, value] of Object.entries(vNode.props)) {
-    el.setAttribute(key, value);
-  }
-
-  // 자식 노드 재귀 생성 후 추가
-  vNode.children.forEach((child) => {
+  (vNode.children || []).forEach(function (child) {
     el.appendChild(createNode(child));
   });
 
   return el;
+}
+
+function applyPropsToElement(el, oldProps, newProps) {
+  const previous = oldProps || {};
+  const next = newProps || {};
+
+  Object.keys(previous).forEach(function (key) {
+    if (!(key in next)) {
+      removeProp(el, key, previous[key]);
+    }
+  });
+
+  Object.keys(next).forEach(function (key) {
+    if (previous[key] !== next[key]) {
+      setProp(el, key, next[key], previous[key]);
+    }
+  });
+}
+
+function setProp(el, key, value, oldValue) {
+  if (key === 'key') {
+    return;
+  }
+
+  if (key === 'className') {
+    el.setAttribute('class', value);
+    return;
+  }
+
+  if (key === 'style' && value && typeof value === 'object') {
+    const prevStyle = oldValue && typeof oldValue === 'object' ? oldValue : {};
+
+    Object.keys(prevStyle).forEach(function (styleKey) {
+      if (!(styleKey in value)) {
+        el.style[styleKey] = '';
+      }
+    });
+
+    Object.keys(value).forEach(function (styleKey) {
+      el.style[styleKey] = value[styleKey];
+    });
+    return;
+  }
+
+  if (isEventProp(key)) {
+    const eventName = key.slice(2).toLowerCase();
+
+    if (typeof oldValue === 'function') {
+      el.removeEventListener(eventName, oldValue);
+    }
+
+    if (typeof value === 'function') {
+      el.addEventListener(eventName, value);
+    }
+    return;
+  }
+
+  if (value === false || value === null || value === undefined) {
+    el.removeAttribute(key);
+    return;
+  }
+
+  if (value === true) {
+    el.setAttribute(key, '');
+    return;
+  }
+
+  el.setAttribute(key, String(value));
+}
+
+function removeProp(el, key, oldValue) {
+  if (key === 'key') {
+    return;
+  }
+
+  if (key === 'className') {
+    el.removeAttribute('class');
+    return;
+  }
+
+  if (key === 'style' && oldValue && typeof oldValue === 'object') {
+    Object.keys(oldValue).forEach(function (styleKey) {
+      el.style[styleKey] = '';
+    });
+    return;
+  }
+
+  if (isEventProp(key)) {
+    if (typeof oldValue === 'function') {
+      el.removeEventListener(key.slice(2).toLowerCase(), oldValue);
+    }
+    return;
+  }
+
+  el.removeAttribute(key);
+}
+
+function isEventProp(key) {
+  return /^on[A-Z]/.test(key);
 }

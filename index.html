@@ -1,524 +1,391 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>개발자 키우기 — Virtual DOM Diff 시각화</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bean Lab Mini React</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
 
-    body {
-      font-family: 'Courier New', Consolas, monospace;
-      display: flex;
-      flex-direction: column;
-      height: 100vh;
-      background: #0d1117;
-      color: #e6edf3;
-      overflow: hidden;
+    :root {
+      --bg: #0f130f;
+      --panel: #181f18;
+      --panel-soft: #202920;
+      --line: #314131;
+      --text: #eef4e4;
+      --muted: #a9b59f;
+      --green: #6bc26d;
+      --green-dark: #305e33;
+      --yellow: #f0c95f;
+      --blue: #5aa8ff;
+      --purple: #9d7df7;
+      --danger: #d9815b;
+      --shadow: 0 18px 38px rgba(0, 0, 0, 0.28);
     }
 
-    /* ── 상단 컨트롤 바 ── */
+    body {
+      font-family: 'Noto Sans KR', 'Malgun Gothic', 'Apple SD Gothic Neo', 'Segoe UI', sans-serif;
+      min-height: 100vh;
+      background:
+        radial-gradient(circle at top left, rgba(107, 194, 109, 0.12), transparent 28%),
+        radial-gradient(circle at bottom right, rgba(240, 201, 95, 0.08), transparent 26%),
+        linear-gradient(180deg, #111612 0%, #0f130f 100%);
+      color: var(--text);
+    }
+
+    #app {
+      min-height: 100vh;
+    }
+
+    .app-shell {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
     .top-bar {
       display: flex;
       align-items: center;
-      gap: 8px;
-      padding: 8px 16px;
-      background: #161b22;
-      border-bottom: 1px solid #30363d;
-      flex-shrink: 0;
+      gap: 14px;
+      padding: 14px 18px;
+      border-bottom: 1px solid var(--line);
+      background: rgba(17, 24, 17, 0.94);
+      backdrop-filter: blur(12px);
     }
 
-    .top-bar .title {
-      font-size: 0.95rem;
+    .brand {
+      font-size: 1.18rem;
       font-weight: bold;
-      color: #3fb950;
       letter-spacing: 0.08em;
-      margin-right: 8px;
-      white-space: nowrap;
+      color: #dff7af;
+      text-transform: uppercase;
     }
 
-    .top-bar button {
-      padding: 5px 14px;
-      border: 1px solid #30363d;
-      border-radius: 4px;
-      background: #21262d;
-      color: #e6edf3;
-      cursor: pointer;
-      font-family: inherit;
-      font-size: 0.82rem;
+    .top-status {
+      color: var(--muted);
+      font-size: 1rem;
     }
 
-    .top-bar button:hover:not(:disabled) { background: #30363d; }
-
-    .top-bar button:disabled {
-      opacity: 0.3;
-      cursor: not-allowed;
+    .top-stage {
+      margin-left: auto;
+      border: 1px solid rgba(223, 247, 175, 0.24);
+      background: rgba(107, 194, 109, 0.1);
+      color: #f6ffd8;
+      padding: 8px 12px;
+      border-radius: 999px;
+      font-size: 1rem;
     }
 
-    #btn-patch {
-      background: #238636;
-      border-color: #2ea043;
-      color: #fff;
-      font-weight: bold;
-      padding: 5px 18px;
-    }
-
-    #btn-patch:hover { background: #2ea043; }
-
-    .history-dots {
-      display: flex;
-      align-items: center;
-      gap: 5px;
-      margin-left: 8px;
-    }
-
-    .history-dot {
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      background: #30363d;
-      transition: background 0.15s;
-    }
-
-    .history-dot.active { background: #3fb950; }
-
-    .history-status {
-      color: #8b949e;
-      font-size: 0.78rem;
-      white-space: nowrap;
-    }
-
-    /* ── 4단 패널 영역 ── */
     .panels {
-      display: flex;
       flex: 1;
-      gap: 8px;
-      padding: 8px;
-      background: #0d1117;
-      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      padding: 14px;
+      min-height: 0;
+    }
+
+    .top-layout {
+      flex: 1;
+      display: flex;
+      gap: 14px;
+      min-height: 0;
+    }
+
+    .debug-panel {
+      flex: 0 0 42%;
+      display: flex;
+      min-width: 320px;
+      min-height: 0;
+    }
+
+    .service-panel {
+      flex: 1;
+      min-width: 0;
+      min-height: 0;
+    }
+
+    .test-panel {
+      min-height: 220px;
+      max-height: 280px;
     }
 
     .panel {
-      flex: 1;
       display: flex;
       flex-direction: column;
-      background: #161b22;
-      border: 1px solid #30363d;
-      border-radius: 6px;
+      min-width: 0;
+      min-height: 0;
+      background: rgba(24, 31, 24, 0.92);
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      box-shadow: var(--shadow);
       overflow: hidden;
-      min-width: 0;
     }
-
-    /* VDOM + PATCH를 세로로 쌓는 컬럼 */
-    .panel-column {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-      min-width: 0;
-    }
-
-    /* VDOM이 더 길게, PATCH는 그 절반 */
-    .panel-column .panel:first-child { flex: 2; }
-    .panel-column .panel:last-child  { flex: 1; }
 
     .panel-header {
       display: flex;
       align-items: center;
-      gap: 6px;
-      padding: 6px 12px;
-      background: #21262d;
-      border-bottom: 1px solid #30363d;
-      font-size: 0.75rem;
-      font-weight: bold;
-      color: #8b949e;
+      gap: 8px;
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--line);
+      background: rgba(32, 41, 32, 0.9);
+      font-size: 0.9rem;
       letter-spacing: 0.12em;
       text-transform: uppercase;
+      color: var(--muted);
       flex-shrink: 0;
-      user-select: none;
     }
 
-    .panel-icon { color: #3fb950; }
-
-    .live-badge {
-      margin-left: auto;
-      background: rgba(63, 185, 80, 0.12);
-      color: #3fb950;
-      font-size: 0.62rem;
-      padding: 1px 7px;
-      border-radius: 10px;
-      border: 1px solid #2ea043;
-      letter-spacing: 0.1em;
+    .panel-icon {
+      color: #dff7af;
     }
 
     .panel-body {
       flex: 1;
+      min-height: 0;
       overflow: auto;
-      padding: 12px;
+      padding: 16px;
     }
 
-    /* ── 1. 테스트 영역 ── */
-    #test-area {
-      width: 100%;
-      height: 100%;
-      border: none;
-      resize: none;
-      font-family: 'Courier New', Consolas, monospace;
-      font-size: 0.82rem;
-      line-height: 1.7;
-      background: transparent;
-      color: #e6edf3;
-      outline: none;
-      padding: 12px;
-    }
-
-    #test-area::placeholder { color: #3d444d; }
-
-    /* ── 2. VDOM 트리 ── */
-    #vdom-area {
-      font-family: 'Courier New', Consolas, monospace;
-      font-size: 0.8rem;
-      line-height: 1.8;
-    }
-
-    .vdom-line      { white-space: nowrap; line-height: 1.7; }
-    .vdom-key       { color: #79c0ff; }
-    .vdom-string    { color: #ffa657; }
-    .vdom-prop-key  { color: #9cdcfe; }
-    .vdom-punct     { color: #8b949e; }
-    .vdom-text-line { color: #ffa657; white-space: nowrap; }
-
-    /* VDOM 변경 하이라이트 */
-    .vdom-line-changed {
-      background: rgba(210, 153, 34, 0.18);
-      border-left: 3px solid #d29922;
-      padding-left: 6px;
-      margin-left: -9px;
-    }
-    .vdom-line-added {
-      background: rgba(63, 185, 80, 0.15);
-      border-left: 3px solid #3fb950;
-      padding-left: 6px;
-      margin-left: -9px;
-    }
-
-    /* ── 3. Patch 내역 ── */
-    #patch-area {
-      font-size: 0.8rem;
-      height: 100%;
-    }
-
-    /* DIFF계획 vs 실제감지 두 컬럼 */
-    .patch-columns {
-      display: flex;
-      gap: 8px;
-      height: 100%;
-    }
-
-    .patch-col {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-      min-width: 0;
-      overflow-y: auto;
-    }
-
-    .patch-col-header {
-      font-size: 0.7rem;
-      font-weight: bold;
-      letter-spacing: 0.08em;
-      padding: 4px 8px;
-      border-radius: 4px;
-      margin-bottom: 4px;
-      flex-shrink: 0;
-    }
-
-    .patch-col-header-plan {
-      background: rgba(88, 166, 255, 0.1);
-      color: #58a6ff;
-      border: 1px solid rgba(88, 166, 255, 0.25);
-    }
-
-    .patch-col-header-real {
-      background: rgba(63, 185, 80, 0.1);
-      color: #3fb950;
-      border: 1px solid rgba(63, 185, 80, 0.25);
-    }
-
-    .panel-empty {
-      color: #3d444d;
-      text-align: center;
-      margin-top: 28px;
-      font-size: 0.8rem;
-      line-height: 1.8;
-    }
-
-    .patch-item {
-      display: flex;
-      align-items: baseline;
-      gap: 8px;
-      padding: 6px 10px;
-      border-radius: 4px;
-      background: rgba(255, 255, 255, 0.02);
-      border-left: 3px solid;
-    }
-
-    .patch-badge {
-      font-size: 0.68rem;
-      font-weight: bold;
-      padding: 1px 8px;
-      border-radius: 10px;
-      letter-spacing: 0.05em;
-      white-space: nowrap;
-      flex-shrink: 0;
-    }
-
-    .patch-detail {
-      color: #8b949e;
-      font-size: 0.78rem;
-      word-break: break-all;
-    }
-
-    .patch-type-create  { border-color: #3fb950; }
-    .patch-type-remove  { border-color: #f85149; }
-    .patch-type-replace { border-color: #d29922; }
-    .patch-type-text    { border-color: #58a6ff; }
-    .patch-type-props   { border-color: #bc8cff; }
-
-    .patch-type-create  .patch-badge { background: rgba(63,185,80,0.15);  color: #3fb950; }
-    .patch-type-remove  .patch-badge { background: rgba(248,81,73,0.15);  color: #f85149; }
-    .patch-type-replace .patch-badge { background: rgba(210,153,34,0.15); color: #d29922; }
-    .patch-type-text    .patch-badge { background: rgba(88,166,255,0.15); color: #58a6ff; }
-    .patch-type-props   .patch-badge { background: rgba(188,140,255,0.15);color: #bc8cff; }
-
-    /* ── 4. 실제 DOM 결과 영역 ── */
-    #real-area {
-      flex: 1;
-      overflow: auto;
-      padding: 20px;
-      background: #1a1a2e;
-      background-image:
-        radial-gradient(circle at 20% 30%, rgba(52,152,219,0.06) 0%, transparent 50%),
-        radial-gradient(circle at 80% 70%, rgba(155,89,182,0.06) 0%, transparent 50%);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
-
-    /* ── 하단 게임 액션 바 ── */
-    .game-bar {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      padding: 8px 16px;
-      background: #161b22;
-      border-top: 1px solid #30363d;
-      flex-shrink: 0;
-    }
-
-    .game-bar button {
-      padding: 7px 14px;
-      border: 1px solid transparent;
-      border-radius: 6px;
-      cursor: pointer;
-      font-family: inherit;
-      font-size: 0.8rem;
-      font-weight: bold;
-      color: #fff;
-      transition: filter 0.1s;
-      white-space: nowrap;
-    }
-
-    .game-bar button:hover  { filter: brightness(1.15); }
-    .game-bar button:active { filter: brightness(0.85); }
-
-    .btn-coding   { background: #1f6feb; border-color: #388bfd; }
-    .btn-project  { background: #238636; border-color: #3fb950; }
-    .btn-study    { background: #6e40c9; border-color: #8957e5; }
-    .btn-overtime { background: #9a3412; border-color: #d29922; }
-    .btn-hire     { background: linear-gradient(135deg, #7d4e00, #d29922); border-color: #f0b429; color: #fffbe6; }
-    .btn-test     { background: #0f766e; border-color: #14b8a6; }
-
-    /* ── 프로필 카드 (real-area 내부) ── */
-    .profile {
-      font-family: 'Segoe UI', sans-serif;
-      width: 100%;
-      max-width: 480px;
-      padding: 28px;
-      background: linear-gradient(135deg, #16213e 0%, #0f3460 100%);
-      border: 2px solid #e94560;
-      border-radius: 10px;
-      box-shadow: 0 0 16px rgba(233,69,96,0.25);
-      position: relative;
-    }
-
-    .profile::before {
-      content: '';
-      position: absolute;
-      inset: 6px;
-      border: 1px solid rgba(233,69,96,0.2);
-      border-radius: 6px;
-      pointer-events: none;
-    }
-
-    .profile h1 {
-      font-size: 1.4rem;
-      color: #fff;
-      text-shadow: 0 0 8px rgba(233,69,96,0.4);
-      margin-bottom: 6px;
-    }
-
-    .profile h2.level {
-      font-size: 0.88rem;
-      padding: 4px 12px;
-      border-radius: 20px;
-      display: inline-block;
-      font-weight: bold;
-      border: 1px solid;
-      margin-bottom: 8px;
-    }
-
-    .profile h2.level-1 { background: rgba(127,140,141,0.2); color: #bdc3c7; border-color: rgba(127,140,141,0.4); }
-    .profile h2.level-2 { background: rgba(39,174,96,0.2);   color: #2ecc71; border-color: rgba(39,174,96,0.4); }
-    .profile h2.level-3 { background: rgba(230,126,34,0.2);  color: #f39c12; border-color: rgba(230,126,34,0.4); }
-    .profile h2.level-4 { background: rgba(231,76,60,0.2);   color: #e74c3c; border-color: rgba(231,76,60,0.4); }
-    .profile h2.level-5 { background: rgba(241,196,15,0.2);  color: #f1c40f; border-color: rgba(241,196,15,0.5); text-shadow: 0 0 10px rgba(241,196,15,0.4); }
-
-    .profile .career    { color: #a0aec0; font-size: 0.82rem; margin-bottom: 4px; }
-    .profile .gold      { color: #f1c40f; font-size: 1.05rem; font-weight: bold; margin-bottom: 3px; text-shadow: 0 0 6px rgba(241,196,15,0.3); }
-    .profile .hire-info { color: #e67e22; font-size: 0.78rem; margin-bottom: 12px; }
-
-    .profile .exp-bar {
-      margin-bottom: 12px;
-      background: rgba(0,0,0,0.3);
-      border-radius: 5px;
-      padding: 7px 10px;
-      border: 1px solid rgba(255,255,255,0.05);
-    }
-
-    .profile .exp-bar progress {
-      width: 100%;
-      height: 12px;
-      border-radius: 6px;
-      appearance: none;
-      display: block;
-    }
-
-    .profile .exp-bar progress::-webkit-progress-bar  { background: rgba(255,255,255,0.1); border-radius: 6px; }
-    .profile .exp-bar progress::-webkit-progress-value { background: linear-gradient(90deg, #e94560, #f39c12); border-radius: 6px; }
-
-    .profile .exp-bar span {
-      display: block;
-      text-align: right;
-      font-size: 0.72rem;
-      color: #f39c12;
-      margin-top: 3px;
-      font-weight: bold;
-    }
-
-    .profile h3 {
-      font-size: 0.72rem;
-      color: #e94560;
-      margin: 10px 0 5px;
-      border-bottom: 1px solid rgba(233,69,96,0.2);
-      padding-bottom: 3px;
-      text-transform: uppercase;
+    .live-badge {
+      margin-left: auto;
+      padding: 3px 8px;
+      border-radius: 999px;
+      font-size: 0.65rem;
       letter-spacing: 0.1em;
+      color: #dff7af;
+      border: 1px solid rgba(223, 247, 175, 0.3);
+      background: rgba(107, 194, 109, 0.12);
     }
 
-    .profile ul { list-style: none; padding-left: 2px; }
-
-    .profile ul li {
-      padding: 3px 6px;
-      font-size: 0.8rem;
-      border-radius: 3px;
-      margin-bottom: 2px;
+    .runtime-stack,
+    .test-stack {
+      display: grid;
+      gap: 12px;
     }
 
-    .profile .skills li          { color: #cbd5e0; background: rgba(255,255,255,0.03); }
-    .profile .projects li        { color: #63b3ed; }
-    .profile .projects li::before { content: '📁 '; }
-    .profile .weaknesses li.bad  { color: #fc8181; background: rgba(231,76,60,0.1); }
-    .profile .weaknesses li.bad::before { content: '⚠️ '; }
-    .profile .strengths li.good  { color: #68d391; background: rgba(39,174,96,0.1); }
-    .profile .strengths li.good::before { content: '✅ '; }
+    .runtime-card,
+    .test-card {
+      border: 1px solid rgba(223, 247, 175, 0.08);
+      background: rgba(255, 255, 255, 0.02);
+      border-radius: 14px;
+      padding: 14px;
+    }
+
+    .runtime-card h3,
+    .test-card h3 {
+      font-size: 1.08rem;
+      margin-bottom: 8px;
+      color: #f5ffe0;
+    }
+
+    .runtime-card pre,
+    .test-card pre {
+      white-space: pre-wrap;
+      word-break: break-word;
+      font-family: 'Courier New', monospace;
+      font-size: 0.92rem;
+      line-height: 1.68;
+      color: #d8e3cb;
+    }
+
+    .plain-list {
+      display: grid;
+      gap: 6px;
+      list-style: none;
+      color: #d8e3cb;
+      font-size: 1rem;
+      line-height: 1.6;
+    }
+
+    .test-card p {
+      color: #d2ddc5;
+      line-height: 1.6;
+      font-size: 0.98rem;
+    }
+
+    .test-card.pass {
+      border-color: rgba(107, 194, 109, 0.28);
+      background: rgba(107, 194, 109, 0.08);
+    }
+
+    .test-card.fail {
+      border-color: rgba(217, 129, 91, 0.28);
+      background: rgba(217, 129, 91, 0.08);
+    }
+
+    .log-card {
+      background: rgba(255, 255, 255, 0.03);
+    }
+
+    .service-body {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background:
+        radial-gradient(circle at 20% 20%, rgba(107, 194, 109, 0.14), transparent 28%),
+        radial-gradient(circle at 80% 15%, rgba(240, 201, 95, 0.1), transparent 26%),
+        linear-gradient(180deg, #192119 0%, #121812 100%);
+    }
+
+    .service-card {
+      width: min(100%, 560px);
+      padding: 24px;
+      border-radius: 24px;
+      background: linear-gradient(145deg, #243722 0%, #355430 56%, #587f3c 100%);
+      border: 2px solid rgba(223, 247, 175, 0.35);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.26);
+    }
+
+    .service-hero {
+      display: flex;
+      gap: 18px;
+      align-items: center;
+      margin-bottom: 18px;
+    }
+
+    .service-emoji {
+      font-size: 4rem;
+      line-height: 1;
+    }
+
+    .service-meta h2 {
+      font-size: 1.9rem;
+      margin-bottom: 6px;
+      color: #fbffe7;
+    }
+
+    .service-meta p {
+      color: #d7e7c8;
+      line-height: 1.6;
+      font-size: 1.04rem;
+    }
+
+    .tag-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .tag {
+      border-radius: 999px;
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      background: rgba(255, 255, 255, 0.08);
+      padding: 6px 10px;
+      font-size: 0.88rem;
+      color: #f6ffe1;
+    }
+
+    .meter-grid {
+      display: grid;
+      gap: 12px;
+      margin-top: 18px;
+    }
+
+    .meter {
+      display: grid;
+      gap: 6px;
+    }
+
+    .meter-top {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      font-size: 1rem;
+      color: #eff9de;
+    }
+
+    .meter-bar {
+      height: 12px;
+      border-radius: 999px;
+      background: rgba(0, 0, 0, 0.24);
+      overflow: hidden;
+    }
+
+    .meter-fill {
+      height: 100%;
+      border-radius: inherit;
+      transition: width 0.18s ease;
+    }
+
+    .insight-box {
+      margin-top: 18px;
+      border-radius: 16px;
+      padding: 14px;
+      background: rgba(0, 0, 0, 0.18);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .insight-box strong {
+      display: inline-block;
+      margin-bottom: 6px;
+      color: #f9ffd5;
+    }
+
+    .insight-box p {
+      color: #dde8cf;
+      line-height: 1.65;
+      font-size: 1rem;
+    }
+
+    .action-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      padding: 12px 14px 16px;
+      border-top: 1px solid var(--line);
+      background: rgba(17, 24, 17, 0.96);
+    }
+
+    .action-button {
+      border: 1px solid transparent;
+      border-radius: 14px;
+      padding: 11px 14px;
+      color: #f8ffed;
+      cursor: pointer;
+      font: inherit;
+      font-size: 1rem;
+      transition: transform 0.14s ease, filter 0.14s ease;
+    }
+
+    .action-button:hover:not(:disabled) {
+      transform: translateY(-1px);
+      filter: brightness(1.08);
+    }
+
+    .action-button:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+    }
+
+    .action-button.water { background: linear-gradient(135deg, #2a6fbb, var(--blue)); }
+    .action-button.sunlight { background: linear-gradient(135deg, #ad7f11, var(--yellow)); }
+    .action-button.nutrition { background: linear-gradient(135deg, #5f43ab, var(--purple)); }
+    .action-button.day { background: linear-gradient(135deg, #2f6a31, var(--green)); }
+    .action-button.harvest { background: linear-gradient(135deg, #916132, #d7b25a); color: #1d1609; }
+    .action-button.probe { background: linear-gradient(135deg, #6c4c2e, var(--danger)); }
+
+    @media (max-width: 1120px) {
+      .top-layout {
+        flex-direction: column;
+      }
+
+      .debug-panel {
+        min-width: 0;
+      }
+
+      .test-panel {
+        max-height: none;
+      }
+    }
   </style>
 </head>
 <body>
-
-  <!-- 상단 컨트롤 바 -->
-  <div class="top-bar">
-    <span class="title">▌개발자 키우기</span>
-    <button id="btn-patch" onclick="onPatchClick()">▶ PATCH</button>
-    <button id="btn-back" onclick="onBackClick()">◀ 뒤로</button>
-    <button id="btn-forward" onclick="onForwardClick()">앞으로 ▶</button>
-    <div class="history-dots" id="history-dots"></div>
-    <span class="history-status" id="history-status">히스토리 없음</span>
-  </div>
-
-  <!-- 4단 패널 -->
-  <div class="panels">
-
-    <!-- 1. 테스트 영역 -->
-    <div class="panel">
-      <div class="panel-header">
-        <span class="panel-icon">✏</span>TEST AREA
-      </div>
-      <textarea id="test-area" placeholder="여기에 HTML을 직접 입력하세요..."></textarea>
-    </div>
-
-    <!-- 2. VDOM + PATCH (같은 열, 세로 분할) -->
-    <div class="panel-column">
-
-      <div class="panel">
-        <div class="panel-header">
-          <span class="panel-icon">◈</span>VDOM
-        </div>
-        <div class="panel-body">
-          <div id="vdom-area"></div>
-        </div>
-      </div>
-
-      <div class="panel">
-        <div class="panel-header">
-          <span class="panel-icon">⚡</span>PATCH
-        </div>
-        <div class="panel-body">
-          <div id="patch-area"></div>
-        </div>
-      </div>
-
-    </div>
-
-    <!-- 4. 실제 DOM -->
-    <div class="panel">
-      <div class="panel-header">
-        <span class="panel-icon">▣</span>REAL AREA
-        <span class="live-badge">LIVE</span>
-      </div>
-      <div id="real-area"></div>
-    </div>
-
-  </div>
-
-  <!-- 하단 게임 액션 바 -->
-  <div class="game-bar">
-    <button class="btn-coding"   onclick="onCodingClick()">💻 코딩하기 +20 | 10G (90%)</button>
-    <button class="btn-project"  onclick="onProjectClick()">📁 사이드 프로젝트 +30 | 20G (70%)</button>
-    <button class="btn-study"    onclick="onStudyClick()">📖 CS 공부 +25 | 15G (80%)</button>
-    <button class="btn-overtime" onclick="onOvertimeClick()">🔥 야근 +50 | 30G (40%)</button>
-    <button class="btn-hire"     onclick="onHireClick()">💼 퇴사하기</button>
-    <button class="btn-test" id="btn-run-tests" onclick="onRunTestsClick()">🧪 테스트하기</button>
-  </div>
-
-  <!-- 스크립트 로드 순서: vdom.js → diff.js → game.js → app.js → 테스트 -->
+  <div id="app"></div>
   <script src="vdom.js"></script>
   <script src="diff.js"></script>
   <script src="game.js"></script>
   <script src="app.js"></script>
-  <script src="vdom.test.js"></script>
-  <script src="app.test.js"></script>
-
 </body>
 </html>
