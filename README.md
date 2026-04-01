@@ -33,6 +33,13 @@ flowchart LR
 
 섹터 화면에서 그린 폴리곤은 화면에만 그려지는 것이 아니라, 방어 판정 로직과 3D 방어 형상까지 동시에 결정합니다.
 
+```mermaid
+flowchart LR
+    A["Sector에서 그린 폴리곤"] --> B["방어 로직 판정"]
+    A --> C["3D 돔 / 기둥 형상"]
+    A --> D["용량 및 breach 계산"]
+```
+
 ### 3. 모든 화면이 하나의 상태를 공유합니다
 
 National, Sector, 3D View, Tests, Briefing은 따로 노는 페이지가 아니라 같은 시뮬레이션 상태를 서로 다른 관점으로 보여줍니다.
@@ -49,20 +56,3 @@ flowchart LR
     C --> G["Tests"]
     C --> H["Briefing"]
 ```
-
-## 도형 재사용 구조
-
-```mermaid
-flowchart LR
-    A["Sector에서 그린 폴리곤"] --> B["방어 로직 판정"]
-    A --> C["3D 돔 / 기둥 형상"]
-    A --> D["용량 및 breach 계산"]
-```
-- **복합 뷰 동기화**: National / Sector / 3D / Tests / Briefing이 하나의 시뮬레이션 흐름을 공유
-
-```
-
-## 핵심 메시지
-
-> 이 프로젝트의 포인트는 “시뮬레이터를 만들었다”가 아니라,
-> **직접 구현한 Virtual DOM 아키텍처가 복잡한 인터페이스와 시뮬레이션 상태를 실제로 감당할 수 있음을 입증했다**는 점입니다.
