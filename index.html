@@ -254,11 +254,16 @@ html,body{width:100%;height:100%;overflow:hidden;font-family:var(--sans);backgro
 .city-marker:hover .city-ring{stroke-width:3}
 .city-marker:hover .city-label-box{stroke-width:1.5}
 .city-marker:hover .city-label-link{opacity:.95}
-.threat-label{font:600 9px var(--mono);fill:var(--alert-red);opacity:.78}
+.threat-origin:hover .threat-label-box{stroke-width:1.5}
+.threat-origin:hover .threat-label-link{opacity:.96}
+.threat-label{font:700 12px var(--mono);fill:#fecaca;letter-spacing:.02em;paint-order:stroke;stroke:rgba(33,10,10,.96);stroke-width:2px;stroke-linejoin:round}
 .city-label{font:700 14px var(--mono);fill:var(--text);letter-spacing:.02em;paint-order:stroke;stroke:rgba(11,15,20,.96);stroke-width:2px;stroke-linejoin:round}
 .city-label-box{fill:rgba(11,15,20,.92);stroke-width:1.2}
 .city-label-link{stroke:rgba(229,231,235,.34);stroke-width:1.4;opacity:.78}
 .city-label-dot{opacity:.98}
+.threat-label-box{fill:rgba(45,14,14,.92);stroke-width:1.2}
+.threat-label-link{stroke:rgba(248,113,113,.42);stroke-width:1.4;opacity:.84}
+.threat-label-dot{opacity:.98}
 .city-ring{stroke-width:2;fill-opacity:.15}
 .missile-path{stroke-dasharray:6,6;animation:dash-flow 1.8s linear infinite}
 @keyframes dash-flow{to{stroke-dashoffset:-12}}
@@ -721,9 +726,9 @@ var INTERCEPT_TRAVEL_MS = 260, INTERCEPT_POP_MS = 220;
 var NATIONAL_MISSILE_SPEED = 36;
 var CITY_TERMINAL_SECONDS = { min: 1.8, max: 2.8 };
 var NATIONAL_ZOOM_TRIGGER_SECONDS = 2.6;
-var MULTI3D_LAUNCH_DELAY_MS = 5000;
-var MULTI3D_FOCUS_MS = 20000;
-var NATIONAL_OVERVIEW_PAUSE_MS = 1500;
+var MULTI3D_LAUNCH_DELAY_MS = 1500;
+var MULTI3D_FOCUS_MS = 6000;
+var NATIONAL_OVERVIEW_PAUSE_MS = 3000;
 function randRange(min, max) {
   return min + Math.random() * (max - min);
 }
@@ -843,14 +848,16 @@ var SCENARIOS = {
     name: 'Operation True Promise — April 13, 2024',
     desc: 'Iran launches 300+ drones & missiles at Israel',
     waves: [
-      { time: 0, from: 'iran', targets: ['telaviv', 'jerusalem', 'haifa'], count: 15, type: 'ballistic' },
-      { time: 1200, from: 'iran', targets: ['telaviv', 'jerusalem'], count: 12, type: 'cruise' },
-      { time: 2200, from: 'yemen', targets: ['ashkelon', 'sderot'], count: 8, type: 'drone' },
-      { time: 3000, from: 'lebanon', targets: ['haifa'], count: 10, type: 'rocket' },
-      { time: 3800, from: 'gaza', targets: ['sderot', 'ashkelon', 'telaviv'], count: 12, type: 'rocket' },
-      { time: 5000, from: 'iran', targets: ['telaviv', 'jerusalem', 'haifa'], count: 18, type: 'ballistic' },
-      { time: 6200, from: 'lebanon', targets: ['haifa', 'telaviv'], count: 8, type: 'rocket' },
-      { time: 7500, from: 'iran', targets: ['jerusalem', 'telaviv'], count: 15, type: 'ballistic' }
+      { time: 0,     from: 'iran',    targets: ['telaviv', 'jerusalem', 'haifa'], count: 12, type: 'ballistic' },
+      { time: 5000,  from: 'yemen',   targets: ['ashkelon', 'sderot'],            count: 8,  type: 'drone' },
+      { time: 10000, from: 'lebanon', targets: ['haifa', 'telaviv'],              count: 10, type: 'rocket' },
+      { time: 15000, from: 'gaza',    targets: ['sderot', 'ashkelon', 'telaviv'], count: 12, type: 'rocket' },
+      { time: 20000, from: 'syria',   targets: ['haifa', 'jerusalem'],            count: 8,  type: 'cruise' },
+      { time: 25000, from: 'iran',    targets: ['telaviv', 'jerusalem', 'haifa'], count: 15, type: 'ballistic' },
+      { time: 30000, from: 'lebanon', targets: ['haifa', 'telaviv'],              count: 8,  type: 'rocket' },
+      { time: 35000, from: 'iran',    targets: ['jerusalem', 'telaviv'],          count: 15, type: 'ballistic' },
+      { time: 38000, from: 'yemen',   targets: ['ashkelon', 'sderot', 'telaviv'], count: 10, type: 'drone' },
+      { time: 42000, from: 'gaza',    targets: ['sderot', 'ashkelon'],            count: 10, type: 'rocket' }
     ]
   }
 };
@@ -1970,17 +1977,103 @@ function NationalView(props) {
 
   // 위협 출발지 마커
   var threatEls = [];
+  var threatMeta = [];
+  var THREAT_LABEL_OFFSETS = {
+    gaza: { dx: 18, dy: -24 },
+    lebanon: { dx: -138, dy: -26 },
+    iran: { dx: -126, dy: -8 },
+    yemen: { dx: -118, dy: -26 },
+    syria: { dx: -154, dy: -36 }
+  };
+  function getThreatLabelText(threat) {
+    if (threat.id === 'lebanon') return 'South Lebanon';
+    if (threat.id === 'syria') return 'Syria / Iraq';
+    return threat.name;
+  }
   for (var ti = 0; ti < THREAT_ORIGINS.length; ti++) {
     var t = THREAT_ORIGINS[ti];
     var tp = geoToScreen(t.lon, t.lat, w, h);
-    // 화면 밖이면 가장자리에 고정
     tp.x = Math.max(30, Math.min(w - 30, tp.x));
     tp.y = Math.max(30, Math.min(h - 30, tp.y));
-    threatEls.push(createVNode('g', { class: 'threat-origin', 'data-action': 'attack-from-' + t.id }, [
-      createVNode('circle', { cx: String(tp.x), cy: String(tp.y), r: '8', class: 'threat-ring',
-        fill: t.color, stroke: t.color, 'fill-opacity': '0.25', 'stroke-width': '2' }, []),
-      createVNode('text', { x: String(tp.x), y: String(tp.y - 14), class: 'threat-label', 'text-anchor': 'middle', fill: t.color }, [
-        createTextVNode(t.id === 'iran' ? 'IRAN →' : t.id === 'yemen' ? 'YEMEN ↗' : t.id === 'syria' ? 'SYRIA →' : t.name.toUpperCase())
+    var labelText = getThreatLabelText(t);
+    var offset = THREAT_LABEL_OFFSETS[t.id] || { dx: (tp.x < w / 2 ? 18 : -120), dy: -12 };
+    threatMeta.push({
+      threat: t,
+      tp: tp,
+      labelText: labelText,
+      offset: { dx: offset.dx, dy: offset.dy },
+      labelWidth: Math.max(102, labelText.length * 8 + 26)
+    });
+  }
+
+  function layoutThreatLabels(entries) {
+    if (entries.length === 0) return;
+    var boxH = 26;
+    var minX = 12;
+    var maxX = w - 12;
+    var minY = 18;
+    var maxY = h - 18;
+
+    for (var li = 0; li < entries.length; li++) {
+      var entry = entries[li];
+      var rawX = entry.tp.x + entry.offset.dx;
+      var rawY = entry.tp.y + entry.offset.dy - boxH / 2;
+      entry.labelBox = {
+        x: Math.max(minX, Math.min(maxX - entry.labelWidth, rawX)),
+        y: Math.max(minY, Math.min(maxY - boxH, rawY)),
+        w: entry.labelWidth,
+        h: boxH
+      };
+    }
+
+    entries.sort(function(a, b) { return a.labelBox.y - b.labelBox.y; });
+    for (var fi = 1; fi < entries.length; fi++) {
+      var prev = entries[fi - 1].labelBox;
+      var cur = entries[fi].labelBox;
+      if (cur.y < prev.y + prev.h + 6) cur.y = prev.y + prev.h + 6;
+    }
+    for (var bi = entries.length - 1; bi >= 0; bi--) {
+      var box = entries[bi].labelBox;
+      if (box.y + box.h > maxY) box.y = maxY - box.h;
+      if (bi > 0) {
+        var prevBox = entries[bi - 1].labelBox;
+        if (prevBox.y + prevBox.h + 6 > box.y) prevBox.y = Math.max(minY, box.y - prevBox.h - 6);
+      }
+    }
+
+    for (var ai = 0; ai < entries.length; ai++) {
+      var item = entries[ai];
+      var boxX = item.labelBox.x;
+      var boxY = item.labelBox.y;
+      var boxW = item.labelBox.w;
+      var boxH2 = item.labelBox.h;
+      var anchorX = item.tp.x < boxX ? boxX : (item.tp.x > boxX + boxW ? boxX + boxW : item.tp.x);
+      var anchorY = Math.max(boxY + 6, Math.min(boxY + boxH2 - 6, item.tp.y));
+      item.labelPoint = { x: anchorX, y: anchorY };
+      item.textX = boxX + 10;
+      item.textY = boxY + 18;
+    }
+  }
+
+  layoutThreatLabels(threatMeta);
+
+  for (var ti = 0; ti < threatMeta.length; ti++) {
+    var meta = threatMeta[ti];
+    threatEls.push(createVNode('g', { class: 'threat-origin', 'data-action': 'attack-from-' + meta.threat.id }, [
+      createVNode('line', {
+        x1: String(meta.tp.x), y1: String(meta.tp.y),
+        x2: String(meta.labelPoint.x), y2: String(meta.labelPoint.y),
+        class: 'threat-label-link', stroke: meta.threat.color
+      }, []),
+      createVNode('circle', { cx: String(meta.tp.x), cy: String(meta.tp.y), r: '8', class: 'threat-ring',
+        fill: meta.threat.color, stroke: meta.threat.color, 'fill-opacity': '0.28', 'stroke-width': '2' }, []),
+      createVNode('rect', {
+        x: String(meta.labelBox.x), y: String(meta.labelBox.y), width: String(meta.labelBox.w), height: String(meta.labelBox.h),
+        rx: '7', ry: '7', class: 'threat-label-box', stroke: meta.threat.color
+      }, []),
+      createVNode('circle', { cx: String(meta.labelPoint.x), cy: String(meta.labelPoint.y), r: '3.5', class: 'threat-label-dot', fill: meta.threat.color }, []),
+      createVNode('text', { x: String(meta.textX), y: String(meta.textY), class: 'threat-label', 'text-anchor': 'start' }, [
+        createTextVNode(meta.labelText)
       ])
     ]));
   }
