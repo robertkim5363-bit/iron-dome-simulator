@@ -1876,13 +1876,23 @@ function NationalView(props) {
   // 도시 마커 SVG
   var cityEls = [];
   var cityMeta = [];
-  var CITY_LABEL_OFFSETS = {
-    haifa: { dx: 34, dy: -36 },
-    telaviv: { dx: -142, dy: -10 },
-    jerusalem: { dx: 34, dy: 18 },
-    ashkelon: { dx: -150, dy: 22 },
-    sderot: { dx: -142, dy: 56 }
+  var CITY_LABEL_NUDGE_Y = {
+    haifa: -34,
+    telaviv: -10,
+    jerusalem: 18,
+    ashkelon: 22,
+    sderot: 50
   };
+  function computeHorizontalMid(entries, key) {
+    if (!entries || entries.length === 0) return w / 2;
+    var minX = Infinity, maxX = -Infinity;
+    for (var i = 0; i < entries.length; i++) {
+      var x = entries[i][key].x;
+      if (x < minX) minX = x;
+      if (x > maxX) maxX = x;
+    }
+    return (minX + maxX) / 2;
+  }
   for (var ci = 0; ci < DEFENSE_CITIES.length; ci++) {
     var c = DEFENSE_CITIES[ci];
     var cp = geoToScreen(c.lon, c.lat, w, h);
@@ -1891,13 +1901,12 @@ function NationalView(props) {
       if (props.natMissiles[ai].targetCity === c.id && props.natMissiles[ai].active) { isUnderAttack = true; break; }
     }
     var ringColor = isUnderAttack ? '#f87171' : '#b8c8dc';
-    var offset = CITY_LABEL_OFFSETS[c.id] || { dx: (cp.x < w / 2 ? 34 : -142), dy: -8 };
     cityMeta.push({
       city: c,
       cp: cp,
       isUnderAttack: isUnderAttack,
       ringColor: ringColor,
-      offset: { dx: offset.dx, dy: offset.dy },
+      dy: CITY_LABEL_NUDGE_Y[c.id] || -8,
       labelWidth: Math.max(116, c.name.length * 9 + 34)
     });
   }
@@ -1909,11 +1918,16 @@ function NationalView(props) {
     var maxX = w - 12;
     var minY = 64;
     var maxY = h - 18;
+    var gapX = 18;
+    var midX = computeHorizontalMid(entries, 'cp');
 
     for (var li = 0; li < entries.length; li++) {
       var entry = entries[li];
-      var rawX = entry.cp.x + entry.offset.dx;
-      var rawY = entry.cp.y + entry.offset.dy - boxH / 2;
+      entry.side = entry.cp.x < midX ? 'left' : 'right';
+      var rawX = entry.side === 'left'
+        ? entry.cp.x - entry.labelWidth - gapX
+        : entry.cp.x + gapX;
+      var rawY = entry.cp.y + entry.dy - boxH / 2;
       entry.labelBox = {
         x: Math.max(minX, Math.min(maxX - entry.labelWidth, rawX)),
         y: Math.max(minY, Math.min(maxY - boxH, rawY)),
@@ -1943,7 +1957,7 @@ function NationalView(props) {
       var boxY = item.labelBox.y;
       var boxW = item.labelBox.w;
       var boxH2 = item.labelBox.h;
-      var anchorX = item.cp.x < boxX ? boxX : (item.cp.x > boxX + boxW ? boxX + boxW : item.cp.x);
+      var anchorX = item.side === 'left' ? boxX + boxW : boxX;
       var anchorY = Math.max(boxY + 7, Math.min(boxY + boxH2 - 7, item.cp.y));
       item.labelPoint = { x: anchorX, y: anchorY };
       item.textX = boxX + 12;
@@ -1978,12 +1992,12 @@ function NationalView(props) {
   // 위협 출발지 마커
   var threatEls = [];
   var threatMeta = [];
-  var THREAT_LABEL_OFFSETS = {
-    gaza: { dx: 18, dy: -24 },
-    lebanon: { dx: -138, dy: -26 },
-    iran: { dx: -126, dy: -8 },
-    yemen: { dx: -118, dy: -26 },
-    syria: { dx: -154, dy: -36 }
+  var THREAT_LABEL_NUDGE_Y = {
+    gaza: -24,
+    lebanon: -26,
+    iran: -8,
+    yemen: -26,
+    syria: -36
   };
   function getThreatLabelText(threat) {
     if (threat.id === 'lebanon') return 'South Lebanon';
@@ -1996,12 +2010,11 @@ function NationalView(props) {
     tp.x = Math.max(30, Math.min(w - 30, tp.x));
     tp.y = Math.max(30, Math.min(h - 30, tp.y));
     var labelText = getThreatLabelText(t);
-    var offset = THREAT_LABEL_OFFSETS[t.id] || { dx: (tp.x < w / 2 ? 18 : -120), dy: -12 };
     threatMeta.push({
       threat: t,
       tp: tp,
       labelText: labelText,
-      offset: { dx: offset.dx, dy: offset.dy },
+      dy: THREAT_LABEL_NUDGE_Y[t.id] || -12,
       labelWidth: Math.max(102, labelText.length * 8 + 26)
     });
   }
@@ -2013,11 +2026,19 @@ function NationalView(props) {
     var maxX = w - 12;
     var minY = 18;
     var maxY = h - 18;
+    var gapX = 18;
+    var midX = computeHorizontalMid(entries, 'tp');
 
     for (var li = 0; li < entries.length; li++) {
       var entry = entries[li];
-      var rawX = entry.tp.x + entry.offset.dx;
-      var rawY = entry.tp.y + entry.offset.dy - boxH / 2;
+      entry.side = entry.tp.x < midX ? 'left' : 'right';
+      var sideInset = entry.labelWidth + gapX + 18;
+      if (entry.side === 'left') entry.tp.x = Math.max(sideInset, entry.tp.x);
+      else entry.tp.x = Math.min(w - sideInset, entry.tp.x);
+      var rawX = entry.side === 'left'
+        ? entry.tp.x - entry.labelWidth - gapX
+        : entry.tp.x + gapX;
+      var rawY = entry.tp.y + entry.dy - boxH / 2;
       entry.labelBox = {
         x: Math.max(minX, Math.min(maxX - entry.labelWidth, rawX)),
         y: Math.max(minY, Math.min(maxY - boxH, rawY)),
@@ -2045,9 +2066,8 @@ function NationalView(props) {
       var item = entries[ai];
       var boxX = item.labelBox.x;
       var boxY = item.labelBox.y;
-      var boxW = item.labelBox.w;
       var boxH2 = item.labelBox.h;
-      var anchorX = item.tp.x < boxX ? boxX : (item.tp.x > boxX + boxW ? boxX + boxW : item.tp.x);
+      var anchorX = item.side === 'left' ? boxX + item.labelBox.w : boxX;
       var anchorY = Math.max(boxY + 6, Math.min(boxY + boxH2 - 6, item.tp.y));
       item.labelPoint = { x: anchorX, y: anchorY };
       item.textX = boxX + 10;
