@@ -1,8 +1,17 @@
+/*
+  flattenChildren은 h()에 들어온 자식들을 평평한 1차원 배열로 정리합니다.
+
+  왜 필요한가?
+  - children 안에는 배열이 중첩될 수 있습니다.
+  - null / undefined / false 같은 렌더링 불필요 값이 들어올 수도 있습니다.
+  - 숫자는 텍스트 노드로 바꿔야 합니다.
+
+  그래서 최종적으로 diff/createNode가 다루기 쉬운
+  "정리된 children 배열"을 만들어 줍니다.
+*/
 function flattenChildren(children, result) {
   children.forEach(function (child) {
     if (Array.isArray(child)) {
-      // JSX의 중첩 children처럼 배열 안 배열이 들어와도 평탄화해
-      // 이후 diff/createNode가 항상 일관된 children 리스트를 받게 합니다.
       flattenChildren(child, result);
       return;
     }
@@ -20,8 +29,26 @@ function flattenChildren(children, result) {
   });
 }
 
-// JSX 대신 쓰는 VNode 생성 함수입니다.
-// type이 문자열이면 DOM 노드, 함수면 함수형 컴포넌트로 취급합니다.
+/*
+  h()는 JSX 대신 사용하는 VNode 생성 함수입니다.
+
+  예:
+  h('div', { className: 'box' }, 'hello')
+
+  반환:
+  {
+    type: 'div',
+    props: { className: 'box' },
+    children: ['hello']
+  }
+
+  특별한 점:
+  - type이 문자열이면 일반 DOM 태그
+  - type이 함수면 함수형 컴포넌트
+
+  이 프로젝트에서는 자식 컴포넌트가 props-only 순수 함수이므로,
+  함수형 컴포넌트는 그냥 즉시 실행해서 그 컴포넌트가 반환한 VNode를 받습니다.
+*/
 function h(type, props) {
   const children = [];
   const rawChildren = Array.prototype.slice.call(arguments, 2);
@@ -29,8 +56,6 @@ function h(type, props) {
   flattenChildren(rawChildren, children);
 
   if (typeof type === 'function') {
-    // 이 프로젝트의 자식 함수형 컴포넌트는 hook을 쓰지 않는 props-only 함수이므로
-    // 별도 인스턴스를 만들지 않고 즉시 실행해 하위 VNode를 얻습니다.
     return type(Object.assign({}, props || {}, { children: children }));
   }
 
@@ -41,38 +66,51 @@ function h(type, props) {
   };
 }
 
-// VNode를 실제 DOM 노드로 바꾸는 단계입니다.
+/*
+  createNode는 VNode를 실제 DOM 노드로 바꾸는 함수입니다.
+
+  역할:
+  - 문자열이면 TextNode 생성
+  - 객체 VNode면 element 생성
+  - props 적용
+  - 자식 VNode도 재귀적으로 DOM으로 변환
+
+  즉 "가상 화면 설명"을 "실제 브라우저 노드"로 바꾸는 단계입니다.
+*/
 function createNode(vNode) {
   if (typeof vNode === 'string') {
     return document.createTextNode(vNode);
   }
 
   const el = document.createElement(vNode.type);
-  // 최초 마운트에서도 props 반영 로직을 재사용하면
-  // 생성(create)과 갱신(props patch)이 같은 규칙으로 DOM을 다루게 됩니다.
   applyPropsToElement(el, {}, vNode.props || {});
 
   (vNode.children || []).forEach(function (child) {
-    // VDOM 트리를 DOM 트리로 바꾸는 과정도 재귀적으로 내려갑니다.
     el.appendChild(createNode(child));
   });
 
   return el;
 }
 
-// 이전 props와 새 props를 비교해 실제 DOM 속성과 이벤트를 동기화합니다.
+/*
+  applyPropsToElement는 이전 props와 새 props를 비교해서 실제 DOM에 반영합니다.
+
+  처리 순서:
+  1. 이전에는 있었지만 지금은 사라진 props 제거
+  2. 새 props 중 변경된 값만 setProp으로 반영
+
+  create 시에도, update 시에도 같은 함수를 재사용합니다.
+*/
 function applyPropsToElement(el, oldProps, newProps) {
   const previous = oldProps || {};
   const next = newProps || {};
 
-  // 먼저 사라진 속성을 지우고,
   Object.keys(previous).forEach(function (key) {
     if (!(key in next)) {
       removeProp(el, key, previous[key]);
     }
   });
 
-  // 남아 있거나 새로 생긴 속성은 값 비교 후 필요한 것만 반영합니다.
   Object.keys(next).forEach(function (key) {
     if (previous[key] !== next[key]) {
       setProp(el, key, next[key], previous[key]);
@@ -80,6 +118,15 @@ function applyPropsToElement(el, oldProps, newProps) {
   });
 }
 
+/*
+  setProp은 props의 한 항목을 실제 DOM에 반영합니다.
+
+  처리 대상:
+  - className
+  - style 객체
+  - onClick 같은 이벤트
+  - 일반 attribute
+*/
 function setProp(el, key, value, oldValue) {
   if (key === 'key') {
     return;
@@ -93,7 +140,6 @@ function setProp(el, key, value, oldValue) {
   if (key === 'style' && value && typeof value === 'object') {
     const prevStyle = oldValue && typeof oldValue === 'object' ? oldValue : {};
 
-    // style 객체도 얕게 diff해서 빠진 키는 지우고 바뀐 키만 다시 씁니다.
     Object.keys(prevStyle).forEach(function (styleKey) {
       if (!(styleKey in value)) {
         el.style[styleKey] = '';
@@ -109,8 +155,12 @@ function setProp(el, key, value, oldValue) {
   if (isEventProp(key)) {
     const eventName = key.slice(2).toLowerCase();
 
-    // 이벤트는 VNode props로 전달되지만 실제 등록/해제는 DOM patch 단계에서 처리합니다.
-    // 이전 핸들러를 먼저 제거한 뒤 새 핸들러를 붙여 참조 변경을 안전하게 반영합니다.
+    /*
+      이벤트는 VNode props로 전달되지만,
+      실제 DOM 등록/해제는 patch 단계에서 처리합니다.
+
+      이전 핸들러 제거 -> 새 핸들러 등록 순서로 동작합니다.
+    */
     if (typeof oldValue === 'function') {
       el.removeEventListener(eventName, oldValue);
     }
@@ -134,6 +184,9 @@ function setProp(el, key, value, oldValue) {
   el.setAttribute(key, String(value));
 }
 
+/*
+  removeProp은 사라진 props를 실제 DOM에서 지웁니다.
+*/
 function removeProp(el, key, oldValue) {
   if (key === 'key') {
     return;
@@ -145,7 +198,6 @@ function removeProp(el, key, oldValue) {
   }
 
   if (key === 'style' && oldValue && typeof oldValue === 'object') {
-    // style 객체 삭제는 키별로 비워야 브라우저에 남은 인라인 스타일이 누적되지 않습니다.
     Object.keys(oldValue).forEach(function (styleKey) {
       el.style[styleKey] = '';
     });
@@ -162,6 +214,9 @@ function removeProp(el, key, oldValue) {
   el.removeAttribute(key);
 }
 
+/*
+  이벤트 props는 onClick, onInput처럼 on + 대문자로 시작하는 이름으로 판단합니다.
+*/
 function isEventProp(key) {
   return /^on[A-Z]/.test(key);
 }

@@ -9,7 +9,7 @@ const STAGE_DEFINITIONS = [
     threshold: 20,
     name: '새싹 등장',
     emoji: '🌱',
-    hint: '물을 잘 주면 작지만 단단한 새싹이 올라옵니다.'
+    hint: '물을 잘 주면 작은 새싹이 천천히 올라옵니다.'
   },
   {
     threshold: 45,
@@ -21,18 +21,22 @@ const STAGE_DEFINITIONS = [
     threshold: 70,
     name: '꽃봉오리 형성',
     emoji: '🌼',
-    hint: '영양이 충분하면 꼬투리 준비가 빨라집니다.'
+    hint: '영양이 충분하면 열매를 준비할 힘이 생깁니다.'
   },
   {
     threshold: 90,
     name: '수확 직전',
-    emoji: '🍃',
-    hint: '이제 수확 버튼으로 오늘의 강낭콩을 마무리할 수 있습니다.'
+    emoji: '🫘',
+    hint: '이제 수확 버튼으로 잘 자란 강낭콩을 마무리할 수 있습니다.'
   }
 ];
 
-// 모든 상태는 루트 App의 useState 하나에 모아 관리합니다.
-// 이 객체가 강낭콩 서비스의 단일 진실 공급원 역할을 합니다.
+/*
+  createInitialBeanState는 강낭콩 서비스의 "초기 상태 객체"를 만듭니다.
+
+  이 프로젝트는 모든 상태를 루트 App의 useState 하나에 모아 두므로,
+  이 함수가 반환하는 객체가 서비스의 단일 진실 공급원 역할을 합니다.
+*/
 function createInitialBeanState() {
   return {
     day: 1,
@@ -53,7 +57,19 @@ function clamp(value, min, max) {
   return Math.max(min, Math.min(max, value));
 }
 
-// growth 값만 보고 현재 강낭콩이 어느 성장 단계인지 계산합니다.
+/*
+  getStageInfo는 growth 수치를 읽어서 현재 성장 단계 정보를 돌려줍니다.
+
+  입력:
+  - beanState.growth
+
+  출력:
+  - 단계 이름
+  - 이모지
+  - 설명 문구
+
+  즉 "원본 상태값"을 "화면에 보여줄 설명 정보"로 바꾸는 파생 계산 함수입니다.
+*/
 function getStageInfo(beanState) {
   let selected = STAGE_DEFINITIONS[0];
 
@@ -66,7 +82,12 @@ function getStageInfo(beanState) {
   return selected;
 }
 
-// 세 자원을 평균 내서 건강 상태 문구를 계산합니다.
+/*
+  getHealthSummary는 세 자원 평균을 바탕으로 건강 상태 요약을 계산합니다.
+
+  이 함수는 state를 직접 바꾸지 않습니다.
+  단지 현재 상태를 읽어서 "라벨 + 설명 문구"를 계산해 돌려줍니다.
+*/
 function getHealthSummary(beanState) {
   const average = Math.round((beanState.water + beanState.sunlight + beanState.nutrition) / 3);
 
@@ -90,15 +111,26 @@ function getHealthSummary(beanState) {
   };
 }
 
+/*
+  appendLog는 기존 로그 뒤에 새 문장을 붙이고,
+  로그가 너무 길어지지 않도록 최근 6개만 남깁니다.
+*/
 function appendLog(beanState, message) {
   return beanState.log.concat('Day ' + beanState.day + ': ' + message).slice(-6);
 }
 
-// 사용자의 액션을 받아 "다음 상태"를 계산하는 순수 함수입니다.
-// 자식 컴포넌트는 상태를 바꾸지 않고, 루트에서만 이 함수를 통해 state를 갱신합니다.
+/*
+  applyBeanAction은 "사용자의 액션이 state를 어떻게 바꾸는가"를 한 곳에 모아 둔 순수 함수입니다.
+
+  왜 순수 함수로 만들까?
+  - 입력 상태(beanState)와 액션(actionType)을 받으면
+  - 다음 상태 객체를 계산해서 반환
+  - 외부 변수나 DOM을 직접 바꾸지 않음
+
+  이 구조 덕분에 상태 변경 규칙을 한 곳에서 읽을 수 있고,
+  루트 App은 setState 안에서 이 함수만 호출하면 됩니다.
+*/
 function applyBeanAction(beanState, actionType) {
-  // beanState를 객체 하나로 관리하므로, 한 액션에서 water/sunlight/growth처럼
-  // 여러 필드가 함께 바뀌어도 "새 상태 객체 1개"를 반환하는 한 번의 전이로 표현할 수 있습니다.
   if (actionType === 'water') {
     return Object.assign({}, beanState, {
       water: clamp(beanState.water + 22, 0, 100),
@@ -121,16 +153,18 @@ function applyBeanAction(beanState, actionType) {
   if (actionType === 'nutrition') {
     return Object.assign({}, beanState, {
       nutrition: clamp(beanState.nutrition + 18, 0, 100),
-      healthNote: '영양을 먹고 줄기가 단단해짐',
+      healthNote: '영양을 머금고 줄기가 단단해짐',
       lastAction: '영양 공급',
       log: appendLog(beanState, '영양제를 보충해 성장 에너지를 채웠습니다.')
     });
   }
 
   if (actionType === 'day') {
-    // 성장도는 하루가 지날 때만 증가합니다.
-    // 물/햇빛/영양은 성장량을 결정하는 조건으로만 사용합니다.
-    // 즉 여러 필드를 따로 setState하지 않고, 다음 상태를 한 번에 계산해서 반환합니다.
+    /*
+      성장도는 하루가 지날 때만 증가합니다.
+      즉 물/햇빛/영양은 "성장을 위한 조건"이고,
+      실제 성장 반영은 day 액션에서만 일어납니다.
+    */
     const growthGain =
       (beanState.water >= 45 ? 7 : 2) +
       (beanState.sunlight >= 45 ? 7 : 2) +
@@ -142,7 +176,7 @@ function applyBeanAction(beanState, actionType) {
       sunlight: clamp(beanState.sunlight - 10, 0, 100),
       nutrition: clamp(beanState.nutrition - 9, 0, 100),
       growth: clamp(beanState.growth + growthGain, 0, 100),
-      healthNote: growthGain >= 18 ? '활짝 성장 중' : '조금 지친 상태',
+      healthNote: growthGain >= 18 ? '순조 성장 중' : '조금 지친 상태',
       lastAction: '하루 보내기',
       log: appendLog(beanState, '하루가 지나며 성장도가 +' + growthGain + ' 증가했습니다.')
     });
@@ -157,17 +191,21 @@ function applyBeanAction(beanState, actionType) {
       });
     }
 
+    /*
+      수확이 성공하면 새 상태를 "초기 상태"로 되돌리되,
+      harvestCount는 이어서 누적합니다.
+    */
     return Object.assign({}, beanState, createInitialBeanState(), {
       harvestCount: beanState.harvestCount + 1,
       lastAction: '수확 완료',
-      healthNote: '오늘의 강낭콩을 수확했습니다.',
-      log: appendLog(beanState, '잘 자란 강낭콩을 수확하고 새로운 씨앗을 준비합니다.')
+      healthNote: '잘 자란 강낭콩을 수확했습니다.',
+      log: appendLog(beanState, '열매를 수확하고 새로운 씨앗을 준비합니다.')
     });
   }
 
   if (actionType === 'probe') {
     return Object.assign({}, beanState, {
-      lastAction: '생장 테스트 실행',
+      lastAction: '성장 테스트 실행',
       lastTestRun: beanState.lastTestRun + 1,
       hasRunWhiteBoxTest: true,
       log: appendLog(beanState, '화이트박스 테스트를 다시 실행해 현재 상태를 검증했습니다.')
@@ -177,19 +215,25 @@ function applyBeanAction(beanState, actionType) {
   return beanState;
 }
 
-// 화이트박스 테스트는 완전 자동 테스트 프레임워크라기보다,
-// 현재 런타임이 과제 핵심 조건을 어떻게 만족하는지 보여주는 검증 패널입니다.
+/*
+  buildWhiteBoxChecks는 화이트박스 테스트 패널에 보여줄 검증 결과를 만듭니다.
+
+  이 함수의 목적:
+  - "단순히 UI가 바뀐다"를 넘어서
+  - 현재 런타임이 과제 조건을 어떻게 만족하는지
+  - 사람이 읽을 수 있는 검증 카드 형태로 보여주기
+*/
 function buildWhiteBoxChecks(beanState, runtimeDebug, stageInfo, healthSummary) {
   return [
     {
       title: '루트 상태 관리',
       pass: runtimeDebug.hookSnapshot.some(function (entry) { return entry.indexOf('state') !== -1; }),
-      detail: 'state는 App 루트 컴포넌트 내부 훅 배열에 저장되고 자식은 props만 사용합니다.'
+      detail: 'state는 App 루트 컴포넌트 내부 hook 배열에 저장되고 자식은 props만 사용합니다.'
     },
     {
       title: 'Hook 순서 유지',
       pass: runtimeDebug.hookSnapshot.length >= 4,
-      detail: '루트 컴포넌트가 매 렌더마다 같은 순서로 훅을 호출해 같은 슬롯을 재사용합니다.'
+      detail: '루트 컴포넌트가 매 렌더마다 같은 순서로 hook을 호출해 같은 슬롯을 재사용합니다.'
     },
     {
       title: 'setState 이후 자동 업데이트',
@@ -199,23 +243,29 @@ function buildWhiteBoxChecks(beanState, runtimeDebug, stageInfo, healthSummary) 
     {
       title: '부분 업데이트 지향',
       pass: runtimeDebug.lastPatchSummary.length > 0,
-      detail: '최근 patch 수: ' + runtimeDebug.lastPatchSummary.length + '개. 변경된 텍스트와 props 중심으로 반영합니다.'
+      detail: '최근 patch ' + runtimeDebug.lastPatchSummary.length + '개가 변경된 텍스트나 props 중심으로 반영됩니다.'
     },
     {
       title: 'useMemo 활용',
       pass: stageInfo.name.length > 0 && healthSummary.label.length > 0,
-      detail: '성장 단계와 건강 상태는 state를 직접 들고 있지 않고 메모 계산값으로 표시합니다.'
+      detail: '성장 단계와 건강 상태는 state를 직접 들고 있지 않고 memo 계산값으로 표시됩니다.'
     },
     {
       title: 'useEffect 활용',
       pass: runtimeDebug.totalEffectCount >= 1,
-      detail: '문서 제목은 patch 이후 useEffect에서 갱신되며, 누적 effect 실행 수는 ' + runtimeDebug.totalEffectCount + '회입니다.'
+      detail: '문서 제목은 patch 이후 useEffect에서 갱신되고, 누적 effect 실행 횟수는 ' + runtimeDebug.totalEffectCount + '회입니다.'
     }
   ];
 }
 
-// 아래부터는 전부 props-only 자식 컴포넌트입니다.
-// state와 hook 없이, 부모가 넘긴 props만 받아 화면을 그립니다.
+/*
+  아래부터는 전부 자식 컴포넌트입니다.
+  공통 특징:
+  - useState 사용 안 함
+  - useEffect 사용 안 함
+  - props만 받아서 VDOM 반환
+*/
+
 function ActionButton(props) {
   return h(
     'button',
@@ -336,7 +386,7 @@ function RuntimePanel(props) {
       { className: 'runtime-card' },
       h('h3', null, 'Hook 저장소'),
       h('pre', { className: 'hook-storage' }, props.runtimeDebug.hookSnapshot.join('\n'))
-    ),
+    )
   );
 }
 
@@ -350,7 +400,7 @@ function WhiteBoxPanel(props) {
         { className: 'test-card log-card' },
         h('h3', null, '테스트 대기 중'),
         h('p', null, '아래 `테스트하기` 버튼을 눌러 현재 강낭콩 서비스의 화이트박스 테스트를 실행하세요.'),
-        h('p', null, '실행 후에는 루트 state, hook 구성, 자동 업데이트 흐름에 대한 검증 결과가 표시됩니다.')
+        h('p', null, '실행 후에는 루트 state, hook 구성, 자동 업데이트 흐름 등 핵심 검증 결과가 표시됩니다.')
       )
     );
   }
