@@ -185,6 +185,17 @@ function snapshotHooks(hooks) {
     }
 
     if (hook.kind === 'memo') {
+      if (hook.value && typeof hook.value === 'object') {
+        const keys = Object.keys(hook.value);
+        const hasFunctionValue = keys.some(function (key) {
+          return typeof hook.value[key] === 'function';
+        });
+
+        if (hasFunctionValue) {
+          return 'hook[' + index + '] memo = actionHandlers(' + keys.join(', ') + ')';
+        }
+      }
+
       return 'hook[' + index + '] memo = ' + JSON.stringify(hook.value);
     }
 
@@ -283,7 +294,11 @@ function App() {
   }, [beanState.day, stageInfo.name]);
 
   const runtimeDebug = currentComponent.debug;
-  const checks = buildWhiteBoxChecks(beanState, runtimeDebug, stageInfo, healthSummary);
+  const liveHookSnapshot = snapshotHooks(currentComponent.hooks);
+  const runtimeDebugView = Object.assign({}, runtimeDebug, {
+    hookSnapshot: liveHookSnapshot
+  });
+  const checks = buildWhiteBoxChecks(beanState, runtimeDebugView, stageInfo, healthSummary);
 
   return h(
     'div',
@@ -315,7 +330,7 @@ function App() {
             { className: 'panel-body' },
             h(RuntimePanel, {
               beanState: beanState,
-              runtimeDebug: runtimeDebug
+              runtimeDebug: runtimeDebugView
             })
           )
         ),

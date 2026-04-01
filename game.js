@@ -179,11 +179,11 @@ function buildWhiteBoxChecks(beanState, runtimeDebug, stageInfo, healthSummary) 
     {
       title: 'Hook 순서 유지',
       pass: runtimeDebug.hookSnapshot.length >= 4,
-      detail: 'useState, useMemo, useMemo, useEffect가 같은 순서로 hooks 배열에 유지됩니다.'
+      detail: '루트 컴포넌트가 매 렌더마다 같은 순서로 훅을 호출해 같은 슬롯을 재사용합니다.'
     },
     {
       title: 'setState 이후 자동 업데이트',
-      pass: runtimeDebug.renderCount >= 1,
+      pass: runtimeDebug.renderCount >= 2 || beanState.lastAction !== '실험 시작',
       detail: '버튼 클릭 시 update()가 호출되어 새 VDOM을 만들고 diff/patch를 실행합니다.'
     },
     {
@@ -355,12 +355,6 @@ function WhiteBoxPanel(props) {
         h('h3', null, (check.pass ? 'PASS' : 'FAIL') + ' · ' + check.title),
         h('p', null, check.detail)
       );
-    }),
-    h(
-      'div',
-      { className: 'test-card log-card' },
-      h('h3', null, '최근 관찰 로그'),
-      h('pre', null, props.beanState.log.join('\n'))
-    )
+    })
   );
 }
