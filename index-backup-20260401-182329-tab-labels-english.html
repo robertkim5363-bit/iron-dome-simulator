@@ -1170,11 +1170,11 @@ function TopBar(props) {
     ]),
   ].concat(modeEl).concat([
     createVNode('div', { class: 'topbar-tabs' }, [
-      createVNode('button', { class: 'tab-btn' + (props.activeView === 'national' ? ' active' : ''), 'data-action': 'view-national' }, [createTextVNode('National')]),
-      createVNode('button', { class: 'tab-btn' + (props.activeView === 'sim' ? ' active' : ''), 'data-action': 'view-sim' }, [createTextVNode('Sector')]),
+      createVNode('button', { class: 'tab-btn' + (props.activeView === 'national' ? ' active' : ''), 'data-action': 'view-national' }, [createTextVNode('국가')]),
+      createVNode('button', { class: 'tab-btn' + (props.activeView === 'sim' ? ' active' : ''), 'data-action': 'view-sim' }, [createTextVNode('섹터')]),
       createVNode('button', { class: 'tab-btn' + (props.activeView === '3d' || props.activeView === 'multi3d' ? ' active' : ''), 'data-action': 'view-3d' }, [createTextVNode('3D View')]),
       createVNode('button', { class: 'tab-btn' + (props.activeView === 'test' ? ' active' : ''), 'data-action': 'view-test' }, [createTextVNode('Tests')]),
-      createVNode('button', { class: 'tab-btn' + (props.activeView === 'briefing' ? ' active' : ''), 'data-action': 'view-briefing' }, [createTextVNode('Briefing')])
+      createVNode('button', { class: 'tab-btn' + (props.activeView === 'briefing' ? ' active' : ''), 'data-action': 'view-briefing' }, [createTextVNode('브리핑')])
     ])
   ]));
 }
@@ -1621,8 +1621,8 @@ function initThreeScene(container, cityId) {
   scene.fog = new THREE.FogExp2(0x0a1208, 0.0003);
 
   var camera = new THREE.PerspectiveCamera(56, w / h, 1, 5000);
-  camera.position.set(0, 340, 620);
-  camera.lookAt(0, 50, 0);
+  camera.position.set(0, 320, 560);
+  camera.lookAt(0, 45, 0);
 
   var renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false });
   renderer.setSize(w, h);
@@ -1678,9 +1678,9 @@ function initThreeScene(container, cityId) {
   function animate() {
     _threeAnimId = requestAnimationFrame(animate);
     camAngle += 0.0015;
-    _threeCamera.position.x = 620 * Math.sin(camAngle);
-    _threeCamera.position.z = 620 * Math.cos(camAngle);
-    _threeCamera.position.y = 320 + 35 * Math.sin(camAngle * 2);
+    _threeCamera.position.x = 560 * Math.sin(camAngle);
+    _threeCamera.position.z = 560 * Math.cos(camAngle);
+    _threeCamera.position.y = 300 + 35 * Math.sin(camAngle * 2);
     _threeCamera.lookAt(0, 50, 0);
 
     // 폭발 파티클 업데이트
@@ -2001,9 +2001,9 @@ function initMulti3dScene(cityId, container, zones2d) {
   scene.fog = new THREE.FogExp2(0x080c08, 0.0004);
 
   var camera = new THREE.PerspectiveCamera(52, w / h, 1, 10000);
-  camera.position.set(0, 545, 680);
-  camera.lookAt(0, 105, 0);
-  var _camBaseY = 545, _camBaseR = 680, _camLookY = 105;
+  camera.position.set(0, 520, 620);
+  camera.lookAt(0, 100, 0);
+  var _camBaseY = 520, _camBaseR = 620, _camLookY = 100;
   var _camTargetY = _camBaseY, _camTargetR = _camBaseR, _camTargetLookY = _camLookY;
 
   var renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false });

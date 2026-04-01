@@ -54,6 +54,25 @@ html,body{width:100%;height:100%;overflow:hidden;font-family:var(--sans);backgro
 .radar-svg{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:10}
 .radar-zone{opacity:.92}
 
+/* Drone */
+.drone{
+  position:absolute;z-index:25;width:28px;height:28px;
+  transform:translate(-50%,-50%);transition:opacity .15s;
+}
+.drone.dead{opacity:0;pointer-events:none}
+.drone-body{width:28px;height:28px;position:relative}
+.drone-body::before{
+  content:'';position:absolute;top:50%;left:50%;
+  width:20px;height:20px;transform:translate(-50%,-50%);
+  background:var(--drone-blue);clip-path:polygon(50% 0%,100% 70%,80% 100%,20% 100%,0% 70%);
+  opacity:.9;
+}
+.drone-body::after{
+  content:'';position:absolute;top:50%;left:50%;
+  width:34px;height:34px;transform:translate(-50%,-50%);
+  border:1px solid rgba(125,211,252,.22);border-radius:50%;
+}
+
 /* Missiles */
 .missile{
   position:absolute;z-index:22;width:8px;height:8px;border-radius:50%;
@@ -133,6 +152,7 @@ html,body{width:100%;height:100%;overflow:hidden;font-family:var(--sans);backgro
 .status-btn:hover{background:rgba(148,163,184,.12);border-color:var(--border2);color:var(--text)}
 .status-btn.active{background:rgba(245,158,11,.12);border-color:rgba(245,158,11,.28);color:#fbbf24}
 .status-btn.target-active{background:rgba(248,113,113,.12);border-color:rgba(248,113,113,.28);color:#fca5a5}
+.status-btn.respawn{background:rgba(125,211,252,.1);border-color:rgba(125,211,252,.25);color:#bae6fd}
 .status-btn.clear{background:rgba(248,113,113,.08);border-color:rgba(248,113,113,.2);color:#fecaca}
 .status-spacer{flex:1}
 .status-area{font:500 10px var(--mono);color:var(--text3)}
@@ -205,48 +225,7 @@ html,body{width:100%;height:100%;overflow:hidden;font-family:var(--sans);backgro
   padding:2px 8px;border-radius:6px;font:600 9px var(--mono);letter-spacing:.03em;
   background:rgba(148,163,184,.1);color:var(--text2);border:1px solid var(--border);
 }
-.briefing-view{position:fixed;inset:52px 0 44px 0;background:var(--bg);overflow-y:auto;padding:34px 34px 56px;display:none}
-.briefing-view.show{display:block}
-.briefing-hero{
-  padding:26px 28px;border-radius:18px;border:1px solid var(--border);
-  background:linear-gradient(180deg,rgba(148,163,184,.10),rgba(15,23,42,.32));
-  margin-bottom:20px;
-}
-.briefing-overline{font:700 11px var(--mono);letter-spacing:.14em;color:var(--text3);margin-bottom:10px}
-.briefing-title{font:700 32px var(--sans);color:var(--text);letter-spacing:.01em;margin-bottom:2px;line-height:1.08}
-.briefing-subtitle{display:none}
-.briefing-section{margin-top:20px}
-.briefing-section-title{font:700 18px var(--sans);color:var(--text);margin-bottom:12px;letter-spacing:.01em}
-.briefing-figure{
-  padding:22px;border-radius:18px;border:1px solid var(--border);
-  background:rgba(15,23,42,.24);
-}
-.briefing-figure-title{font:700 18px var(--sans);color:var(--text);margin-bottom:14px}
-.briefing-figure-note{display:none}
-.briefing-svg{width:100%;height:auto;display:block}
-.briefing-svg-box{fill:rgba(148,163,184,.06);stroke:rgba(148,163,184,.22);stroke-width:2}
-.briefing-svg-box-strong{fill:rgba(148,163,184,.10);stroke:rgba(184,200,220,.28)}
-.briefing-svg-box-accent{fill:rgba(127,29,29,.12);stroke:rgba(248,113,113,.28)}
-.briefing-svg-slot{fill:rgba(255,255,255,.03);stroke:rgba(148,163,184,.16);stroke-width:1.5}
-.briefing-svg-arrow{stroke:rgba(184,200,220,.5);stroke-width:3;fill:none;stroke-linecap:round}
-.briefing-svg-arrowhead{fill:rgba(184,200,220,.6)}
-.briefing-svg-label{font:700 10px var(--mono);letter-spacing:.10em;fill:var(--text3)}
-.briefing-svg-title{font:700 20px var(--sans);fill:var(--text)}
-.briefing-svg-copy{font:500 12px var(--sans);fill:var(--text2)}
-.briefing-svg-small{font:600 11px var(--sans);fill:var(--text2)}
-.briefing-svg-callout{font:700 12px var(--sans);fill:var(--text)}
-.briefing-core-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px;margin-top:18px}
-.briefing-core-card{
-  padding:26px;border-radius:16px;border:1px solid var(--border);
-  background:rgba(148,163,184,.05);min-height:196px;
-}
-.briefing-core-title{font:700 24px var(--sans);color:var(--text);margin-bottom:14px;line-height:1.28}
-.briefing-core-copy{font:520 18px var(--sans);color:var(--text2);line-height:1.78}
-.briefing-claim{
-  margin-top:18px;padding:18px 20px;border-radius:16px;border:1px solid rgba(248,113,113,.18);
-  background:rgba(127,29,29,.08);
-}
-.briefing-claim-copy{font:700 21px var(--sans);color:#f8e4e4;line-height:1.45}
+
 /* Controls help */
 .controls-help{
   position:fixed;bottom:54px;right:12px;z-index:50;
@@ -286,36 +265,9 @@ html,body{width:100%;height:100%;overflow:hidden;font-family:var(--sans);backgro
 .threat-label-link{stroke:rgba(248,113,113,.42);stroke-width:1.4;opacity:.84}
 .threat-label-dot{opacity:.98}
 .city-ring{stroke-width:2;fill-opacity:.15}
-.missile-path{stroke-linecap:round}
-.normal-missile-trail{stroke-dasharray:4,8;animation:dash-flow 1.15s linear infinite}
-.missile-path-ballistic{stroke-dasharray:none;animation:none;stroke-linecap:round}
-.ballistic-trail-glow{opacity:.38}
-.ballistic-trail-core{opacity:.94}
-.ballistic-icon-shadow{opacity:.92}
-.ballistic-icon-core{opacity:1}
-.ballistic-engine{animation:ballistic-engine-flicker .9s ease-in-out infinite}
-.ballistic-aura{animation:ballistic-pulse 1.9s ease-in-out infinite}
-.normal-missile-dot{fill:#ef4444;stroke:rgba(255,255,255,.45);stroke-width:.8}
+.missile-path{stroke-dasharray:6,6;animation:dash-flow 1.8s linear infinite}
+.missile-path-ballistic{stroke-dasharray:10,4;animation:dash-flow 1.2s linear infinite}
 @keyframes dash-flow{to{stroke-dashoffset:-12}}
-@keyframes ballistic-pulse{
-  0%,100%{opacity:.34}
-  50%{opacity:.68}
-}
-@keyframes ballistic-engine-flicker{
-  0%,100%{opacity:.42}
-  50%{opacity:.78}
-}
-/* ── 고고도 요격 화면 플래시 ── */
-.screen-flash{
-  position:fixed;inset:0;z-index:999;pointer-events:none;
-  background:rgba(255,255,255,0);
-  animation:arrow3-flash .6s ease-out forwards;
-}
-@keyframes arrow3-flash{
-  0%{background:rgba(200,220,255,.55)}
-  15%{background:rgba(255,255,255,.35)}
-  100%{background:rgba(255,255,255,0)}
-}
 .alert-banner{
   position:absolute;top:16px;left:50%;transform:translateX(-50%);z-index:50;max-width:min(720px,calc(100% - 32px));
   font:600 13px var(--sans);line-height:1.5;letter-spacing:.01em;color:var(--text);text-align:center;
@@ -760,77 +712,11 @@ function _makeArcPoints(cx, cy, rx, ry, n, fromAngle, toAngle) {
   }
   return pts;
 }
-function _makeRectPoints(cx, cy, w, h) {
-  var hw = Math.round(w / 2), hh = Math.round(h / 2);
-  return [
-    { x: cx - hw, y: cy - hh },
-    { x: cx + hw, y: cy - hh },
-    { x: cx + hw, y: cy + hh },
-    { x: cx - hw, y: cy + hh }
-  ];
-}
-function _dedupePoints(points) {
-  var cleaned = [];
-  for (var i = 0; i < points.length; i++) {
-    var prev = cleaned[cleaned.length - 1];
-    if (!prev || prev.x !== points[i].x || prev.y !== points[i].y) cleaned.push(points[i]);
-  }
-  if (cleaned.length > 2) {
-    var first = cleaned[0], last = cleaned[cleaned.length - 1];
-    if (first.x === last.x && first.y === last.y) cleaned.pop();
-  }
-  return cleaned;
-}
-function _makeCapsulePoints(cx, cy, w, h, n) {
-  var pts = [];
-  var steps = Math.max(6, n || 12);
-  if (w >= h) {
-    var hr = h / 2;
-    var leftCx = cx - (w / 2 - hr);
-    var rightCx = cx + (w / 2 - hr);
-    for (var i = 0; i <= steps; i++) {
-      var a1 = Math.PI / 2 + Math.PI * (i / steps);
-      pts.push({ x: Math.round(leftCx + Math.cos(a1) * hr), y: Math.round(cy + Math.sin(a1) * hr) });
-    }
-    for (var j = 0; j <= steps; j++) {
-      var a2 = -Math.PI / 2 + Math.PI * (j / steps);
-      pts.push({ x: Math.round(rightCx + Math.cos(a2) * hr), y: Math.round(cy + Math.sin(a2) * hr) });
-    }
-  } else {
-    var vr = w / 2;
-    var topCy = cy - (h / 2 - vr);
-    var bottomCy = cy + (h / 2 - vr);
-    for (var ti = 0; ti <= steps; ti++) {
-      var aTop = Math.PI + Math.PI * (ti / steps);
-      pts.push({ x: Math.round(cx + Math.cos(aTop) * vr), y: Math.round(topCy + Math.sin(aTop) * vr) });
-    }
-    for (var bi = 0; bi <= steps; bi++) {
-      var aBottom = Math.PI * (bi / steps);
-      pts.push({ x: Math.round(cx + Math.cos(aBottom) * vr), y: Math.round(bottomCy + Math.sin(aBottom) * vr) });
-    }
-  }
-  return _dedupePoints(pts);
-}
-function _makeClippedEllipsePoints(cx, cy, rx, ry, n, clipX) {
-  var pts = [];
-  for (var i = 0; i < n; i++) {
-    var angle = (i / n) * Math.PI * 2 - Math.PI / 2;
-    var px = Math.round(cx + Math.cos(angle) * rx);
-    var py = Math.round(cy + Math.sin(angle) * ry);
-    if (typeof clipX === 'number' && px < clipX) px = clipX;
-    pts.push({ x: px, y: py });
-  }
-  return _dedupePoints(pts);
-}
-function _zoneObj(points, extra) {
+function _zoneObj(points) {
   var cx = 0, cy = 0;
   for (var i = 0; i < points.length; i++) { cx += points[i].x; cy += points[i].y; }
   cx = Math.round(cx / points.length); cy = Math.round(cy / points.length);
-  var zone = { id: _zoneId++, capacity: 5000, maxConcurrent: 100, active: 0, points: points, center: { x: cx, y: cy } };
-  if (extra) {
-    for (var key in extra) zone[key] = extra[key];
-  }
-  return zone;
+  return { id: _zoneId++, capacity: 5000, maxConcurrent: 100, active: 0, points: points, center: { x: cx, y: cy } };
 }
 
 function _generateCityZones(cityId) {
@@ -839,75 +725,103 @@ function _generateCityZones(cityId) {
   var r = Math.min(w, h);
 
   if (cityId === 'telaviv') {
-    var coastClipX = Math.round(cx - w * 0.16);
-    var taNorthCoast = _makeClippedEllipsePoints(Math.round(cx - w * 0.01), Math.round(cy - h * 0.18), Math.round(r * 0.15), Math.round(r * 0.10), 30, coastClipX);
-    var taSouthCoast = _makeClippedEllipsePoints(Math.round(cx + w * 0.01), Math.round(cy + h * 0.16), Math.round(r * 0.14), Math.round(r * 0.10), 30, coastClipX);
-    var taDowntown = _makeCirclePoints(Math.round(cx + w * 0.11), Math.round(cy - h * 0.02), Math.round(r * 0.11), Math.round(r * 0.11), 28);
-    var taMetro = _makeCapsulePoints(Math.round(cx + w * 0.22), Math.round(cy + h * 0.10), Math.round(r * 0.20), Math.round(r * 0.10), 12);
-    return [
-      _zoneObj(taNorthCoast, { renderMode: 'extrude', height: 150 }),
-      _zoneObj(taSouthCoast, { renderMode: 'extrude', height: 148 }),
-      _zoneObj(taDowntown, { renderMode: 'dome', height: 162 }),
-      _zoneObj(taMetro, { renderMode: 'extrude', height: 138 })
-    ];
+    // ── 텔아비브: 해안도시 — 왼쪽이 바다, 직선 커팅된 반원형 방공 + 해안 직선방벽 ──
+    // Zone 1: 해안선 따라 세로로 긴 직사각형 방벽 (바다쪽 1차 방어선)
+    var bx = Math.round(cx - w * 0.25), bw = Math.round(w * 0.06);
+    var by = Math.round(cy - h * 0.30), bh = Math.round(h * 0.60);
+    var z1 = [{ x: bx, y: by }, { x: bx + bw, y: by }, { x: bx + bw, y: by + bh }, { x: bx, y: by + bh }];
+
+    // Zone 2: 해안선에 맞닿은 반원형 (서쪽 직선, 동쪽 곡선) — 도심 커버
+    var a2pts = _makeArcPoints(cx - w * 0.04, cy, r * 0.18, r * 0.18, 20, -Math.PI * 0.45, Math.PI * 0.45);
+    a2pts.push({ x: Math.round(cx - w * 0.04), y: Math.round(cy + r * 0.18 * Math.sin(Math.PI * 0.45)) });
+    a2pts.push({ x: Math.round(cx - w * 0.04), y: Math.round(cy - r * 0.18 * Math.sin(Math.PI * 0.45)) });
+
+    // Zone 3: 북쪽 내륙 원형 (라마트간/브네이브라크 커버)
+    var z3pts = _makeCirclePoints(Math.round(cx + w * 0.14), Math.round(cy - h * 0.16), Math.round(r * 0.10), Math.round(r * 0.10), 22);
+
+    // Zone 4: 남쪽 타원형 (홀론/바트얌 커버)
+    var z4pts = _makeCirclePoints(Math.round(cx + w * 0.06), Math.round(cy + h * 0.22), Math.round(r * 0.12), Math.round(r * 0.08), 20);
+
+    return [_zoneObj(z1), _zoneObj(a2pts), _zoneObj(z3pts), _zoneObj(z4pts)];
   }
 
   if (cityId === 'jerusalem') {
-    var jCenter = _makeCirclePoints(cx, Math.round(cy - h * 0.08), Math.round(r * 0.14), Math.round(r * 0.14), 30);
-    var jSouthWest = _makeCirclePoints(Math.round(cx - w * 0.11), Math.round(cy + h * 0.08), Math.round(r * 0.13), Math.round(r * 0.13), 26);
-    var jSouthEast = _makeCirclePoints(Math.round(cx + w * 0.11), Math.round(cy + h * 0.08), Math.round(r * 0.13), Math.round(r * 0.13), 26);
-    return [
-      _zoneObj(jCenter, { renderMode: 'dome', height: 176 }),
-      _zoneObj(jSouthWest, { renderMode: 'dome', height: 162 }),
-      _zoneObj(jSouthEast, { renderMode: 'dome', height: 162 })
-    ];
+    // ── 예루살렘: 철벽방어 — 3개 대형 돔이 겹쳐서 절대 안뚫림 ──
+    var overlap = r * 0.14;
+    // 중앙 대형 돔
+    var jc = _makeCirclePoints(cx, cy, Math.round(r * 0.16), Math.round(r * 0.16), 28);
+    // 북서 돔 (중앙과 겹침)
+    var jnw = _makeCirclePoints(Math.round(cx - w * 0.10), Math.round(cy - h * 0.12), Math.round(r * 0.13), Math.round(r * 0.13), 24);
+    // 남동 돔 (중앙과 겹침)
+    var jse = _makeCirclePoints(Math.round(cx + w * 0.10), Math.round(cy + h * 0.12), Math.round(r * 0.13), Math.round(r * 0.13), 24);
+    return [_zoneObj(jc), _zoneObj(jnw), _zoneObj(jse)];
   }
 
   if (cityId === 'haifa') {
-    var haifaClipX = Math.round(cx - w * 0.18);
-    var hfHarbor = _makeClippedEllipsePoints(Math.round(cx - w * 0.08), Math.round(cy - h * 0.12), Math.round(r * 0.11), Math.round(r * 0.09), 28, haifaClipX);
-    var hfBay = _makeCirclePoints(Math.round(cx + w * 0.03), Math.round(cy - h * 0.02), Math.round(r * 0.10), Math.round(r * 0.10), 24);
-    var hfCarmel = _makeCapsulePoints(Math.round(cx + w * 0.16), Math.round(cy + h * 0.16), Math.round(r * 0.24), Math.round(r * 0.10), 12);
-    var hfEast = _makeCirclePoints(Math.round(cx + w * 0.23), Math.round(cy - h * 0.10), Math.round(r * 0.08), Math.round(r * 0.08), 20);
-    return [
-      _zoneObj(hfHarbor, { renderMode: 'extrude', height: 144 }),
-      _zoneObj(hfBay, { renderMode: 'dome', height: 154 }),
-      _zoneObj(hfCarmel, { renderMode: 'extrude', height: 136 }),
-      _zoneObj(hfEast, { renderMode: 'dome', height: 142 })
-    ];
+    // ── 하이파: 항구+산악지형 — 해안 직선방벽 + 내륙 원형 2개 + 카르멜산 타원 ──
+    // Zone 1: 해안 직선 방벽
+    var hbx = Math.round(cx - w * 0.28), hby = Math.round(cy - h * 0.20);
+    var hbw = Math.round(w * 0.05), hbh = Math.round(h * 0.50);
+    var hz1 = [{ x: hbx, y: hby }, { x: hbx + hbw, y: hby }, { x: hbx + hbw, y: hby + hbh }, { x: hbx, y: hby + hbh }];
+
+    // Zone 2: 항구 원형
+    var hz2 = _makeCirclePoints(Math.round(cx - w * 0.08), Math.round(cy - h * 0.10), Math.round(r * 0.11), Math.round(r * 0.11), 22);
+
+    // Zone 3: 도심 원형
+    var hz3 = _makeCirclePoints(Math.round(cx + w * 0.10), Math.round(cy + h * 0.05), Math.round(r * 0.10), Math.round(r * 0.10), 20);
+
+    // Zone 4: 카르멜산 넓은 타원
+    var hz4 = _makeCirclePoints(Math.round(cx + w * 0.04), Math.round(cy + h * 0.22), Math.round(r * 0.16), Math.round(r * 0.09), 24);
+
+    return [_zoneObj(hz1), _zoneObj(hz2), _zoneObj(hz3), _zoneObj(hz4)];
   }
 
   if (cityId === 'sderot') {
-    var sdFrontNorth = _makeCapsulePoints(Math.round(cx - w * 0.16), Math.round(cy - h * 0.10), Math.round(r * 0.10), Math.round(r * 0.18), 10);
-    var sdFrontSouth = _makeCapsulePoints(Math.round(cx - w * 0.14), Math.round(cy + h * 0.10), Math.round(r * 0.10), Math.round(r * 0.16), 10);
-    var sdCore = _makeCirclePoints(Math.round(cx - w * 0.01), Math.round(cy - h * 0.02), Math.round(r * 0.11), Math.round(r * 0.11), 24);
-    var sdRear = _makeCirclePoints(Math.round(cx + w * 0.11), Math.round(cy + h * 0.06), Math.round(r * 0.10), Math.round(r * 0.10), 22);
-    return [
-      _zoneObj(sdFrontNorth, { renderMode: 'extrude', height: 138 }),
-      _zoneObj(sdFrontSouth, { renderMode: 'extrude', height: 136 }),
-      _zoneObj(sdCore, { renderMode: 'dome', height: 152 }),
-      _zoneObj(sdRear, { renderMode: 'dome', height: 146 })
-    ];
+    // ── 스데롯: 가자 접경 최전방 — 겹치는 2개 돔 + 전방 직사각형 차단벽 ──
+    // Zone 1: 서쪽 전방 직사각형 (가자방면 차단)
+    var s1x = Math.round(cx - w * 0.24), s1y = Math.round(cy - h * 0.18);
+    var s1 = [{ x: s1x, y: s1y }, { x: s1x + Math.round(w * 0.08), y: s1y },
+              { x: s1x + Math.round(w * 0.08), y: s1y + Math.round(h * 0.36) }, { x: s1x, y: s1y + Math.round(h * 0.36) }];
+
+    // Zone 2+3: 겹치는 원형 돔 2개 (도심)
+    var sd2 = _makeCirclePoints(Math.round(cx - w * 0.02), Math.round(cy - h * 0.04), Math.round(r * 0.13), Math.round(r * 0.13), 24);
+    var sd3 = _makeCirclePoints(Math.round(cx + w * 0.08), Math.round(cy + h * 0.06), Math.round(r * 0.12), Math.round(r * 0.12), 22);
+
+    // Zone 4: 후방 소형 원
+    var sd4 = _makeCirclePoints(Math.round(cx + w * 0.22), Math.round(cy - h * 0.02), Math.round(r * 0.07), Math.round(r * 0.07), 16);
+
+    return [_zoneObj(s1), _zoneObj(sd2), _zoneObj(sd3), _zoneObj(sd4)];
   }
 
   if (cityId === 'ashkelon') {
-    var akNorthWest = _makeCirclePoints(Math.round(cx - w * 0.11), Math.round(cy - h * 0.12), Math.round(r * 0.10), Math.round(r * 0.10), 22);
-    var akNorthEast = _makeCirclePoints(Math.round(cx + w * 0.08), Math.round(cy - h * 0.11), Math.round(r * 0.10), Math.round(r * 0.10), 22);
-    var akSouth = _makeCapsulePoints(Math.round(cx - w * 0.01), Math.round(cy + h * 0.17), Math.round(r * 0.22), Math.round(r * 0.10), 12);
-    var akEast = _makeRectPoints(Math.round(cx + w * 0.20), Math.round(cy + h * 0.03), Math.round(r * 0.12), Math.round(r * 0.10));
-    return [
-      _zoneObj(akNorthWest, { renderMode: 'extrude', height: 162 }),
-      _zoneObj(akNorthEast, { renderMode: 'extrude', height: 162 }),
-      _zoneObj(akSouth, { renderMode: 'extrude', height: 148 }),
-      _zoneObj(akEast, { renderMode: 'extrude', height: 140 })
-    ];
+    // ── 아슈켈론: 해안+남부 — 대형 타원 1개 + 겹치는 원 2개 + 육각형 ──
+    // Zone 1: 대형 타원 (광역 커버)
+    var ak1 = _makeCirclePoints(cx, cy, Math.round(r * 0.18), Math.round(r * 0.12), 26);
+
+    // Zone 2: 북쪽 원형 (타원과 겹침)
+    var ak2 = _makeCirclePoints(Math.round(cx - w * 0.06), Math.round(cy - h * 0.16), Math.round(r * 0.10), Math.round(r * 0.10), 20);
+
+    // Zone 3: 남쪽 원형 (타원과 겹침)
+    var ak3 = _makeCirclePoints(Math.round(cx + w * 0.06), Math.round(cy + h * 0.18), Math.round(r * 0.09), Math.round(r * 0.09), 18);
+
+    // Zone 4: 동쪽 육각형 초소
+    var hx = Math.round(cx + w * 0.22), hy = Math.round(cy);
+    var hr = Math.round(r * 0.08);
+    var hex = [];
+    for (var hi = 0; hi < 6; hi++) {
+      var ha = (hi / 6) * Math.PI * 2 - Math.PI / 2;
+      hex.push({ x: Math.round(hx + Math.cos(ha) * hr), y: Math.round(hy + Math.sin(ha) * hr) });
+    }
+
+    return [_zoneObj(ak1), _zoneObj(ak2), _zoneObj(ak3), _zoneObj(hex)];
   }
 
+  // 폴백: 기본 원형 4개
   return [
-    _zoneObj(_makeCirclePoints(Math.round(cx - w * 0.15), Math.round(cy - h * 0.14), Math.round(r * 0.10), Math.round(r * 0.10), 22), { renderMode: 'extrude', height: 156 }),
-    _zoneObj(_makeCirclePoints(Math.round(cx + w * 0.15), Math.round(cy - h * 0.14), Math.round(r * 0.10), Math.round(r * 0.10), 22), { renderMode: 'extrude', height: 156 }),
-    _zoneObj(_makeCapsulePoints(Math.round(cx - w * 0.12), Math.round(cy + h * 0.16), Math.round(r * 0.16), Math.round(r * 0.09), 10), { renderMode: 'extrude', height: 144 }),
-    _zoneObj(_makeRectPoints(Math.round(cx + w * 0.12), Math.round(cy + h * 0.16), Math.round(r * 0.12), Math.round(r * 0.10)), { renderMode: 'extrude', height: 140 })
+    _zoneObj(_makeCirclePoints(Math.round(cx - w*0.15), Math.round(cy - h*0.14), Math.round(r*0.10), Math.round(r*0.10), 22)),
+    _zoneObj(_makeCirclePoints(Math.round(cx + w*0.15), Math.round(cy - h*0.14), Math.round(r*0.10), Math.round(r*0.10), 22)),
+    _zoneObj(_makeCirclePoints(Math.round(cx - w*0.12), Math.round(cy + h*0.16), Math.round(r*0.09), Math.round(r*0.09), 20)),
+    _zoneObj(_makeCirclePoints(Math.round(cx + w*0.12), Math.round(cy + h*0.16), Math.round(r*0.09), Math.round(r*0.09), 20))
   ];
 }
 
@@ -947,7 +861,7 @@ function buildZoneSignature(zones) {
   if (!zones || zones.length === 0) return 'none';
   return zones.map(function(z) {
     var pts = (z.points || []).map(function(p) { return Math.round(p.x) + ',' + Math.round(p.y); }).join(';');
-    return [z.id, z.capacity || 0, z.renderMode || 'extrude', z.height || 0, pts].join(':');
+    return [z.id, z.capacity || 0, pts].join(':');
   }).join('|');
 }
 /** clientY → sim-view 내부 좌표 변환 */
@@ -991,8 +905,8 @@ function computeTravelSpeed(distance, durationSeconds) {
   return distance / Math.max(0.001, durationSeconds);
 }
 function buildNationalMissileSpeed(startX, startY, targetX, targetY, type) {
-  // 탄도미사일: 일반보다 약간 느리게 (시각적 위협감)
-  if (type === 'ballistic') return NATIONAL_MISSILE_SPEED * 0.9;
+  // 탄도미사일: 느리게 (포물선 느낌), 일반: 빠르게
+  if (type === 'ballistic') return NATIONAL_MISSILE_SPEED * 0.65;
   if (type === 'drone') return NATIONAL_MISSILE_SPEED * 0.85;
   return NATIONAL_MISSILE_SPEED;
 }
@@ -1161,20 +1075,25 @@ function TopBar(props) {
   if (props.activeView === '3d' && props.targetMode) modeEl.push(createVNode('span', { class: 'topbar-mode mode-target' }, [createTextVNode('Target input')]));
   else if (props.activeView === '3d') modeEl.push(createVNode('span', { class: 'topbar-mode mode-fly' }, [createTextVNode('Terminal view')]));
   else if (props.isDrawing) modeEl.push(createVNode('span', { class: 'topbar-mode mode-draw' }, [createTextVNode('Sector edit')]));
-
+  else modeEl.push(createVNode('span', { class: 'topbar-mode mode-fly' }, [createTextVNode('Live view')]));
 
   return createVNode('div', { class: 'topbar' }, [
     createVNode('div', { class: 'topbar-logo' }, [
       createVNode('span', { class: 'dot' }, []),
-      createTextVNode('Israel Iron Dome')
+      createTextVNode('Air Defense Console')
     ]),
+    createVNode('span', { class: 'topbar-loc' }, [createTextVNode(
+      props.activeView === 'national' ? 'Israel · National view' :
+      props.activeView === 'multi3d' ? 'Israel · Multi-city terminal view' :
+      props.activeView === '3d' ? 'Israel · ' + props.simCityName + ' terminal view' :
+      'Israel · ' + props.simCityName + ' sector view'
+    )]),
   ].concat(modeEl).concat([
     createVNode('div', { class: 'topbar-tabs' }, [
       createVNode('button', { class: 'tab-btn' + (props.activeView === 'national' ? ' active' : ''), 'data-action': 'view-national' }, [createTextVNode('National')]),
       createVNode('button', { class: 'tab-btn' + (props.activeView === 'sim' ? ' active' : ''), 'data-action': 'view-sim' }, [createTextVNode('Sector')]),
       createVNode('button', { class: 'tab-btn' + (props.activeView === '3d' || props.activeView === 'multi3d' ? ' active' : ''), 'data-action': 'view-3d' }, [createTextVNode('3D View')]),
-      createVNode('button', { class: 'tab-btn' + (props.activeView === 'test' ? ' active' : ''), 'data-action': 'view-test' }, [createTextVNode('Tests')]),
-      createVNode('button', { class: 'tab-btn' + (props.activeView === 'briefing' ? ' active' : ''), 'data-action': 'view-briefing' }, [createTextVNode('Briefing')])
+      createVNode('button', { class: 'tab-btn' + (props.activeView === 'test' ? ' active' : ''), 'data-action': 'view-test' }, [createTextVNode('Tests')])
     ])
   ]));
 }
@@ -1207,6 +1126,12 @@ function SimView(props) {
   }
 
   var svgEl = createVNode('svg', { class: 'radar-svg', xmlns: SVG_NS }, zoneEls);
+
+  // Drone
+  var droneStyle = 'left:' + props.dronePos.x + 'px;top:' + props.dronePos.y + 'px;transform:translate(-50%,-50%) rotate(' + props.droneAngle + 'deg)';
+  var droneEl = createVNode('div', { class: 'drone' + (props.droneAlive ? '' : ' dead'), style: droneStyle }, [
+    createVNode('div', { class: 'drone-body' }, [])
+  ]);
 
   // Missiles
   var missileEls = [];
@@ -1258,8 +1183,14 @@ function SimView(props) {
     targetEls.push(createVNode('div', { class: 'target-marker', style: 'left:' + t.x + 'px;top:' + t.y + 'px' }, []));
   }
 
+  // Intercept messages
+  var msgEls = [];
+  if (props.interceptPos) {
+    msgEls.push(createVNode('div', { class: 'intercept-msg', style: 'left:' + props.interceptPos.x + 'px;top:' + props.interceptPos.y + 'px' }, [createTextVNode('Intercept')]));
+  }
+
   return createVNode('div', { class: cls, style: satStyle, 'data-sim': 'true' },
-    [svgEl].concat(missileEls).concat(interceptorEls).concat(breachEls).concat(vulnEls).concat(targetEls));
+    [svgEl, droneEl].concat(missileEls).concat(interceptorEls).concat(breachEls).concat(vulnEls).concat(targetEls).concat(msgEls));
 }
 
 function InfoPanel(props) {
@@ -1321,6 +1252,10 @@ function InfoPanel(props) {
 function StatusBar(props) {
   var items = [
     createVNode('span', { class: 'status-item' }, [
+      createVNode('span', { class: 'indicator ' + (props.droneAlive ? 'green' : 'red') }, []),
+      createTextVNode('UAV ' + (props.droneAlive ? 'online' : 'offline'))
+    ]),
+    createVNode('span', { class: 'status-item' }, [
       createVNode('span', { class: 'indicator green' }, []),
       createTextVNode('Sectors ' + props.zoneCount)
     ])
@@ -1354,6 +1289,9 @@ function StatusBar(props) {
     items.push(createVNode('button', { class: 'status-btn' + (props.isDrawing ? ' active' : ''), 'data-action': 'toggle-draw' }, [
       createTextVNode(props.isDrawing ? 'Editing sectors' : 'Edit sectors')
     ]));
+    if (!props.droneAlive) {
+      items.push(createVNode('button', { class: 'status-btn respawn', 'data-action': 'respawn' }, [createTextVNode('Reset UAV')]));
+    }
     if (props.zoneCount > 0) {
       items.push(createVNode('button', { class: 'status-btn clear', 'data-action': 'clear-all' }, [createTextVNode('Reset city')]));
     }
@@ -1396,6 +1334,10 @@ function ControlsHelp(props) {
   if (props.activeView !== 'sim') return createVNode('div', { style: 'display:none' }, []);
   return createVNode('div', { class: 'controls-help' }, [
     createVNode('div', {}, [
+      createVNode('span', { class: 'key' }, [createTextVNode('↑↓←→')]),
+      createTextVNode(' Reposition reconnaissance vehicle')
+    ]),
+    createVNode('div', {}, [
       createTextVNode('Select a map point to assign an inbound threat track')
     ]),
     createVNode('div', {}, [
@@ -1418,6 +1360,7 @@ var _threeAnimId = null, _threeInitialized = false;
 var _3dMissileMap = {};   // 2D missile id → { meshes }
 var _3dZoneMap = {};      // 2D zone id → { dome, outline }
 var _3dExplosions = [];
+var _3dDroneMesh = null;
 var _3dBreachMarkers = [];
 
 /** 2D 화면 좌표(px) → 3D 월드 좌표 매핑 */
@@ -1426,190 +1369,6 @@ function to3D(px2d, py2d) {
   var w = window.innerWidth, h = window.innerHeight - SIM_TOP - SIM_BOTTOM;
   _3dScaleX = 1200 / w; _3dScaleZ = 1200 / h;
   return { x: (px2d - w / 2) * _3dScaleX, z: (py2d - h / 2) * _3dScaleZ };
-}
-function _groundUvFromWorld(x, z) {
-  return {
-    u: (x + 600) / 1200,
-    v: (z + 600) / 1200
-  };
-}
-function _worldFromGroundUv(u, v) {
-  return {
-    x: u * 1200 - 600,
-    z: v * 1200 - 600
-  };
-}
-function _getBuildClustersForCity(cityId) {
-  if (cityId === 'telaviv') {
-    return [
-      { u: 0.66, v: 0.28, du: 0.12, dv: 0.14 },
-      { u: 0.64, v: 0.50, du: 0.14, dv: 0.16 },
-      { u: 0.68, v: 0.73, du: 0.12, dv: 0.14 }
-    ];
-  }
-  if (cityId === 'haifa') {
-    return [
-      { u: 0.80, v: 0.22, du: 0.08, dv: 0.10 },
-      { u: 0.76, v: 0.44, du: 0.10, dv: 0.12 },
-      { u: 0.72, v: 0.70, du: 0.10, dv: 0.12 }
-    ];
-  }
-  if (cityId === 'ashkelon') {
-    return [
-      { u: 0.64, v: 0.26, du: 0.12, dv: 0.12 },
-      { u: 0.62, v: 0.50, du: 0.12, dv: 0.14 },
-      { u: 0.66, v: 0.76, du: 0.10, dv: 0.12 }
-    ];
-  }
-  if (cityId === 'sderot') {
-    return [
-      { u: 0.52, v: 0.34, du: 0.14, dv: 0.12 },
-      { u: 0.56, v: 0.58, du: 0.14, dv: 0.14 }
-    ];
-  }
-  if (cityId === 'jerusalem') {
-    return [
-      { u: 0.52, v: 0.34, du: 0.16, dv: 0.14 },
-      { u: 0.48, v: 0.58, du: 0.14, dv: 0.14 },
-      { u: 0.60, v: 0.66, du: 0.12, dv: 0.12 }
-    ];
-  }
-  return null;
-}
-function _isLandPointForCity(cityId, x, z) {
-  var uv = _groundUvFromWorld(x, z);
-  var u = uv.u, v = uv.v;
-  if (u < 0.06 || u > 0.95 || v < 0.05 || v > 0.95) return false;
-
-  var coastMask = null;
-  if (cityId === 'telaviv') {
-    coastMask = [
-      { x: 0.50, y: 0.04 },
-      { x: 0.95, y: 0.04 },
-      { x: 0.95, y: 0.96 },
-      { x: 0.44, y: 0.96 },
-      { x: 0.44, y: 0.80 },
-      { x: 0.46, y: 0.63 },
-      { x: 0.48, y: 0.44 },
-      { x: 0.49, y: 0.24 },
-      { x: 0.48, y: 0.10 }
-    ];
-  } else if (cityId === 'haifa') {
-    coastMask = [
-      { x: 0.83, y: 0.05 },
-      { x: 0.95, y: 0.05 },
-      { x: 0.95, y: 0.96 },
-      { x: 0.64, y: 0.96 },
-      { x: 0.63, y: 0.80 },
-      { x: 0.67, y: 0.62 },
-      { x: 0.74, y: 0.46 },
-      { x: 0.80, y: 0.24 },
-      { x: 0.82, y: 0.10 }
-    ];
-  } else if (cityId === 'ashkelon') {
-    coastMask = [
-      { x: 0.48, y: 0.04 },
-      { x: 0.95, y: 0.04 },
-      { x: 0.95, y: 0.96 },
-      { x: 0.42, y: 0.96 },
-      { x: 0.40, y: 0.74 },
-      { x: 0.44, y: 0.48 },
-      { x: 0.46, y: 0.22 }
-    ];
-  }
-  if (coastMask) return pointInPolygon(u, v, coastMask);
-  return true;
-}
-function _getBuildingSampleRangeForCity(cityId) {
-  if (cityId === 'telaviv') return 980;
-  if (cityId === 'ashkelon') return 920;
-  if (cityId === 'jerusalem') return 900;
-  if (cityId === 'sderot') return 760;
-  return 840;
-}
-function _getBuildingClusterSpreadForCity(cityId) {
-  if (cityId === 'sderot') return 1.15;
-  if (cityId === 'jerusalem') return 1.35;
-  return 1.5;
-}
-function _getBuildingMinSpacingForCity(cityId) {
-  if (cityId === 'telaviv') return 28;
-  if (cityId === 'ashkelon') return 26;
-  if (cityId === 'jerusalem') return 26;
-  if (cityId === 'sderot') return 30;
-  return 24;
-}
-function _isBuildingPointAvailable(point, placed, minSpacing) {
-  if (!placed || !placed.length || minSpacing <= 0) return true;
-  var minDistSq = minSpacing * minSpacing;
-  for (var pi = 0; pi < placed.length; pi++) {
-    var dx = point.x - placed[pi].x;
-    var dz = point.z - placed[pi].z;
-    if (dx * dx + dz * dz < minDistSq) return false;
-  }
-  return true;
-}
-function _pickBuildingPointForCity(cityId, placed, minSpacing) {
-  var clusters = _getBuildClustersForCity(cityId);
-  var spread = _getBuildingClusterSpreadForCity(cityId);
-  if (clusters && clusters.length > 0) {
-    for (var attempt = 0; attempt < 180; attempt++) {
-      var cluster = clusters[Math.floor(Math.random() * clusters.length)];
-      var cu = cluster.u + (Math.random() - 0.5) * cluster.du * spread;
-      var cv = cluster.v + (Math.random() - 0.5) * cluster.dv * spread;
-      var clusterPoint = _worldFromGroundUv(cu, cv);
-      if (_isLandPointForCity(cityId, clusterPoint.x, clusterPoint.z) && _isBuildingPointAvailable(clusterPoint, placed, minSpacing)) return clusterPoint;
-    }
-  }
-  var sampleRange = _getBuildingSampleRangeForCity(cityId);
-  for (var fallback = 0; fallback < 160; fallback++) {
-    var bx = (Math.random() - 0.5) * sampleRange;
-    var bz = (Math.random() - 0.5) * sampleRange;
-    var fallbackPoint = { x: bx, z: bz };
-    if (_isLandPointForCity(cityId, bx, bz) && _isBuildingPointAvailable(fallbackPoint, placed, minSpacing)) return fallbackPoint;
-  }
-  return null;
-}
-function _addCityBuildings(scene, cityId, count, footprintScale, heightScale) {
-  if (cityId === 'haifa') return;
-  // 스데롯: 농촌 소도시 — 건물 적고 낮음
-  var isSderot = cityId === 'sderot';
-  var total = isSderot ? 35 : (count || 140);
-  var fpScale = isSderot ? 0.7 : (footprintScale || 1);
-  var htScale = isSderot ? 0.25 : (heightScale || 1);
-  var minSpacing = _getBuildingMinSpacingForCity(cityId) * fpScale;
-  var placed = [];
-  for (var bi = 0; bi < total; bi++) {
-    var pos = _pickBuildingPointForCity(cityId, placed, minSpacing);
-    if (!pos) continue;
-    placed.push(pos);
-    var centerBias = 1 - Math.min(0.78, Math.sqrt(pos.x * pos.x + pos.z * pos.z) / 860);
-    var bw, bd, bh;
-    if (isSderot) {
-      // 농촌 건물: 낮고 넓적한 1-2층 주택
-      bw = (8 + Math.random() * 10) * fpScale;
-      bd = (8 + Math.random() * 10) * fpScale;
-      bh = (4 + Math.random() * 6) * htScale; // 최대 2.5m 수준
-    } else {
-      bw = (6 + Math.random() * 12) * fpScale;
-      bd = (6 + Math.random() * 12) * fpScale;
-      bh = (10 + Math.random() * (26 + centerBias * 22)) * htScale;
-      if (Math.random() < 0.18) bh *= 1.55;
-    }
-    var bGeo = new THREE.BoxGeometry(bw, bh, bd);
-    var buildColor = isSderot ? 0x8a9070 : 0x5b6f62;
-    var buildEmissive = isSderot ? 0x4a5040 : 0x27352c;
-    var bMat = new THREE.MeshPhongMaterial({
-      color: buildColor,
-      emissive: buildEmissive,
-      shininess: 22,
-      transparent: true,
-      opacity: 0.92
-    });
-    var bMesh = new THREE.Mesh(bGeo, bMat);
-    bMesh.position.set(pos.x, bh / 2, pos.z);
-    scene.add(bMesh);
-  }
 }
 
 function initThreeScene(container, cityId) {
@@ -1620,8 +1379,8 @@ function initThreeScene(container, cityId) {
   var scene = new THREE.Scene();
   scene.fog = new THREE.FogExp2(0x0a1208, 0.0003);
 
-  var camera = new THREE.PerspectiveCamera(56, w / h, 1, 5000);
-  camera.position.set(0, 340, 620);
+  var camera = new THREE.PerspectiveCamera(60, w / h, 1, 5000);
+  camera.position.set(0, 400, 700);
   camera.lookAt(0, 50, 0);
 
   var renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false });
@@ -1653,8 +1412,17 @@ function initThreeScene(container, cityId) {
   grid.material.transparent = true; grid.material.opacity = 0.15;
   scene.add(grid);
 
-  // 도시 건물들 — 육지 영역에만 배치
-  _addCityBuildings(scene, cityId, 180, 1, 1);
+  // 도시 건물들 — 현재 선택된 도시에 맞춰 범용 밀도로 배치
+  for (var bi = 0; bi < 100; bi++) {
+    var bw = 4 + Math.random() * 10, bh = 3 + Math.random() * 25, bd = 4 + Math.random() * 10;
+    var bGeo = new THREE.BoxGeometry(bw, bh, bd);
+    var bMat = new THREE.MeshPhongMaterial({ color: 0x2a3a2a, emissive: 0x152015, transparent: true, opacity: 0.6 });
+    var bMesh = new THREE.Mesh(bGeo, bMat);
+    var bx = (Math.random() - 0.5) * 1050;
+    var bz = (Math.random() - 0.5) * 1050;
+    bMesh.position.set(bx, bh / 2, bz);
+    scene.add(bMesh);
+  }
 
   // 조명
   scene.add(new THREE.AmbientLight(0xffffff, 1.2));
@@ -1669,6 +1437,13 @@ function initThreeScene(container, cityId) {
   starGeo.setAttribute('position', new THREE.Float32BufferAttribute(sv, 3));
   scene.add(new THREE.Points(starGeo, new THREE.PointsMaterial({ color: 0x88aa88, size: 2 })));
 
+  // 드론 메쉬 (하늘색 삼각뿔)
+  var dGeo = new THREE.ConeGeometry(6, 18, 4);
+  var dMat = new THREE.MeshBasicMaterial({ color: 0x00e5ff });
+  _3dDroneMesh = new THREE.Mesh(dGeo, dMat);
+  _3dDroneMesh.visible = false;
+  scene.add(_3dDroneMesh);
+
   _threeScene = scene;
   _threeRenderer = renderer;
   _threeCamera = camera;
@@ -1678,10 +1453,10 @@ function initThreeScene(container, cityId) {
   function animate() {
     _threeAnimId = requestAnimationFrame(animate);
     camAngle += 0.0015;
-    _threeCamera.position.x = 620 * Math.sin(camAngle);
-    _threeCamera.position.z = 620 * Math.cos(camAngle);
-    _threeCamera.position.y = 320 + 35 * Math.sin(camAngle * 2);
-    _threeCamera.lookAt(0, 50, 0);
+    _threeCamera.position.x = 700 * Math.sin(camAngle);
+    _threeCamera.position.z = 700 * Math.cos(camAngle);
+    _threeCamera.position.y = 350 + 50 * Math.sin(camAngle * 2);
+    _threeCamera.lookAt(0, 60, 0);
 
     // 폭발 파티클 업데이트
     for (var ei = _3dExplosions.length - 1; ei >= 0; ei--) {
@@ -1790,130 +1565,94 @@ function syncThreeMissiles(missiles2d) {
 /** 2D 레이더 존 → 3D 돔 동기화 */
 function syncThreeZones(zones2d) {
   if (!_threeScene) return;
+  var PILLAR_H = 180;
   var seen = {};
-
-  function _zoneColor(capacity) {
-    var capPct = (capacity || 0) / 5000;
-    return capPct > 0.5 ? 0x00ff41 : (capPct > 0.2 ? 0xff9100 : 0xff4444);
-  }
-
-  function _buildFootprint(zone) {
-    if (!zone || !zone.points || zone.points.length < 3) return null;
-    var center3d = to3D(zone.center.x, zone.center.y);
-    var shape = new THREE.Shape();
-    var linePoints = [];
-    var minX = Infinity, maxX = -Infinity, minZ = Infinity, maxZ = -Infinity;
-    for (var pi = 0; pi < zone.points.length; pi++) {
-      var wp = to3D(zone.points[pi].x, zone.points[pi].y);
-      var localX = wp.x - center3d.x;
-      var localY = -(wp.z - center3d.z);
-      if (pi === 0) shape.moveTo(localX, localY);
-      else shape.lineTo(localX, localY);
-      linePoints.push(new THREE.Vector3(wp.x, 0.5, wp.z));
-      if (wp.x < minX) minX = wp.x;
-      if (wp.x > maxX) maxX = wp.x;
-      if (wp.z < minZ) minZ = wp.z;
-      if (wp.z > maxZ) maxZ = wp.z;
-    }
-    shape.closePath();
-    linePoints.push(linePoints[0].clone());
-    return {
-      center3d: center3d,
-      shape: shape,
-      linePoints: linePoints,
-      spanX: Math.max(24, maxX - minX),
-      spanZ: Math.max(24, maxZ - minZ)
-    };
-  }
-
-  function _createExtrudeVisual(zone, footprint, zoneColor) {
-    var height = zone.height || 180;
-    var extGeo = new THREE.ExtrudeGeometry(footprint.shape, { depth: height, bevelEnabled: false });
-    var pillarMat = new THREE.MeshBasicMaterial({ color: zoneColor, transparent: true, opacity: 0.08, side: THREE.DoubleSide });
-    var pillar = new THREE.Mesh(extGeo, pillarMat);
-    pillar.rotation.x = -Math.PI / 2;
-    pillar.position.set(footprint.center3d.x, 0, footprint.center3d.z);
-    _threeScene.add(pillar);
-
-    var wireMat = new THREE.MeshBasicMaterial({ color: zoneColor, wireframe: true, transparent: true, opacity: 0.3 });
-    var wire = new THREE.Mesh(extGeo.clone(), wireMat);
-    wire.rotation.x = -Math.PI / 2;
-    wire.position.set(footprint.center3d.x, 0, footprint.center3d.z);
-    _threeScene.add(wire);
-
-    var topGeo = new THREE.ShapeGeometry(footprint.shape);
-    var topMat = new THREE.MeshBasicMaterial({ color: zoneColor, transparent: true, opacity: 0.12, side: THREE.DoubleSide });
-    var top = new THREE.Mesh(topGeo, topMat);
-    top.rotation.x = -Math.PI / 2;
-    top.position.set(footprint.center3d.x, height, footprint.center3d.z);
-    _threeScene.add(top);
-
-    var edgeGeo = new THREE.BufferGeometry().setFromPoints(footprint.linePoints);
-    var edgeMat = new THREE.LineBasicMaterial({ color: zoneColor, transparent: true, opacity: 0.6 });
-    var edge = new THREE.Line(edgeGeo, edgeMat);
-    _threeScene.add(edge);
-
-    return { parts: [pillar, wire, top, edge], materials: [pillarMat, wireMat, topMat, edgeMat] };
-  }
-
-  function _createDomeVisual(zone, footprint, zoneColor) {
-    var maxSpan = Math.max(footprint.spanX, footprint.spanZ);
-    var height = Math.min(zone.height || maxSpan * 0.62, maxSpan * 0.72);
-    var domeGeo = new THREE.SphereGeometry(1, 28, 18, 0, Math.PI * 2, 0, Math.PI / 2);
-    var domeMat = new THREE.MeshBasicMaterial({ color: zoneColor, transparent: true, opacity: 0.12, side: THREE.DoubleSide });
-    var dome = new THREE.Mesh(domeGeo, domeMat);
-    dome.scale.set(footprint.spanX / 2, height, footprint.spanZ / 2);
-    dome.position.set(footprint.center3d.x, 0, footprint.center3d.z);
-    _threeScene.add(dome);
-
-    var wireMat = new THREE.MeshBasicMaterial({ color: zoneColor, wireframe: true, transparent: true, opacity: 0.28 });
-    var wire = new THREE.Mesh(domeGeo.clone(), wireMat);
-    wire.scale.copy(dome.scale);
-    wire.position.copy(dome.position);
-    _threeScene.add(wire);
-
-    var baseGeo = new THREE.ShapeGeometry(footprint.shape);
-    var baseMat = new THREE.MeshBasicMaterial({ color: zoneColor, transparent: true, opacity: 0.08, side: THREE.DoubleSide });
-    var base = new THREE.Mesh(baseGeo, baseMat);
-    base.rotation.x = -Math.PI / 2;
-    base.position.set(footprint.center3d.x, 0.8, footprint.center3d.z);
-    _threeScene.add(base);
-
-    var edgeGeo = new THREE.BufferGeometry().setFromPoints(footprint.linePoints);
-    var edgeMat = new THREE.LineBasicMaterial({ color: zoneColor, transparent: true, opacity: 0.58 });
-    var edge = new THREE.Line(edgeGeo, edgeMat);
-    _threeScene.add(edge);
-
-    return { parts: [dome, wire, base, edge], materials: [domeMat, wireMat, baseMat, edgeMat] };
-  }
-
   for (var i = 0; i < zones2d.length; i++) {
     var z = zones2d[i];
     seen[z.id] = true;
     if (!_3dZoneMap[z.id]) {
-      var footprint = _buildFootprint(z);
-      if (!footprint) continue;
-      var mode = z.renderMode || 'extrude';
-      var zoneColor = _zoneColor(z.capacity || 5000);
-      _3dZoneMap[z.id] = mode === 'dome'
-        ? _createDomeVisual(z, footprint, zoneColor)
-        : _createExtrudeVisual(z, footprint, zoneColor);
-    }
-    var zObj = _3dZoneMap[z.id];
-    if (!zObj || !zObj.materials) continue;
-    var hx = _zoneColor(z.capacity || 5000);
-    for (var mi = 0; mi < zObj.materials.length; mi++) zObj.materials[mi].color.setHex(hx);
-  }
+      var center3d = to3D(z.center.x, z.center.y);
 
+      // 2D 폴리곤 포인트 → THREE.Shape (그린 형태 그대로)
+      var shape = new THREE.Shape();
+      var p0 = to3D(z.points[0].x, z.points[0].y);
+      shape.moveTo(p0.x - center3d.x, -(p0.z - center3d.z));
+      for (var pi = 1; pi < z.points.length; pi++) {
+        var pp = to3D(z.points[pi].x, z.points[pi].y);
+        shape.lineTo(pp.x - center3d.x, -(pp.z - center3d.z));
+      }
+      shape.closePath();
+
+      // ExtrudeGeometry — 그린 형태를 위로 올림
+      var extSettings = { depth: PILLAR_H, bevelEnabled: false };
+      var extGeo = new THREE.ExtrudeGeometry(shape, extSettings);
+      // Extrude는 Z 방향으로 올라가므로 X축 -90° 회전 필요
+      var pillarMat = new THREE.MeshBasicMaterial({ color: 0x00ff41, transparent: true, opacity: 0.08, side: THREE.DoubleSide });
+      var pillar = new THREE.Mesh(extGeo, pillarMat);
+      pillar.rotation.x = -Math.PI / 2;
+      pillar.position.set(center3d.x, 0, center3d.z);
+      _threeScene.add(pillar);
+
+      // 와이어프레임
+      var wireMat = new THREE.MeshBasicMaterial({ color: 0x00ff41, wireframe: true, transparent: true, opacity: 0.3 });
+      var wire = new THREE.Mesh(extGeo.clone(), wireMat);
+      wire.rotation.x = -Math.PI / 2;
+      wire.position.set(center3d.x, 0, center3d.z);
+      _threeScene.add(wire);
+
+      // 상단 면 (ShapeGeometry)
+      var topGeo = new THREE.ShapeGeometry(shape);
+      var topMat = new THREE.MeshBasicMaterial({ color: 0x00ff41, transparent: true, opacity: 0.12, side: THREE.DoubleSide });
+      var top = new THREE.Mesh(topGeo, topMat);
+      top.rotation.x = -Math.PI / 2;
+      top.position.set(center3d.x, PILLAR_H, center3d.z);
+      _threeScene.add(top);
+
+      // 바닥 윤곽선 (LineLoop)
+      var linePoints = [];
+      for (var li = 0; li < z.points.length; li++) {
+        var lp = to3D(z.points[li].x, z.points[li].y);
+        linePoints.push(new THREE.Vector3(lp.x, 0.5, lp.z));
+      }
+      linePoints.push(linePoints[0].clone());
+      var lineGeo = new THREE.BufferGeometry().setFromPoints(linePoints);
+      var lineMat = new THREE.LineBasicMaterial({ color: 0x00ff41, transparent: true, opacity: 0.6 });
+      var edge = new THREE.Line(lineGeo, lineMat);
+      _threeScene.add(edge);
+
+      _3dZoneMap[z.id] = { pillar: pillar, wire: wire, top: top, edge: edge };
+    }
+    // 용량에 따라 색상 변경
+    var zObj = _3dZoneMap[z.id];
+    var capPct = z.capacity / 5000;
+    var hx = capPct > 0.5 ? 0x00ff41 : (capPct > 0.2 ? 0xff9100 : 0xff4444);
+    zObj.pillar.material.color.setHex(hx);
+    zObj.wire.material.color.setHex(hx);
+    zObj.top.material.color.setHex(hx);
+    zObj.edge.material.color.setHex(hx);
+  }
+  // 삭제된 존 제거
   var zids = Object.keys(_3dZoneMap);
   for (var ki = 0; ki < zids.length; ki++) {
     if (!seen[zids[ki]]) {
       var old = _3dZoneMap[zids[ki]];
-      if (old && old.parts) {
-        for (var pi = 0; pi < old.parts.length; pi++) _threeScene.remove(old.parts[pi]);
-      }
+      _threeScene.remove(old.pillar);
+      _threeScene.remove(old.wire);
+      _threeScene.remove(old.top);
+      _threeScene.remove(old.edge);
       delete _3dZoneMap[zids[ki]];
     }
+  }
+}
+
+/** 드론 위치 3D 동기화 */
+function syncThreeDrone(dronePos, droneAlive, droneAngle) {
+  if (!_3dDroneMesh) return;
+  _3dDroneMesh.visible = droneAlive;
+  if (droneAlive) {
+    var dp = to3D(dronePos.x, dronePos.y);
+    _3dDroneMesh.position.set(dp.x, 30, dp.z);
+    _3dDroneMesh.rotation.y = -(droneAngle - 90) * Math.PI / 180;
   }
 }
 
@@ -1975,6 +1714,7 @@ function destroyThreeScene() {
   if (_threeAnimId) cancelAnimationFrame(_threeAnimId);
   for (var i = 0; i < _3dBreachMarkers.length; i++) remove3dBreachMarker(_3dBreachMarkers[i]);
   _3dMissileMap = {}; _3dZoneMap = {}; _3dExplosions = []; _3dBreachMarkers = [];
+  _3dDroneMesh = null;
   if (_threeRenderer) {
     _threeRenderer.dispose();
     if (_threeRenderer.domElement && _threeRenderer.domElement.parentNode)
@@ -2000,11 +1740,9 @@ function initMulti3dScene(cityId, container, zones2d) {
   var scene = new THREE.Scene();
   scene.fog = new THREE.FogExp2(0x080c08, 0.0004);
 
-  var camera = new THREE.PerspectiveCamera(52, w / h, 1, 10000);
-  camera.position.set(0, 545, 680);
-  camera.lookAt(0, 105, 0);
-  var _camBaseY = 545, _camBaseR = 680, _camLookY = 105;
-  var _camTargetY = _camBaseY, _camTargetR = _camBaseR, _camTargetLookY = _camLookY;
+  var camera = new THREE.PerspectiveCamera(55, w / h, 1, 6000);
+  camera.position.set(0, 500, 600);
+  camera.lookAt(0, 0, 0);
 
   var renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false });
   renderer.setSize(w, h);
@@ -2043,8 +1781,6 @@ function initMulti3dScene(cityId, container, zones2d) {
   ground.rotation.x = -Math.PI / 2;
   scene.add(ground);
 
-  _addCityBuildings(scene, cityId, 110, 0.9, 0.92);
-
   // ── 도시별 2D 방공 구역을 그대로 3D로 세움 ──
   var zoneSource = zones2d || [];
   var zoneData = [];
@@ -2081,56 +1817,25 @@ function initMulti3dScene(cityId, container, zones2d) {
     shape.closePath();
 
     var zoneColor = _zoneColor(zone.capacity || 5000);
-    var mode = zone.renderMode || 'extrude';
-    var spanX = Math.max(24, maxX - minX);
-    var spanZ = Math.max(24, maxZ - minZ);
-    var zoneHeight = zone.height || ZONE_HEIGHT;
-    var radiusX = Math.max(18, spanX / 2);
-    var radiusZ = Math.max(18, spanZ / 2);
+    var extGeo = new THREE.ExtrudeGeometry(shape, { depth: ZONE_HEIGHT, bevelEnabled: false });
+    var pillarMat = new THREE.MeshBasicMaterial({ color: zoneColor, transparent: true, opacity: 0.08, side: THREE.DoubleSide });
+    var pillar = new THREE.Mesh(extGeo, pillarMat);
+    pillar.rotation.x = -Math.PI / 2;
+    pillar.position.set(center3d.x, 0, center3d.z);
+    scene.add(pillar);
 
-    if (mode === 'dome') {
-      var maxSpan = Math.max(spanX, spanZ);
-      zoneHeight = Math.min(zone.height || maxSpan * 0.62, maxSpan * 0.72);
-      var domeGeo = new THREE.SphereGeometry(1, 28, 18, 0, Math.PI * 2, 0, Math.PI / 2);
-      var domeMat = new THREE.MeshBasicMaterial({ color: zoneColor, transparent: true, opacity: 0.12, side: THREE.DoubleSide });
-      var dome = new THREE.Mesh(domeGeo, domeMat);
-      dome.scale.set(radiusX, zoneHeight, radiusZ);
-      dome.position.set(center3d.x, 0, center3d.z);
-      scene.add(dome);
+    var wireMat = new THREE.MeshBasicMaterial({ color: zoneColor, wireframe: true, transparent: true, opacity: 0.32 });
+    var wire = new THREE.Mesh(extGeo.clone(), wireMat);
+    wire.rotation.x = -Math.PI / 2;
+    wire.position.set(center3d.x, 0, center3d.z);
+    scene.add(wire);
 
-      var domeWireMat = new THREE.MeshBasicMaterial({ color: zoneColor, wireframe: true, transparent: true, opacity: 0.28 });
-      var domeWire = new THREE.Mesh(domeGeo.clone(), domeWireMat);
-      domeWire.scale.copy(dome.scale);
-      domeWire.position.copy(dome.position);
-      scene.add(domeWire);
-
-      var baseGeo = new THREE.ShapeGeometry(shape);
-      var baseMat = new THREE.MeshBasicMaterial({ color: zoneColor, transparent: true, opacity: 0.08, side: THREE.DoubleSide });
-      var base = new THREE.Mesh(baseGeo, baseMat);
-      base.rotation.x = -Math.PI / 2;
-      base.position.set(center3d.x, 0.8, center3d.z);
-      scene.add(base);
-    } else {
-      var extGeo = new THREE.ExtrudeGeometry(shape, { depth: zoneHeight, bevelEnabled: false });
-      var pillarMat = new THREE.MeshBasicMaterial({ color: zoneColor, transparent: true, opacity: 0.08, side: THREE.DoubleSide });
-      var pillar = new THREE.Mesh(extGeo, pillarMat);
-      pillar.rotation.x = -Math.PI / 2;
-      pillar.position.set(center3d.x, 0, center3d.z);
-      scene.add(pillar);
-
-      var wireMat = new THREE.MeshBasicMaterial({ color: zoneColor, wireframe: true, transparent: true, opacity: 0.32 });
-      var wire = new THREE.Mesh(extGeo.clone(), wireMat);
-      wire.rotation.x = -Math.PI / 2;
-      wire.position.set(center3d.x, 0, center3d.z);
-      scene.add(wire);
-
-      var topGeo = new THREE.ShapeGeometry(shape);
-      var topMat = new THREE.MeshBasicMaterial({ color: zoneColor, transparent: true, opacity: 0.12, side: THREE.DoubleSide });
-      var top = new THREE.Mesh(topGeo, topMat);
-      top.rotation.x = -Math.PI / 2;
-      top.position.set(center3d.x, zoneHeight, center3d.z);
-      scene.add(top);
-    }
+    var topGeo = new THREE.ShapeGeometry(shape);
+    var topMat = new THREE.MeshBasicMaterial({ color: zoneColor, transparent: true, opacity: 0.12, side: THREE.DoubleSide });
+    var top = new THREE.Mesh(topGeo, topMat);
+    top.rotation.x = -Math.PI / 2;
+    top.position.set(center3d.x, ZONE_HEIGHT, center3d.z);
+    scene.add(top);
 
     var edgeGeo = new THREE.BufferGeometry().setFromPoints(linePoints);
     var edgeMat = new THREE.LineBasicMaterial({ color: zoneColor, transparent: true, opacity: 0.55 });
@@ -2139,78 +1844,12 @@ function initMulti3dScene(cityId, container, zones2d) {
 
     zoneData.push({
       id: zone.id,
-      mode: mode,
       cx: center3d.x,
       cz: center3d.z,
       poly: worldPoly,
       bounds: { minX: minX, maxX: maxX, minZ: minZ, maxZ: maxZ },
-      height: zoneHeight,
-      radiusX: radiusX,
-      radiusZ: radiusZ,
       cap: zone.capacity || 5000
     });
-  }
-
-  function _zoneContainsPoint3d(zone, x, y, z) {
-    if (y < 0) return false;
-    if (zone.mode === 'dome') {
-      if (y > zone.height) return false;
-      var nx = (x - zone.cx) / Math.max(1, zone.radiusX || 1);
-      var ny = y / Math.max(1, zone.height || 1);
-      var nz = (z - zone.cz) / Math.max(1, zone.radiusZ || 1);
-      return (nx * nx + ny * ny + nz * nz) <= 1;
-    }
-    if (y > zone.height) return false;
-    if (x < zone.bounds.minX || x > zone.bounds.maxX || z < zone.bounds.minZ || z > zone.bounds.maxZ) return false;
-    return pointInPolygon(x, z, zone.poly);
-  }
-
-  function _samplePointOnSegment3d(start, end, t) {
-    return {
-      x: start.x + (end.x - start.x) * t,
-      y: start.y + (end.y - start.y) * t,
-      z: start.z + (end.z - start.z) * t
-    };
-  }
-
-  function _findZoneSurfaceHit(zone, start, end) {
-    var prevT = 0;
-    var prevInside = _zoneContainsPoint3d(zone, start.x, start.y, start.z);
-    var steps = zone.mode === 'dome' ? 22 : 18;
-    for (var si = 1; si <= steps; si++) {
-      var t = si / steps;
-      var sample = _samplePointOnSegment3d(start, end, t);
-      var inside = _zoneContainsPoint3d(zone, sample.x, sample.y, sample.z);
-      if (inside && !prevInside) {
-        var lo = prevT;
-        var hi = t;
-        for (var iter = 0; iter < 8; iter++) {
-          var mid = (lo + hi) / 2;
-          var probe = _samplePointOnSegment3d(start, end, mid);
-          if (_zoneContainsPoint3d(zone, probe.x, probe.y, probe.z)) hi = mid;
-          else lo = mid;
-        }
-        var hit = _samplePointOnSegment3d(start, end, hi);
-        hit.t = hi;
-        return hit;
-      }
-      prevT = t;
-      prevInside = inside;
-    }
-    return null;
-  }
-
-  function _findFirstZoneSurfaceHit(start, end, capCost) {
-    var best = null;
-    for (var zi = 0; zi < zoneData.length; zi++) {
-      var zone = zoneData[zi];
-      if (zone.cap < capCost) continue;
-      var hit = _findZoneSurfaceHit(zone, start, end);
-      if (hit && (!best || hit.t < best.hit.t)) {
-        best = { zone: zone, hit: hit };
-      }
-    }
-    return best;
   }
 
   function _pickPointInsideZone(zone) {
@@ -2235,13 +1874,25 @@ function initMulti3dScene(cityId, container, zones2d) {
 
   for (var zi = 0; zi < zoneSource.length; zi++) _addExtrudedZone(zoneSource[zi]);
 
-  // ══ Multi-3D 도시뷰: 일반(Iron Dome) + 고고도(큰빨간점) ══
+  // ══ 2-TIER MISSILE DEFENSE: BALLISTIC(Arrow-3) + NORMAL(Iron Dome) ══
   var cityMissiles = [];
-  var ballisticMissiles3d = []; // 고고도 전용
+  var cityInterceptors = []; // Arrow-3 요격 미사일 (파란색)
   var cityExplosions = [];
   var breachMarkers = [];
   var MISSILE_COUNT = 12;
+  var BALLISTIC_RATIO = 0.35; // 35% 탄도미사일
   var initialLaunchAt = Date.now() + MULTI3D_LAUNCH_DELAY_MS;
+
+  /** 탄도미사일 포물선 easing — t: 0→1, 반환: 높이 비율 */
+  function _ballisticArc(t) {
+    // 상승: 느리게 올라감, 하강: 급격 가속 (ease-in cubic)
+    return 4 * t * (1 - t); // 포물선: 0에서 시작, 0.5에서 정점, 1에서 0
+  }
+  function _ballisticEaseT(t) {
+    // 시간 easing: 전반 느리게, 후반 빠르게 (ease-in quad)
+    if (t < 0.5) return 2 * t * t;
+    return 1 - Math.pow(-2 * t + 2, 2) / 2;
+  }
 
   function _pickMissileTarget(mm) {
     if (zoneData.length > 0 && Math.random() < 0.7) {
@@ -2261,56 +1912,49 @@ function initMulti3dScene(cityId, container, zones2d) {
     }
   }
 
-  function _sampleInboundAngle(cityId) {
-    var ranges;
-    if (cityId === 'sderot' || cityId === 'ashkelon') {
-      ranges = [[Math.PI * 0.78, Math.PI * 0.98], [Math.PI * 1.02, Math.PI * 1.18]];
-    } else if (cityId === 'haifa') {
-      ranges = [[-Math.PI * 0.68, -Math.PI * 0.48], [Math.PI * 0.82, Math.PI * 0.96]];
-    } else if (cityId === 'jerusalem') {
-      ranges = [[-0.22, 0.12], [-0.52, -0.28]];
-    } else {
-      ranges = [[Math.PI * 0.90, Math.PI * 1.08], [-0.42, -0.18]];
-    }
-    var band = ranges[Math.floor(Math.random() * ranges.length)];
-    return randRange(band[0], band[1]);
-  }
-
-  function _pickSpawnForCity(cityId) {
-    var spawnAngle = _sampleInboundAngle(cityId);
-    var spawnR = 470 + Math.random() * 130;
-    return {
-      x: Math.cos(spawnAngle) * spawnR,
-      y: 85 + Math.random() * 70,
-      z: Math.sin(spawnAngle) * spawnR
-    };
-  }
-
   function _resetCityMissile(mm, delayed) {
-    var spawn = _pickSpawnForCity(cityId);
-    mm.sx = spawn.x;
-    mm.sy = spawn.y;
-    mm.sz = spawn.z;
+    var spawnAngle = Math.random() * Math.PI * 2;
+    var spawnR = 450 + Math.random() * 150;
+    mm.sx = Math.cos(spawnAngle) * spawnR;
+    mm.sy = 300 + Math.random() * 200;
+    mm.sz = Math.sin(spawnAngle) * spawnR;
     mm.x = mm.sx; mm.y = mm.sy; mm.z = mm.sz;
 
     _pickMissileTarget(mm);
 
-    var dx = mm.tx - mm.x, dy = -mm.y, dz = mm.tz - mm.z;
-    var dist = Math.sqrt(dx * dx + dy * dy + dz * dz);
-    mm.speed = computeTravelSpeed(dist, randRange(CITY_TERMINAL_SECONDS.min, CITY_TERMINAL_SECONDS.max));
+    // 타입 결정
+    mm.isBallistic = Math.random() < BALLISTIC_RATIO;
+    if (mm.isBallistic) {
+      // 탄도미사일: 높이 800-1200까지 올라갔다 내려옴, 느린 비행시간
+      mm.arcApex = 800 + Math.random() * 400;
+      mm.flightDuration = randRange(3.5, 5.5); // 초
+      mm.flightT = 0;
+      mm.arrowLaunched = false;
+      mm.arrowIntercepted = false;
+    } else {
+      var dx = mm.tx - mm.x, dy = -mm.y, dz = mm.tz - mm.z;
+      var dist = Math.sqrt(dx * dx + dy * dy + dz * dz);
+      mm.speed = computeTravelSpeed(dist, randRange(CITY_TERMINAL_SECONDS.min, CITY_TERMINAL_SECONDS.max));
+    }
+
     mm.pendingLaunch = !!delayed;
     mm.launchAt = delayed ? initialLaunchAt : 0;
     mm.alive = !delayed;
     mm.mesh.position.set(mm.x, mm.y, mm.z);
     mm.mesh.visible = !delayed;
-    mm.mesh.material.color.setHex(0xff9100);
-    mm.mesh.scale.set(1, 1, 1);
+    // 트레일 색상 갱신
+    mm.mesh.material.color.setHex(mm.isBallistic ? 0xff2222 : 0xff9100);
+    var newScale = mm.isBallistic ? 1.8 : 1.0;
+    mm.mesh.scale.set(newScale, newScale, newScale);
+    // 트레일 라인 초기화
     if (mm.trail) { scene.remove(mm.trail); mm.trail = null; }
   }
 
-  function _createMissileMesh(s) {
-    var geo = new THREE.SphereGeometry(4, 6, 6);
-    var mat = new THREE.MeshBasicMaterial({ color: 0xff9100 });
+  function _createMissileMesh(s, isBallistic) {
+    var size = isBallistic ? 7 : 5;
+    var geo = new THREE.SphereGeometry(size, 6, 6);
+    var color = isBallistic ? 0xff2222 : 0xff9100;
+    var mat = new THREE.MeshBasicMaterial({ color: color });
     var mesh = new THREE.Mesh(geo, mat);
     s.add(mesh);
     return mesh;
@@ -2340,44 +1984,38 @@ function initMulti3dScene(cityId, container, zones2d) {
     return { cone: cone, ring: ring };
   }
 
-  for (var mi = 0; mi < MISSILE_COUNT; mi++) {
-    var missile = { mesh: _createMissileMesh(scene), trail: null };
-    _resetCityMissile(missile, true);
-    cityMissiles.push(missile);
+  /** Arrow-3 요격 미사일 생성 — 지상에서 발사, 고고도로 상승하여 탄도미사일 요격 */
+  function _launchArrow3(targetMissile) {
+    if (targetMissile.arrowLaunched) return;
+    targetMissile.arrowLaunched = true;
+    var geo = new THREE.ConeGeometry(3, 12, 6);
+    var mat = new THREE.MeshBasicMaterial({ color: 0x44aaff });
+    var mesh = new THREE.Mesh(geo, mat);
+    // 방공구역 중심에서 발사
+    var launchZone = zoneData.length > 0 ? zoneData[Math.floor(Math.random() * zoneData.length)] : null;
+    var lx = launchZone ? launchZone.cx : 0;
+    var lz = launchZone ? launchZone.cz : 0;
+    mesh.position.set(lx, 0, lz);
+    scene.add(mesh);
+    // 트레일
+    var trailGeo = new THREE.BufferGeometry();
+    var trailMat = new THREE.LineBasicMaterial({ color: 0x44aaff, transparent: true, opacity: 0.6 });
+    var trailLine = new THREE.Line(trailGeo, trailMat);
+    scene.add(trailLine);
+    cityInterceptors.push({
+      mesh: mesh, trail: trailLine,
+      sx: lx, sy: 0, sz: lz,
+      target: targetMissile,
+      speed: 450, alive: true,
+      positions: [lx, 0, lz]
+    });
   }
 
-  // ── 고고도 탄도미사일 (큰 빨간 구체, 수직 낙하) ──
-  function _createBallisticMesh3d(s) {
-    var geo = new THREE.SphereGeometry(10, 10, 10);
-    var mat = new THREE.MeshBasicMaterial({ color: 0xdd2222 });
-    var mesh = new THREE.Mesh(geo, mat);
-    // 글로우 링
-    var glowGeo = new THREE.RingGeometry(14, 22, 16);
-    var glowMat = new THREE.MeshBasicMaterial({ color: 0xff4444, transparent: true, opacity: 0.3, side: THREE.DoubleSide });
-    var glow = new THREE.Mesh(glowGeo, glowMat);
-    mesh.add(glow);
-    s.add(mesh);
-    return mesh;
-  }
-  function _resetBallistic3d(bm, delayed) {
-    var angle = Math.random() * Math.PI * 2;
-    var r = 100 + Math.random() * 200;
-    bm.tx = Math.cos(angle) * r;
-    bm.tz = Math.sin(angle) * r;
-    bm.x = bm.tx + (Math.random() - 0.5) * 80;
-    bm.y = 1200 + Math.random() * 400;
-    bm.z = bm.tz + (Math.random() - 0.5) * 80;
-    bm.speed = 120 + Math.random() * 60;
-    bm.pendingLaunch = !!delayed;
-    bm.launchAt = delayed ? (initialLaunchAt + 1000 + Math.random() * 3000) : 0;
-    bm.alive = !delayed;
-    bm.mesh.position.set(bm.x, bm.y, bm.z);
-    bm.mesh.visible = !delayed;
-  }
-  for (var bi = 0; bi < 3; bi++) {
-    var bm = { mesh: _createBallisticMesh3d(scene) };
-    _resetBallistic3d(bm, true);
-    ballisticMissiles3d.push(bm);
+  for (var mi = 0; mi < MISSILE_COUNT; mi++) {
+    var isBall = mi < Math.round(MISSILE_COUNT * BALLISTIC_RATIO);
+    var missile = { mesh: _createMissileMesh(scene, isBall), trail: null };
+    _resetCityMissile(missile, true);
+    cityMissiles.push(missile);
   }
 
   var animId, lastFrameTs = 0;
@@ -2387,7 +2025,7 @@ function initMulti3dScene(cityId, container, zones2d) {
     var dt = lastFrameTs ? Math.min(0.05, (ts - lastFrameTs) / 1000) : (1 / 60);
     lastFrameTs = ts;
 
-    // ── 일반 미사일 (Iron Dome) ──
+    // ── 미사일 업데이트 ──
     for (var i = 0; i < cityMissiles.length; i++) {
       var m = cityMissiles[i];
       if (m.pendingLaunch) {
@@ -2397,75 +2035,118 @@ function initMulti3dScene(cityId, container, zones2d) {
       }
       if (!m.alive) continue;
 
-      var dx = m.tx - m.x, dy = -m.y, dz = m.tz - m.z;
-      var dist = Math.sqrt(dx * dx + dy * dy + dz * dz);
-      var step = m.speed * dt;
-      var invDist = dist > 0.0001 ? (1 / dist) : 0;
-      var nextPos = {
-        x: m.x + dx * invDist * step,
-        y: m.y + dy * invDist * step,
-        z: m.z + dz * invDist * step
-      };
-      var surfaceHit = _findFirstZoneSurfaceHit({ x: m.x, y: m.y, z: m.z }, nextPos, 1);
-      if (surfaceHit) {
-        m.alive = false; m.mesh.visible = false;
-        if (m.trail) { scene.remove(m.trail); m.trail = null; }
-        surfaceHit.zone.cap = Math.max(0, surfaceHit.zone.cap - 1);
-        cityExplosions.push(_createExplosion(scene, surfaceHit.hit.x, surfaceHit.hit.y, surfaceHit.hit.z, 0x00ff41, false));
-        (function(mm) { setTimeout(function() { _resetCityMissile(mm, false); }, 800 + Math.random() * 1500); })(m);
-        continue;
-      }
-      if (nextPos.y <= 3 || dist < Math.max(15, step * 1.1)) {
-        m.alive = false; m.mesh.visible = false;
-        if (m.trail) { scene.remove(m.trail); m.trail = null; }
-        cityExplosions.push(_createExplosion(scene, nextPos.x, Math.max(1, nextPos.y), nextPos.z, 0xff4444, false));
-        breachMarkers.push(_createBreachMarker(scene, nextPos.x, nextPos.z));
-        (function(mm) { setTimeout(function() { _resetCityMissile(mm, false); }, 800 + Math.random() * 1500); })(m);
-        continue;
-      }
+      if (m.isBallistic) {
+        // ── BALLISTIC: 포물선 궤적 (시작→정점→타겟) ──
+        m.flightT += dt / m.flightDuration;
+        if (m.flightT >= 1.0) m.flightT = 1.0;
+        var easedT = _ballisticEaseT(m.flightT);
+        // XZ: 선형 보간
+        m.x = m.sx + (m.tx - m.sx) * easedT;
+        m.z = m.sz + (m.tz - m.sz) * easedT;
+        // Y: 포물선 아크 + 시작 높이에서 0으로 감소
+        var baseY = m.sy * (1 - easedT); // 시작높이→0 선형감소
+        m.y = baseY + _ballisticArc(easedT) * m.arcApex;
+        m.mesh.position.set(m.x, m.y, m.z);
 
-      m.x = nextPos.x;
-      m.y = nextPos.y;
-      m.z = nextPos.z;
-      m.mesh.position.set(m.x, m.y, m.z);
+        // Arrow-3 발사 조건: 비행 30-50% 구간에서 방공구역 내 타겟이면 Arrow-3 발사
+        if (!m.arrowLaunched && m.hitsZone && m.flightT > 0.3 && m.flightT < 0.5 && zoneData.length > 0) {
+          _launchArrow3(m);
+        }
+
+        // 지면 도달 (요격 안됨) — Arrow-3이 실패하거나 없을 경우
+        if (m.flightT >= 1.0 && !m.arrowIntercepted) {
+          m.alive = false; m.mesh.visible = false;
+          if (m.trail) { scene.remove(m.trail); m.trail = null; }
+          var intercepted = false;
+          for (var zci = 0; zci < zoneData.length; zci++) {
+            if (zoneData[zci].cap > 0 && pointInPolygon(m.x, m.z, zoneData[zci].poly)) {
+              intercepted = true; zoneData[zci].cap--;
+              cityExplosions.push(_createExplosion(scene, m.x, 20, m.z, 0x00ff41, false));
+              break;
+            }
+          }
+          if (!intercepted) {
+            cityExplosions.push(_createExplosion(scene, m.x, 2, m.z, 0xff4444, false));
+            breachMarkers.push(_createBreachMarker(scene, m.x, m.z));
+          }
+          (function(mm) { setTimeout(function() { _resetCityMissile(mm, false); }, 1000 + Math.random() * 2000); })(m);
+        }
+      } else {
+        // ── NORMAL: 선형 궤적 (Iron Dome 요격) ──
+        var dx = m.tx - m.x, dy = -m.y, dz = m.tz - m.z;
+        var dist = Math.sqrt(dx * dx + dy * dy + dz * dz);
+        var step = m.speed * dt;
+        if (m.y <= 3 || dist < Math.max(15, step * 1.1)) {
+          m.alive = false; m.mesh.visible = false;
+          if (m.trail) { scene.remove(m.trail); m.trail = null; }
+          var intercepted2 = false;
+          for (var zci2 = 0; zci2 < zoneData.length; zci2++) {
+            if (zoneData[zci2].cap > 0 && pointInPolygon(m.x, m.z, zoneData[zci2].poly)) {
+              intercepted2 = true; zoneData[zci2].cap--;
+              // Iron Dome: 방공구역 표면 근처에서 작은 폭발
+              cityExplosions.push(_createExplosion(scene, m.x, Math.max(ZONE_HEIGHT * 0.7, m.y), m.z, 0x00ff41, false));
+              break;
+            }
+          }
+          if (!intercepted2) {
+            cityExplosions.push(_createExplosion(scene, m.x, Math.max(1, m.y), m.z, 0xff4444, false));
+            breachMarkers.push(_createBreachMarker(scene, m.x, m.z));
+          }
+          (function(mm) { setTimeout(function() { _resetCityMissile(mm, false); }, 800 + Math.random() * 1500); })(m);
+          continue;
+        }
+        m.x += (dx / dist) * step;
+        m.y += (dy / dist) * step;
+        m.z += (dz / dist) * step;
+        m.mesh.position.set(m.x, m.y, m.z);
+      }
     }
 
-    // ── 고고도 탄도미사일 (수직 낙하, 방공구역에서 요격 시 대형 폭발) ──
-    for (var bi2 = 0; bi2 < ballisticMissiles3d.length; bi2++) {
-      var bm2 = ballisticMissiles3d[bi2];
-      if (bm2.pendingLaunch) {
-        if (now < bm2.launchAt) continue;
-        bm2.pendingLaunch = false; bm2.alive = true;
-        bm2.mesh.visible = true;
+    // ── Arrow-3 요격 미사일 업데이트 ──
+    for (var ai = cityInterceptors.length - 1; ai >= 0; ai--) {
+      var arrow = cityInterceptors[ai];
+      if (!arrow.alive) { continue; }
+      var tgt = arrow.target;
+      // 타겟이 이미 죽었으면 자폭
+      if (!tgt.alive && !tgt.arrowIntercepted) {
+        arrow.alive = false; scene.remove(arrow.mesh);
+        if (arrow.trail) scene.remove(arrow.trail);
+        cityInterceptors.splice(ai, 1); continue;
       }
-      if (!bm2.alive) continue;
-      // 거의 수직 낙하
-      var nextBallistic = {
-        x: bm2.x + (bm2.tx - bm2.x) * 0.01,
-        y: bm2.y - bm2.speed * dt,
-        z: bm2.z + (bm2.tz - bm2.z) * 0.01
-      };
-      var ballisticHit = _findFirstZoneSurfaceHit({ x: bm2.x, y: bm2.y, z: bm2.z }, nextBallistic, 3);
-      if (ballisticHit) {
-        bm2.alive = false; bm2.mesh.visible = false;
-        ballisticHit.zone.cap = Math.max(0, ballisticHit.zone.cap - 3);
-        cityExplosions.push(_createExplosion(scene, ballisticHit.hit.x, ballisticHit.hit.y, ballisticHit.hit.z, 0xdd2222, true));
-        (function(bb) { setTimeout(function() { _resetBallistic3d(bb, false); }, 2000 + Math.random() * 3000); })(bm2);
+      // Arrow-3 → 탄도미사일 추적
+      var adx = tgt.x - arrow.mesh.position.x;
+      var ady = tgt.y - arrow.mesh.position.y;
+      var adz = tgt.z - arrow.mesh.position.z;
+      var adist = Math.sqrt(adx * adx + ady * ady + adz * adz);
+      var astep = arrow.speed * dt;
+      if (adist < Math.max(20, astep * 1.2)) {
+        // ★ 고고도 요격 성공! 대형 폭발 + 화면 플래시
+        tgt.arrowIntercepted = true;
+        tgt.alive = false; tgt.mesh.visible = false;
+        if (tgt.trail) { scene.remove(tgt.trail); tgt.trail = null; }
+        cityExplosions.push(_createExplosion(scene, tgt.x, tgt.y, tgt.z, 0x44aaff, true)); // 대형 파란 폭발
+        cityExplosions.push(_createExplosion(scene, tgt.x, tgt.y, tgt.z, 0xffffff, true)); // 백색 플래시 구
+        arrow.alive = false; scene.remove(arrow.mesh);
+        if (arrow.trail) scene.remove(arrow.trail);
+        cityInterceptors.splice(ai, 1);
+        // 리스폰
+        (function(mm) { setTimeout(function() { _resetCityMissile(mm, false); }, 1500 + Math.random() * 2000); })(tgt);
         continue;
       }
-      bm2.x = nextBallistic.x;
-      bm2.y = nextBallistic.y;
-      bm2.z = nextBallistic.z;
-      bm2.mesh.position.set(bm2.x, bm2.y, bm2.z);
-      // 지면 도달
-      if (bm2.y <= 5) {
-        bm2.alive = false; bm2.mesh.visible = false;
-        cityExplosions.push(_createExplosion(scene, bm2.x, 5, bm2.z, 0xff2222, true));
-        breachMarkers.push(_createBreachMarker(scene, bm2.x, bm2.z));
-        (function(bb) { setTimeout(function() { _resetBallistic3d(bb, false); }, 2000 + Math.random() * 3000); })(bm2);
-      }
+      // 이동
+      arrow.mesh.position.x += (adx / adist) * astep;
+      arrow.mesh.position.y += (ady / adist) * astep;
+      arrow.mesh.position.z += (adz / adist) * astep;
+      // 트레일 업데이트
+      arrow.positions.push(arrow.mesh.position.x, arrow.mesh.position.y, arrow.mesh.position.z);
+      if (arrow.positions.length > 90) arrow.positions.splice(0, 3); // 최대 30포인트
+      var trailArr = new Float32Array(arrow.positions);
+      arrow.trail.geometry.dispose();
+      arrow.trail.geometry = new THREE.BufferGeometry();
+      arrow.trail.geometry.setAttribute('position', new THREE.BufferAttribute(trailArr, 3));
     }
 
+    // ── 폭발 ──
     for (var ei = cityExplosions.length - 1; ei >= 0; ei--) {
       var ex = cityExplosions[ei];
       var age = now - ex.born;
@@ -2476,11 +2157,11 @@ function initMulti3dScene(cityId, container, zones2d) {
       ex.mesh.material.opacity = 1 - t;
     }
 
+    // ── 카메라 회전 ──
     var ct = now * 0.00008;
-    camera.position.x = Math.sin(ct) * _camBaseR;
-    camera.position.y = _camBaseY;
-    camera.position.z = Math.cos(ct) * _camBaseR;
-    camera.lookAt(0, _camLookY, 0);
+    camera.position.x = Math.sin(ct) * 650;
+    camera.position.z = Math.cos(ct) * 650;
+    camera.lookAt(0, 0, 0);
     renderer.render(scene, camera);
   }
   animId = requestAnimationFrame(animate);
@@ -2491,6 +2172,7 @@ function initMulti3dScene(cityId, container, zones2d) {
     camera: camera,
     animId: animId,
     missiles: cityMissiles,
+    interceptors: cityInterceptors,
     explosions: cityExplosions,
     zoneSignature: buildZoneSignature(zoneSource)
   };
@@ -2504,10 +2186,6 @@ function destroyMulti3dScene(cityId) {
     entry.renderer.dispose();
     if (entry.renderer.domElement && entry.renderer.domElement.parentNode)
       entry.renderer.domElement.parentNode.removeChild(entry.renderer.domElement);
-  }
-  var flashes = document.querySelectorAll('.screen-flash');
-  for (var fi = 0; fi < flashes.length; fi++) {
-    if (flashes[fi].parentNode) flashes[fi].parentNode.removeChild(flashes[fi]);
   }
   delete _multi3dScenes[cityId];
 }
@@ -2751,77 +2429,32 @@ function NationalView(props) {
     ]));
   }
 
-  // ══ 비행 중인 미사일 궤적 — BALLISTIC(대왕) vs NORMAL 시각 완전 분리 ══
-
-  // SVG defs: 탄도미사일 전용 글로우 필터 + 미사일 아이콘 심볼
-  var defsChildren = [];
-  defsChildren.push(createVNode('filter', { id: 'ballistic-glow', x: '-120%', y: '-120%', width: '340%', height: '340%' }, [
-    createVNode('feGaussianBlur', { stdDeviation: '7', result: 'blur' }, []),
-    createVNode('feFlood', { 'flood-color': '#ef4444', 'flood-opacity': '0.95', result: 'color' }, []),
-    createVNode('feComposite', { in: 'color', in2: 'blur', operator: 'in', result: 'glow' }, []),
-    createVNode('feMerge', {}, [
-      createVNode('feMergeNode', { in: 'glow' }, []),
-      createVNode('feMergeNode', { in: 'glow' }, []),
-      createVNode('feMergeNode', { in: 'SourceGraphic' }, [])
-    ])
-  ]));
-  defsChildren.push(createVNode('filter', { id: 'ballistic-trail-glow', x: '-120%', y: '-120%', width: '340%', height: '340%' }, [
-    createVNode('feGaussianBlur', { stdDeviation: '6', result: 'blur' }, []),
-    createVNode('feMerge', {}, [
-      createVNode('feMergeNode', { in: 'blur' }, []),
-      createVNode('feMergeNode', { in: 'SourceGraphic' }, [])
-    ])
-  ]));
-  defsChildren.push(createVNode('symbol', { id: 'ballistic-icon', viewBox: '0 0 22 52' }, [
-    createVNode('path', {
-      d: 'M11 0 L17 10 L17 34 L21 44 L21 47 L15 44 L15 52 L7 52 L7 44 L1 47 L1 44 L5 34 L5 10 Z',
-      fill: '#dc2626', stroke: '#7f1d1d', 'stroke-width': '1.2', 'stroke-linejoin': 'round'
-    }, []),
-    createVNode('path', {
-      d: 'M11 4 L14 11 L14 34 L11 40 L8 34 L8 11 Z',
-      fill: '#fca5a5', 'fill-opacity': '0.28'
-    }, []),
-    createVNode('path', {
-      d: 'M11 42 L16 50 L11 48 L6 50 Z',
-      fill: '#991b1b', 'fill-opacity': '0.92'
-    }, [])
-  ]));
-  var defsEl = createVNode('defs', {}, defsChildren);
-
-  var missileEls = [defsEl];
+  // 비행 중인 미사일 궤적 — BALLISTIC vs NORMAL 시각 분리
+  var missileEls = [];
   for (var mi = 0; mi < props.natMissiles.length; mi++) {
     var nm = props.natMissiles[mi];
     if (!nm.active) continue;
     var ball = isBallistic(nm.type);
-    var mx = Math.round(nm.x), my = Math.round(nm.y);
-
+    var mColor = ball ? '#ff2222' : (nm.color || '#ff9900');
+    var mRadius = ball ? '7' : '3.5';
+    var mStroke = ball ? '3' : '1.8';
+    var mClass = ball ? 'missile-path-ballistic' : 'missile-path';
+    var mOpacity = ball ? '0.65' : '0.45';
+    // 출발지 → 현재 위치 라인
+    missileEls.push(createVNode('line', {
+      x1: String(nm.sx), y1: String(nm.sy), x2: String(Math.round(nm.x)), y2: String(Math.round(nm.y)),
+      stroke: mColor, 'stroke-width': mStroke, 'stroke-opacity': mOpacity, class: mClass
+    }, []));
+    // 미사일 점 — ballistic은 크고 빨간 글로우
+    missileEls.push(createVNode('circle', {
+      cx: String(Math.round(nm.x)), cy: String(Math.round(nm.y)), r: mRadius,
+      fill: mColor, stroke: ball ? '#ffaaaa' : '#fff', 'stroke-width': ball ? '2' : '1'
+    }, []));
     if (ball) {
-      // ── 고고도 탄도미사일: 트레일 없음, 큰 빨간 점 + 글로우만 ──
+      // 탄도미사일 글로우 후광
       missileEls.push(createVNode('circle', {
-        cx: String(mx), cy: String(my), r: '7',
-        fill: '#dc2626', stroke: '#fca5a5', 'stroke-width': '2'
-      }, []));
-      missileEls.push(createVNode('circle', {
-        cx: String(mx), cy: String(my), r: '16',
-        fill: 'none', stroke: '#dc2626', 'stroke-width': '2', 'stroke-opacity': '0.4',
-        class: 'ballistic-aura'
-      }, []));
-    } else {
-      var ndx = nm.targetX - nm.x, ndy = nm.targetY - nm.y;
-      var nlen = Math.sqrt(ndx * ndx + ndy * ndy) || 1;
-      var ux = ndx / nlen, uy = ndy / nlen;
-      var tailLen = nm.type === 'drone' ? 9 : 13;
-      var tailX = mx - ux * tailLen;
-      var tailY = my - uy * tailLen;
-
-      missileEls.push(createVNode('line', {
-        x1: String(Math.round(tailX)), y1: String(Math.round(tailY)), x2: String(mx), y2: String(my),
-        stroke: '#ef4444', 'stroke-width': nm.type === 'drone' ? '1.1' : '1.5', 'stroke-opacity': '0.32',
-        class: 'missile-path normal-missile-trail'
-      }, []));
-      missileEls.push(createVNode('circle', {
-        cx: String(mx), cy: String(my), r: nm.type === 'drone' ? '2.5' : '3.1',
-        class: 'normal-missile-dot'
+        cx: String(Math.round(nm.x)), cy: String(Math.round(nm.y)), r: '14',
+        fill: 'none', stroke: '#ff2222', 'stroke-width': '1', 'stroke-opacity': '0.25'
       }, []));
     }
   }
@@ -2857,7 +2490,11 @@ function NationalView(props) {
   }
 
   var hudEl = createVNode('div', { class: 'national-hud' }, [
-    createTextVNode('Israel Iron Dome')
+    createTextVNode('Israel National Defense'),
+    createVNode('br', {}, []),
+    createTextVNode('Cities ' + DEFENSE_CITIES.length + '  ·  Origins ' + THREAT_ORIGINS.length),
+    createVNode('br', {}, []),
+    createTextVNode('Active tracks  ' + activeTracks)
   ].concat(scenarioBtn));
 
   // ── 시나리오 정보 패널 (실행 중일 때만) ──
@@ -2873,8 +2510,30 @@ function NationalView(props) {
     var interceptRate = totalLaunched > 0 ? Math.round((intercepted / totalLaunched) * 100) : 0;
 
     scenarioInfoEl.push(createVNode('div', { class: 'scenario-info-panel' }, [
+      createVNode('div', { class: 'scenario-info-title' }, [
+        createTextVNode('OPERATION TRUE PROMISE')
+      ]),
       createVNode('div', { class: 'scenario-info-subtitle' }, [
         createTextVNode('April 13-14, 2024  ·  01:45 AM Israel Time')
+      ]),
+      createVNode('div', { class: 'scenario-info-desc' }, [
+        createTextVNode('Iran IRGC retaliatory strike on Israel in response to the Israeli')
+      ]),
+      createVNode('div', { class: 'scenario-info-desc' }, [
+        createTextVNode('bombing of the Iranian consulate in Damascus, April 1, 2024')
+      ]),
+      createVNode('div', { class: 'scenario-info-sep' }, []),
+      createVNode('div', { class: 'scenario-info-row' }, [
+        createVNode('span', { class: 'scenario-info-label' }, [createTextVNode('Assets deployed')]),
+        createVNode('span', { class: 'scenario-info-value' }, [createTextVNode('170 drones · 30 cruise · 120 ballistic')])
+      ]),
+      createVNode('div', { class: 'scenario-info-row' }, [
+        createVNode('span', { class: 'scenario-info-label' }, [createTextVNode('Origins')]),
+        createVNode('span', { class: 'scenario-info-value' }, [createTextVNode('Iran · Yemen · S. Lebanon · Gaza · Syria')])
+      ]),
+      createVNode('div', { class: 'scenario-info-row' }, [
+        createVNode('span', { class: 'scenario-info-label' }, [createTextVNode('Targets')]),
+        createVNode('span', { class: 'scenario-info-value' }, [createTextVNode('Negev airbases · Golan Heights · Urban centers')])
       ]),
       createVNode('div', { class: 'scenario-info-sep' }, []),
       createVNode('div', { class: 'scenario-info-row' }, [
@@ -2931,125 +2590,6 @@ function TestView(props) {
     createVNode('div', { class: 'test-title' }, [createTextVNode('Validation')]),
     createVNode('div', { class: 'test-subtitle' }, [createTextVNode(pc + '/' + props.results.length + ' passed · diff engine checks')])
   ].concat(cards));
-}
-
-function BriefingView(props) {
-  var coreCards = [
-    {
-      title: '커스텀 렌더러가 핵심',
-      copy: '이 프로젝트의 핵심 가치는 커스텀 가상 DOM 흐름입니다. 시뮬레이터는 그 렌더링 엔진이 복잡한 인터페이스를 실제로 구동할 수 있음을 보여주는 증명 화면입니다.'
-    },
-    {
-      title: '하나의 도형이 전체에 재사용됨',
-      copy: '섹터 폴리곤은 화면에만 그려지는 것이 아닙니다. 같은 데이터가 방어 로직이 되고 3D 방어 형상이 됩니다.'
-    },
-    {
-      title: '공유 상태가 모든 화면을 묶음',
-      copy: '국가 화면, 섹터 화면, 3D 장면, 테스트 화면은 각각 따로 노는 것이 아니라 같은 시뮬레이션 상태를 함께 사용합니다.'
-    }
-  ];
-
-  function svgArrow(x1, y1, x2, y2) {
-    var dx = x2 - x1;
-    var dy = y2 - y1;
-    var len = Math.sqrt(dx * dx + dy * dy) || 1;
-    var ux = dx / len;
-    var uy = dy / len;
-    var hx = x2 - ux * 16;
-    var hy = y2 - uy * 16;
-    var px = -uy;
-    var py = ux;
-    var points = [
-      x2 + ',' + y2,
-      (hx + px * 6) + ',' + (hy + py * 6),
-      (hx - px * 6) + ',' + (hy - py * 6)
-    ].join(' ');
-    return createVNode('g', {}, [
-      createVNode('line', { x1: String(x1), y1: String(y1), x2: String(x2), y2: String(y2), class: 'briefing-svg-arrow' }, []),
-      createVNode('polygon', { points: points, class: 'briefing-svg-arrowhead' }, [])
-    ]);
-  }
-
-  function svgNode(x, y, w, h, label, title, lines, variant) {
-    var kids = [
-      createVNode('rect', { x: String(x), y: String(y), width: String(w), height: String(h), rx: '18', class: 'briefing-svg-box ' + (variant || '') }, []),
-      createVNode('text', { x: String(x + 20), y: String(y + 28), class: 'briefing-svg-label' }, [createTextVNode(label)]),
-      createVNode('text', { x: String(x + 20), y: String(y + 58), class: 'briefing-svg-title' }, [createTextVNode(title)])
-    ];
-    for (var li = 0; li < lines.length; li++) {
-      kids.push(createVNode('text', { x: String(x + 20), y: String(y + 84 + li * 20), class: 'briefing-svg-copy' }, [createTextVNode(lines[li]) ]));
-    }
-    return createVNode('g', {}, kids);
-  }
-
-  function svgSlot(x, y, w, h, title) {
-    return createVNode('g', {}, [
-      createVNode('rect', { x: String(x), y: String(y), width: String(w), height: String(h), rx: '12', class: 'briefing-svg-slot' }, []),
-      createVNode('text', { x: String(x + 14), y: String(y + 28), class: 'briefing-svg-small' }, [createTextVNode(title)])
-    ]);
-  }
-
-  var architectureFigure = createVNode('svg', { class: 'briefing-svg', viewBox: '0 0 980 340', xmlns: SVG_NS }, [
-    svgArrow(250, 155, 300, 155),
-    svgArrow(520, 155, 570, 155),
-    svgArrow(790, 155, 840, 155),
-    svgNode(30, 95, 220, 132, '입력', '운용자 조작', ['시나리오 시작', '섹터 그리기', '표적 배치'], 'briefing-svg-box-strong'),
-    svgNode(300, 95, 220, 132, '상태', '시뮬레이션 데이터', ['도시와 방어 구역', '미사일과 관통 지점', '시간 흐름과 경보'], ''),
-    svgNode(570, 95, 220, 132, '엔진', '커스텀 VDOM', ['createVNode', 'diff', 'applyPatch'], 'briefing-svg-box-strong'),
-    createVNode('g', {}, [
-      createVNode('rect', { x: '840', y: '58', width: '110', height: '194', rx: '18', class: 'briefing-svg-box briefing-svg-box-accent' }, []),
-      createVNode('text', { x: '860', y: '88', class: 'briefing-svg-label' }, [createTextVNode('화면')]),
-      createVNode('text', { x: '860', y: '118', class: 'briefing-svg-title' }, [createTextVNode('출력')]),
-      svgSlot(856, 136, 78, 34, '국가'),
-      svgSlot(856, 175, 78, 34, '섹터'),
-      svgSlot(856, 214, 78, 34, '3D / 테스트')
-    ]),
-    createVNode('rect', { x: '300', y: '254', width: '490', height: '52', rx: '16', class: 'briefing-svg-box' }, []),
-    createVNode('text', { x: '324', y: '278', class: 'briefing-svg-callout' }, [createTextVNode('하나의 시나리오 상태가 각 화면의 내용과 확대 시점을 함께 결정합니다.')])
-  ]);
-
-  var geometryFigure = createVNode('svg', { class: 'briefing-svg', viewBox: '0 0 980 230', xmlns: SVG_NS }, [
-    svgArrow(295, 102, 370, 102),
-    svgArrow(610, 102, 685, 102),
-    svgNode(35, 46, 260, 108, '2D 입력', '섹터 폴리곤', ['에디터에서 한 번 그림'], 'briefing-svg-box-strong'),
-    svgNode(370, 46, 240, 108, '로직', '방어 판정 로직', ['같은 점 데이터가', '방어 위치를 결정함'], ''),
-    svgNode(685, 46, 260, 108, '3D 형상', '돔 / 기둥 형태', ['같은 바닥 윤곽이', '보이는 방어 볼륨이 됨'], 'briefing-svg-box-accent'),
-    createVNode('rect', { x: '180', y: '176', width: '620', height: '36', rx: '14', class: 'briefing-svg-box' }, []),
-    createVNode('text', { x: '212', y: '199', class: 'briefing-svg-callout' }, [createTextVNode('하나의 도형 데이터가 입력, 로직, 시각화 전부에 재사용됩니다.')])
-  ]);
-
-  return createVNode('div', { class: 'briefing-view' + (props.visible ? ' show' : '') }, [
-    createVNode('div', { class: 'briefing-hero' }, [
-      createVNode('div', { class: 'briefing-overline' }, [createTextVNode('프로젝트 브리핑')]),
-      createVNode('div', { class: 'briefing-title' }, [createTextVNode('아키텍처 우선')])
-    ]),
-    createVNode('div', { class: 'briefing-section' }, [
-      createVNode('div', { class: 'briefing-section-title' }, [createTextVNode('시스템 구조')]),
-      createVNode('div', { class: 'briefing-figure' }, [
-        createVNode('div', { class: 'briefing-figure-title' }, [createTextVNode('입력에서 화면까지 이어지는 하나의 흐름')]),
-        architectureFigure
-      ])
-    ]),
-    createVNode('div', { class: 'briefing-section' }, [
-      createVNode('div', { class: 'briefing-section-title' }, [createTextVNode('도형 재사용 구조')]),
-      createVNode('div', { class: 'briefing-figure' }, [
-        createVNode('div', { class: 'briefing-figure-title' }, [createTextVNode('하나의 폴리곤, 세 가지 역할')]),
-        geometryFigure
-      ])
-    ]),
-    createVNode('div', { class: 'briefing-section' }, [
-      createVNode('div', { class: 'briefing-section-title' }, [createTextVNode('핵심 주장')]),
-      createVNode('div', { class: 'briefing-core-grid' }, coreCards.map(function(card) {
-        return createVNode('div', { class: 'briefing-core-card' }, [
-          createVNode('div', { class: 'briefing-core-title' }, [createTextVNode(card.title)]),
-          createVNode('div', { class: 'briefing-core-copy' }, [createTextVNode(card.copy)])
-        ]);
-      })),
-      createVNode('div', { class: 'briefing-claim' }, [
-        createVNode('div', { class: 'briefing-claim-copy' }, [createTextVNode('시뮬레이터는 시연 화면이고, 진짜 프로젝트 가치는 커스텀 렌더러와 모든 화면에 공통으로 쓰이는 상태·도형 구조에 있습니다.')])
-      ])
-    ])
-  ]);
 }
 
 // ══════════════════════════════════════════════════════════
@@ -3303,6 +2843,7 @@ function App() {
   var s23 = useState(0);           var scenarioElapsed = s23[0], setScenarioElapsed = s23[1];
   var s24 = useState(0);           var scenarioIntercepted = s24[0], setScenarioIntercepted = s24[1];
   var s25 = useState(0);           var scenarioBreached = s25[0], setScenarioBreached = s25[1];
+
   _droneAlive = droneAlive; _isDrawing = isDrawing; _targetMode = targetMode; _radarZones = radarZones;
 
   var testResults = useMemo(function() { return runVDomTests(); }, []);
@@ -3364,7 +2905,7 @@ function App() {
 
   // 선택된 도시의 시뮬레이션 상태 로드
   useEffect(function() {
-    var snapshot = cloneSimState(simCityStore[selectedSimCityId] || createDefaultSimState(selectedSimCityId));
+    var snapshot = cloneSimState(simCityStore[selectedSimCityId] || createDefaultSimState());
     setDronePos(snapshot.dronePos);
     setDroneAlive(snapshot.droneAlive);
     setDroneAngle(snapshot.droneAngle);
@@ -3392,6 +2933,58 @@ function App() {
       stopAlertSiren();
     };
   }, []);
+
+  // 키보드 + 게임루프
+  useEffect(function() {
+    function onKD(e) {
+      _pressedKeys[e.key] = true;
+      if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].indexOf(e.key) >= 0) e.preventDefault();
+    }
+    function onKU(e) { _pressedKeys[e.key] = false; }
+    document.addEventListener('keydown', onKD);
+    document.addEventListener('keyup', onKU);
+
+    var speed = 4, animId;
+    function loop() {
+      animId = requestAnimationFrame(loop);
+      if (!_droneAlive || _isDrawing) return;
+      var dx = 0, dy = 0;
+      if (_pressedKeys['ArrowUp']) dy -= speed;
+      if (_pressedKeys['ArrowDown']) dy += speed;
+      if (_pressedKeys['ArrowLeft']) dx -= speed;
+      if (_pressedKeys['ArrowRight']) dx += speed;
+      if (dx !== 0 || dy !== 0) {
+        setDroneAngle(Math.atan2(dy, dx) * 180 / Math.PI + 90);
+        setDronePos(function(p) {
+          var simH = window.innerHeight - SIM_TOP - SIM_BOTTOM;
+          var nx = Math.max(20, Math.min(window.innerWidth - 20, p.x + dx));
+          var ny = Math.max(10, Math.min(simH - 10, p.y + dy));
+          return (nx === p.x && ny === p.y) ? p : { x: nx, y: ny };
+        });
+      }
+    }
+    animId = requestAnimationFrame(loop);
+    return function() { document.removeEventListener('keydown', onKD); document.removeEventListener('keyup', onKU); cancelAnimationFrame(animId); };
+  }, []);
+
+  // 드론 충돌 감지
+  useEffect(function() {
+    if (!droneAlive || radarZones.length === 0) return;
+    for (var i = 0; i < radarZones.length; i++) {
+      if (radarZones[i].capacity > 0 && pointInPolygon(dronePos.x, dronePos.y, radarZones[i].points)) {
+        setDroneAlive(false);
+        setInterceptPos({ x: dronePos.x, y: dronePos.y });
+        // 해당 존 capacity 감소
+        setRadarZones(function(prev) {
+          return prev.map(function(z) {
+            return z.id === radarZones[i].id ? Object.assign({}, z, { capacity: z.capacity - 1 }) : z;
+          });
+        });
+        setTimeout(function() { setInterceptPos(null); }, 1500);
+        break;
+      }
+    }
+  }, [dronePos, radarZones, droneAlive]);
 
   // 미사일 시뮬레이션 루프
   useEffect(function() {
@@ -3518,17 +3111,19 @@ function App() {
         case 'view-sim': setActiveView('sim'); setTargetMode(false); break;
         case 'view-3d': setActiveView('3d'); setIsDrawing(false); setDrawPoints([]); break;
         case 'view-test': setActiveView('test'); setTargetMode(false); setIsDrawing(false); break;
-        case 'view-briefing': setActiveView('briefing'); setTargetMode(false); setIsDrawing(false); break;
         case 'toggle-draw':
           setIsDrawing(function(p) { return !p; }); setTargetMode(false); setDrawPoints([]); break;
         case 'toggle-target':
           setTargetMode(function(p) { return !p; }); setIsDrawing(false); setDrawPoints([]); break;
+        case 'respawn':
+          setDroneAlive(true); setDronePos(getDefaultDronePos()); setDroneAngle(0); break;
         case 'clear-all':
+          setDronePos(getDefaultDronePos()); setDroneAlive(true); setDroneAngle(0); setInterceptPos(null);
           setRadarZones([]); setBreaches([]); setTargets([]); setMissiles([]); setInterceptors([]); setTotalAttacks(0); setNatMissiles([]); setScenarioRunning(false); setAttackedCities([]);
           setMultiCities(null); setMulti3dCooldownUntil(0);
           setSimCityStore(function(store) {
             var next = Object.assign({}, store);
-            next[selectedSimCityId] = createDefaultSimState(selectedSimCityId);
+            next[selectedSimCityId] = createDefaultSimState();
             return next;
           });
           break;
@@ -3664,15 +3259,6 @@ function App() {
     return function() { document.removeEventListener('click', onClick); };
   }, [targetMode, activeView]);
 
-  // ── 탄도미사일 스폰 위치 보정: 화면 최상단 우측에서 수직낙하 궤적 ──
-  function _ballisticSpawn(originId, originX, originY, targetX, targetY, w, h) {
-    // 화면 상단 근처에서 진입 (화면 밖 너무 멀리 X)
-    var topY = 10 + Math.random() * 30;
-    // 타겟보다 약간 오른쪽 (동쪽에서 진입)
-    var topX = Math.min(w - 24, targetX + 40 + Math.random() * 60);
-    return { x: topX, y: topY };
-  }
-
   // ── National: 수동 공격 함수 ──
   function launchNatAttack(originId) {
     var origin = null;
@@ -3697,21 +3283,15 @@ function App() {
         var spreadX = (Math.random() - 0.5) * 20;
         var spreadY = (Math.random() - 0.5) * 20;
         var targetX = cp.x + spreadX, targetY = cp.y + spreadY;
-        // 탄도미사일이면 스폰 위치를 화면 최상단으로 변경
-        var launchX = sp.x, launchY = sp.y;
-        if (attackType === 'ballistic') {
-          var bsp = _ballisticSpawn(originId, sp.x, sp.y, targetX, targetY, w, h);
-          launchX = bsp.x; launchY = bsp.y;
-        }
         newMs.push({
-          id: _natMissileId++, sx: launchX, sy: launchY,
-          x: launchX, y: launchY,
+          id: _natMissileId++, sx: sp.x, sy: sp.y,
+          x: sp.x, y: sp.y,
           targetX: targetX, targetY: targetY,
           targetCity: city.id, targetCityName: city.name,
           type: attackType,
           color: origin.color,
           active: true,
-          speed: buildNationalMissileSpeed(launchX, launchY, targetX, targetY, attackType)
+          speed: buildNationalMissileSpeed(sp.x, sp.y, targetX, targetY, attackType)
         });
       }
     }
@@ -3757,16 +3337,8 @@ function App() {
               var spreadX = (Math.random() - 0.5) * 20;
               var spreadY = (Math.random() - 0.5) * 20;
               var targetX = cp.x + spreadX, targetY = cp.y + spreadY;
-              // 탄도미사일이면 화면 최상단에서 수직낙하
-              var launchSx = sp.x, launchSy = sp.y;
-              if (wave.type === 'ballistic') {
-                var bsp = _ballisticSpawn(wave.from, sp.x, sp.y, targetX, targetY, w, h);
-                spawnX = bsp.x + (Math.random() - 0.5) * 10;
-                spawnY = bsp.y + (Math.random() - 0.5) * 10;
-                launchSx = bsp.x; launchSy = bsp.y;
-              }
               newMs.push({
-                id: _natMissileId++, sx: launchSx, sy: launchSy,
+                id: _natMissileId++, sx: sp.x, sy: sp.y,
                 x: spawnX, y: spawnY,
                 targetX: targetX, targetY: targetY,
                 targetCity: city.id, targetCityName: city.name,
@@ -3788,10 +3360,6 @@ function App() {
       setScenarioRunning(false);
       setNatMissiles([]);
       setAttackedCities([]);
-      var flashes = document.querySelectorAll('.screen-flash');
-      for (var fi = 0; fi < flashes.length; fi++) {
-        if (flashes[fi].parentNode) flashes[fi].parentNode.removeChild(flashes[fi]);
-      }
       setActiveView('national');
       // multi3d 씬 전부 파괴
       var sceneKeys = Object.keys(_multi3dScenes);
@@ -3833,7 +3401,6 @@ function App() {
         if (arrivedIds.length > 0) {
           // 요격/관통 카운트 — 도착한 미사일 중 방공구역에 닿은 것은 요격
           var intCount = 0, brCount = 0;
-          var ballisticIntercepted = false;
           for (var ai = 0; ai < newMissiles.length; ai++) {
             var am = newMissiles[ai];
             if (am.active || !arrivedCities[am.targetCity]) continue;
@@ -3841,10 +3408,7 @@ function App() {
             for (var rz = 0; rz < _radarZones.length; rz++) {
               if (pointInPolygon(am.x, am.y, _radarZones[rz].points)) { wasIntercepted = true; break; }
             }
-            if (wasIntercepted) {
-              intCount++;
-              if (am.type === 'ballistic') ballisticIntercepted = true;
-            } else { brCount++; }
+            if (wasIntercepted) intCount++; else brCount++;
           }
           if (intCount > 0) setScenarioIntercepted(function(p) { return p + intCount; });
           if (brCount > 0) setScenarioBreached(function(p) { return p + brCount; });
@@ -3955,6 +3519,7 @@ function App() {
         syncThreeZones(_radarZones);
         syncThreeMissiles(missiles);
         syncThreeBreaches(breaches);
+        syncThreeDrone(dronePos, droneAlive, droneAngle);
       }, 50);
     } else {
       destroyThreeScene();
@@ -3967,7 +3532,8 @@ function App() {
     syncThreeZones(radarZones);
     syncThreeMissiles(missiles);
     syncThreeBreaches(breaches);
-  }, [radarZones, missiles, breaches]);
+    syncThreeDrone(dronePos, droneAlive, droneAngle);
+  }, [radarZones, missiles, breaches, dronePos, droneAlive, droneAngle]);
 
   // ── Multi3D 뷰 초기화/파괴 ──
   useEffect(function() {
@@ -4046,7 +3612,6 @@ function App() {
     createVNode('div', { class: splitClass }, multi3dCells),
     View3D({ visible: activeView === '3d', activeMissiles: activeMissiles, radarZones: radarZones, breachCount: breaches.length, targetMode: targetMode, totalAttacks: totalAttacks, currentTimeLabel: currentTimeLabel, cityName: selectedSimCity.name }),
     TestView({ results: testResults, visible: activeView === 'test' }),
-    BriefingView({ visible: activeView === 'briefing', cityCount: DEFENSE_CITIES.length, scenarioCount: SCENARIOS.length, testCount: testResults.length }),
     InfoPanel({ activeView: activeView, radarZones: radarZones, breachCount: breaches.length, activeMissiles: activeMissiles, totalAttacks: totalAttacks, currentTimeLabel: currentTimeLabel, cityName: selectedSimCity.name }),
     StatusBar({
       droneAlive: droneAlive, zoneCount: radarZones.length, isDrawing: isDrawing, cityName: selectedSimCity.name,

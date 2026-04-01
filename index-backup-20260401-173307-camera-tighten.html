@@ -205,48 +205,58 @@ html,body{width:100%;height:100%;overflow:hidden;font-family:var(--sans);backgro
   padding:2px 8px;border-radius:6px;font:600 9px var(--mono);letter-spacing:.03em;
   background:rgba(148,163,184,.1);color:var(--text2);border:1px solid var(--border);
 }
-.briefing-view{position:fixed;inset:52px 0 44px 0;background:var(--bg);overflow-y:auto;padding:34px 34px 56px;display:none}
+.briefing-view{position:fixed;inset:52px 0 44px 0;background:var(--bg);overflow-y:auto;padding:32px;display:none}
 .briefing-view.show{display:block}
 .briefing-hero{
-  padding:26px 28px;border-radius:18px;border:1px solid var(--border);
-  background:linear-gradient(180deg,rgba(148,163,184,.10),rgba(15,23,42,.32));
-  margin-bottom:20px;
+  padding:24px;border-radius:16px;border:1px solid var(--border);
+  background:linear-gradient(180deg,rgba(148,163,184,.08),rgba(15,23,42,.28));
+  margin-bottom:18px;
 }
-.briefing-overline{font:700 11px var(--mono);letter-spacing:.14em;color:var(--text3);margin-bottom:10px}
-.briefing-title{font:700 32px var(--sans);color:var(--text);letter-spacing:.01em;margin-bottom:2px;line-height:1.08}
-.briefing-subtitle{display:none}
-.briefing-section{margin-top:20px}
-.briefing-section-title{font:700 18px var(--sans);color:var(--text);margin-bottom:12px;letter-spacing:.01em}
-.briefing-figure{
-  padding:22px;border-radius:18px;border:1px solid var(--border);
-  background:rgba(15,23,42,.24);
+.briefing-title{font:600 24px var(--sans);color:var(--text);letter-spacing:.01em;margin-bottom:8px}
+.briefing-subtitle{font:500 12px var(--mono);color:var(--text3);line-height:1.7;max-width:920px}
+.briefing-chip-row{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}
+.briefing-chip{
+  padding:6px 10px;border-radius:999px;border:1px solid var(--border);
+  background:rgba(148,163,184,.08);color:var(--text2);font:600 10px var(--mono);letter-spacing:.03em;
 }
-.briefing-figure-title{font:700 18px var(--sans);color:var(--text);margin-bottom:14px}
-.briefing-figure-note{display:none}
-.briefing-svg{width:100%;height:auto;display:block}
-.briefing-svg-box{fill:rgba(148,163,184,.06);stroke:rgba(148,163,184,.22);stroke-width:2}
-.briefing-svg-box-strong{fill:rgba(148,163,184,.10);stroke:rgba(184,200,220,.28)}
-.briefing-svg-box-accent{fill:rgba(127,29,29,.12);stroke:rgba(248,113,113,.28)}
-.briefing-svg-slot{fill:rgba(255,255,255,.03);stroke:rgba(148,163,184,.16);stroke-width:1.5}
-.briefing-svg-arrow{stroke:rgba(184,200,220,.5);stroke-width:3;fill:none;stroke-linecap:round}
-.briefing-svg-arrowhead{fill:rgba(184,200,220,.6)}
-.briefing-svg-label{font:700 10px var(--mono);letter-spacing:.10em;fill:var(--text3)}
-.briefing-svg-title{font:700 20px var(--sans);fill:var(--text)}
-.briefing-svg-copy{font:500 12px var(--sans);fill:var(--text2)}
-.briefing-svg-small{font:600 11px var(--sans);fill:var(--text2)}
-.briefing-svg-callout{font:700 12px var(--sans);fill:var(--text)}
-.briefing-core-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px;margin-top:18px}
-.briefing-core-card{
-  padding:26px;border-radius:16px;border:1px solid var(--border);
-  background:rgba(148,163,184,.05);min-height:196px;
+.briefing-kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-top:18px}
+.briefing-kpi{
+  padding:14px 16px;border-radius:12px;border:1px solid var(--border);
+  background:rgba(148,163,184,.05);
 }
-.briefing-core-title{font:700 24px var(--sans);color:var(--text);margin-bottom:14px;line-height:1.28}
-.briefing-core-copy{font:520 18px var(--sans);color:var(--text2);line-height:1.78}
-.briefing-claim{
-  margin-top:18px;padding:18px 20px;border-radius:16px;border:1px solid rgba(248,113,113,.18);
-  background:rgba(127,29,29,.08);
+.briefing-kpi-value{font:700 24px var(--mono);color:var(--text);margin-bottom:6px}
+.briefing-kpi-label{font:600 11px var(--sans);color:var(--text2);letter-spacing:.02em}
+.briefing-kpi-detail{font:500 10px var(--mono);color:var(--text3);margin-top:4px;line-height:1.5}
+.briefing-section{margin-top:18px}
+.briefing-section-title{font:600 15px var(--sans);color:var(--text);margin-bottom:10px;letter-spacing:.01em}
+.briefing-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:14px}
+.briefing-card{
+  padding:18px;border-radius:14px;border:1px solid var(--border);
+  background:rgba(15,23,42,.22);
 }
-.briefing-claim-copy{font:700 21px var(--sans);color:#f8e4e4;line-height:1.45}
+.briefing-card-eyebrow{font:700 10px var(--mono);letter-spacing:.08em;color:var(--text3);margin-bottom:10px}
+.briefing-card-title{font:600 16px var(--sans);color:var(--text);margin-bottom:10px}
+.briefing-card-text{font:500 12px var(--sans);color:var(--text2);line-height:1.75}
+.briefing-list{display:flex;flex-direction:column;gap:10px;margin-top:12px}
+.briefing-list-row{display:flex;gap:10px;align-items:flex-start}
+.briefing-list-mark{
+  width:20px;height:20px;border-radius:999px;display:flex;align-items:center;justify-content:center;flex-shrink:0;
+  background:rgba(148,163,184,.1);border:1px solid var(--border);color:var(--text);font:700 10px var(--mono);
+}
+.briefing-list-copy{font:500 11px var(--sans);color:var(--text2);line-height:1.7}
+.briefing-flow{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px}
+.briefing-flow-step{
+  padding:16px;border-radius:14px;border:1px solid var(--border);
+  background:rgba(148,163,184,.05);min-height:138px;
+}
+.briefing-step-num{font:700 10px var(--mono);letter-spacing:.08em;color:var(--text3);margin-bottom:8px}
+.briefing-step-title{font:600 14px var(--sans);color:var(--text);margin-bottom:8px}
+.briefing-step-copy{font:500 11px var(--sans);color:var(--text2);line-height:1.75}
+.briefing-callout{
+  margin-top:14px;padding:14px 16px;border-radius:12px;border:1px solid rgba(248,113,113,.18);
+  background:rgba(127,29,29,.08);font:500 11px var(--sans);color:#f3d0d0;line-height:1.75;
+}
+
 /* Controls help */
 .controls-help{
   position:fixed;bottom:54px;right:12px;z-index:50;
@@ -1620,8 +1630,8 @@ function initThreeScene(container, cityId) {
   var scene = new THREE.Scene();
   scene.fog = new THREE.FogExp2(0x0a1208, 0.0003);
 
-  var camera = new THREE.PerspectiveCamera(56, w / h, 1, 5000);
-  camera.position.set(0, 340, 620);
+  var camera = new THREE.PerspectiveCamera(60, w / h, 1, 5000);
+  camera.position.set(0, 400, 700);
   camera.lookAt(0, 50, 0);
 
   var renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false });
@@ -1678,10 +1688,10 @@ function initThreeScene(container, cityId) {
   function animate() {
     _threeAnimId = requestAnimationFrame(animate);
     camAngle += 0.0015;
-    _threeCamera.position.x = 620 * Math.sin(camAngle);
-    _threeCamera.position.z = 620 * Math.cos(camAngle);
-    _threeCamera.position.y = 320 + 35 * Math.sin(camAngle * 2);
-    _threeCamera.lookAt(0, 50, 0);
+    _threeCamera.position.x = 700 * Math.sin(camAngle);
+    _threeCamera.position.z = 700 * Math.cos(camAngle);
+    _threeCamera.position.y = 350 + 50 * Math.sin(camAngle * 2);
+    _threeCamera.lookAt(0, 60, 0);
 
     // 폭발 파티클 업데이트
     for (var ei = _3dExplosions.length - 1; ei >= 0; ei--) {
@@ -2000,10 +2010,10 @@ function initMulti3dScene(cityId, container, zones2d) {
   var scene = new THREE.Scene();
   scene.fog = new THREE.FogExp2(0x080c08, 0.0004);
 
-  var camera = new THREE.PerspectiveCamera(52, w / h, 1, 10000);
-  camera.position.set(0, 545, 680);
-  camera.lookAt(0, 105, 0);
-  var _camBaseY = 545, _camBaseR = 680, _camLookY = 105;
+  var camera = new THREE.PerspectiveCamera(55, w / h, 1, 10000);
+  camera.position.set(0, 850, 900);
+  camera.lookAt(0, 200, 0);
+  var _camBaseY = 850, _camBaseR = 900, _camLookY = 200;
   var _camTargetY = _camBaseY, _camTargetR = _camBaseR, _camTargetLookY = _camLookY;
 
   var renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false });
@@ -2082,19 +2092,14 @@ function initMulti3dScene(cityId, container, zones2d) {
 
     var zoneColor = _zoneColor(zone.capacity || 5000);
     var mode = zone.renderMode || 'extrude';
-    var spanX = Math.max(24, maxX - minX);
-    var spanZ = Math.max(24, maxZ - minZ);
-    var zoneHeight = zone.height || ZONE_HEIGHT;
-    var radiusX = Math.max(18, spanX / 2);
-    var radiusZ = Math.max(18, spanZ / 2);
 
     if (mode === 'dome') {
-      var maxSpan = Math.max(spanX, spanZ);
-      zoneHeight = Math.min(zone.height || maxSpan * 0.62, maxSpan * 0.72);
+      var maxSpan = Math.max(maxX - minX, maxZ - minZ);
+      var domeHeight = Math.min(zone.height || maxSpan * 0.62, maxSpan * 0.72);
       var domeGeo = new THREE.SphereGeometry(1, 28, 18, 0, Math.PI * 2, 0, Math.PI / 2);
       var domeMat = new THREE.MeshBasicMaterial({ color: zoneColor, transparent: true, opacity: 0.12, side: THREE.DoubleSide });
       var dome = new THREE.Mesh(domeGeo, domeMat);
-      dome.scale.set(radiusX, zoneHeight, radiusZ);
+      dome.scale.set(Math.max(18, (maxX - minX) / 2), domeHeight, Math.max(18, (maxZ - minZ) / 2));
       dome.position.set(center3d.x, 0, center3d.z);
       scene.add(dome);
 
@@ -2111,7 +2116,8 @@ function initMulti3dScene(cityId, container, zones2d) {
       base.position.set(center3d.x, 0.8, center3d.z);
       scene.add(base);
     } else {
-      var extGeo = new THREE.ExtrudeGeometry(shape, { depth: zoneHeight, bevelEnabled: false });
+      var height = zone.height || ZONE_HEIGHT;
+      var extGeo = new THREE.ExtrudeGeometry(shape, { depth: height, bevelEnabled: false });
       var pillarMat = new THREE.MeshBasicMaterial({ color: zoneColor, transparent: true, opacity: 0.08, side: THREE.DoubleSide });
       var pillar = new THREE.Mesh(extGeo, pillarMat);
       pillar.rotation.x = -Math.PI / 2;
@@ -2128,7 +2134,7 @@ function initMulti3dScene(cityId, container, zones2d) {
       var topMat = new THREE.MeshBasicMaterial({ color: zoneColor, transparent: true, opacity: 0.12, side: THREE.DoubleSide });
       var top = new THREE.Mesh(topGeo, topMat);
       top.rotation.x = -Math.PI / 2;
-      top.position.set(center3d.x, zoneHeight, center3d.z);
+      top.position.set(center3d.x, height, center3d.z);
       scene.add(top);
     }
 
@@ -2139,78 +2145,12 @@ function initMulti3dScene(cityId, container, zones2d) {
 
     zoneData.push({
       id: zone.id,
-      mode: mode,
       cx: center3d.x,
       cz: center3d.z,
       poly: worldPoly,
       bounds: { minX: minX, maxX: maxX, minZ: minZ, maxZ: maxZ },
-      height: zoneHeight,
-      radiusX: radiusX,
-      radiusZ: radiusZ,
       cap: zone.capacity || 5000
     });
-  }
-
-  function _zoneContainsPoint3d(zone, x, y, z) {
-    if (y < 0) return false;
-    if (zone.mode === 'dome') {
-      if (y > zone.height) return false;
-      var nx = (x - zone.cx) / Math.max(1, zone.radiusX || 1);
-      var ny = y / Math.max(1, zone.height || 1);
-      var nz = (z - zone.cz) / Math.max(1, zone.radiusZ || 1);
-      return (nx * nx + ny * ny + nz * nz) <= 1;
-    }
-    if (y > zone.height) return false;
-    if (x < zone.bounds.minX || x > zone.bounds.maxX || z < zone.bounds.minZ || z > zone.bounds.maxZ) return false;
-    return pointInPolygon(x, z, zone.poly);
-  }
-
-  function _samplePointOnSegment3d(start, end, t) {
-    return {
-      x: start.x + (end.x - start.x) * t,
-      y: start.y + (end.y - start.y) * t,
-      z: start.z + (end.z - start.z) * t
-    };
-  }
-
-  function _findZoneSurfaceHit(zone, start, end) {
-    var prevT = 0;
-    var prevInside = _zoneContainsPoint3d(zone, start.x, start.y, start.z);
-    var steps = zone.mode === 'dome' ? 22 : 18;
-    for (var si = 1; si <= steps; si++) {
-      var t = si / steps;
-      var sample = _samplePointOnSegment3d(start, end, t);
-      var inside = _zoneContainsPoint3d(zone, sample.x, sample.y, sample.z);
-      if (inside && !prevInside) {
-        var lo = prevT;
-        var hi = t;
-        for (var iter = 0; iter < 8; iter++) {
-          var mid = (lo + hi) / 2;
-          var probe = _samplePointOnSegment3d(start, end, mid);
-          if (_zoneContainsPoint3d(zone, probe.x, probe.y, probe.z)) hi = mid;
-          else lo = mid;
-        }
-        var hit = _samplePointOnSegment3d(start, end, hi);
-        hit.t = hi;
-        return hit;
-      }
-      prevT = t;
-      prevInside = inside;
-    }
-    return null;
-  }
-
-  function _findFirstZoneSurfaceHit(start, end, capCost) {
-    var best = null;
-    for (var zi = 0; zi < zoneData.length; zi++) {
-      var zone = zoneData[zi];
-      if (zone.cap < capCost) continue;
-      var hit = _findZoneSurfaceHit(zone, start, end);
-      if (hit && (!best || hit.t < best.hit.t)) {
-        best = { zone: zone, hit: hit };
-      }
-    }
-    return best;
   }
 
   function _pickPointInsideZone(zone) {
@@ -2400,33 +2340,28 @@ function initMulti3dScene(cityId, container, zones2d) {
       var dx = m.tx - m.x, dy = -m.y, dz = m.tz - m.z;
       var dist = Math.sqrt(dx * dx + dy * dy + dz * dz);
       var step = m.speed * dt;
-      var invDist = dist > 0.0001 ? (1 / dist) : 0;
-      var nextPos = {
-        x: m.x + dx * invDist * step,
-        y: m.y + dy * invDist * step,
-        z: m.z + dz * invDist * step
-      };
-      var surfaceHit = _findFirstZoneSurfaceHit({ x: m.x, y: m.y, z: m.z }, nextPos, 1);
-      if (surfaceHit) {
+      if (m.y <= 3 || dist < Math.max(15, step * 1.1)) {
         m.alive = false; m.mesh.visible = false;
         if (m.trail) { scene.remove(m.trail); m.trail = null; }
-        surfaceHit.zone.cap = Math.max(0, surfaceHit.zone.cap - 1);
-        cityExplosions.push(_createExplosion(scene, surfaceHit.hit.x, surfaceHit.hit.y, surfaceHit.hit.z, 0x00ff41, false));
-        (function(mm) { setTimeout(function() { _resetCityMissile(mm, false); }, 800 + Math.random() * 1500); })(m);
-        continue;
-      }
-      if (nextPos.y <= 3 || dist < Math.max(15, step * 1.1)) {
-        m.alive = false; m.mesh.visible = false;
-        if (m.trail) { scene.remove(m.trail); m.trail = null; }
-        cityExplosions.push(_createExplosion(scene, nextPos.x, Math.max(1, nextPos.y), nextPos.z, 0xff4444, false));
-        breachMarkers.push(_createBreachMarker(scene, nextPos.x, nextPos.z));
+        var intercepted = false;
+        for (var zci = 0; zci < zoneData.length; zci++) {
+          if (zoneData[zci].cap > 0 && pointInPolygon(m.x, m.z, zoneData[zci].poly)) {
+            intercepted = true; zoneData[zci].cap--;
+            cityExplosions.push(_createExplosion(scene, m.x, Math.max(ZONE_HEIGHT * 0.7, m.y), m.z, 0x00ff41, false));
+            break;
+          }
+        }
+        if (!intercepted) {
+          cityExplosions.push(_createExplosion(scene, m.x, Math.max(1, m.y), m.z, 0xff4444, false));
+          breachMarkers.push(_createBreachMarker(scene, m.x, m.z));
+        }
         (function(mm) { setTimeout(function() { _resetCityMissile(mm, false); }, 800 + Math.random() * 1500); })(m);
         continue;
       }
 
-      m.x = nextPos.x;
-      m.y = nextPos.y;
-      m.z = nextPos.z;
+      m.x += (dx / dist) * step;
+      m.y += (dy / dist) * step;
+      m.z += (dz / dist) * step;
       m.mesh.position.set(m.x, m.y, m.z);
     }
 
@@ -2440,28 +2375,25 @@ function initMulti3dScene(cityId, container, zones2d) {
       }
       if (!bm2.alive) continue;
       // 거의 수직 낙하
-      var nextBallistic = {
-        x: bm2.x + (bm2.tx - bm2.x) * 0.01,
-        y: bm2.y - bm2.speed * dt,
-        z: bm2.z + (bm2.tz - bm2.z) * 0.01
-      };
-      var ballisticHit = _findFirstZoneSurfaceHit({ x: bm2.x, y: bm2.y, z: bm2.z }, nextBallistic, 3);
-      if (ballisticHit) {
-        bm2.alive = false; bm2.mesh.visible = false;
-        ballisticHit.zone.cap = Math.max(0, ballisticHit.zone.cap - 3);
-        cityExplosions.push(_createExplosion(scene, ballisticHit.hit.x, ballisticHit.hit.y, ballisticHit.hit.z, 0xdd2222, true));
-        (function(bb) { setTimeout(function() { _resetBallistic3d(bb, false); }, 2000 + Math.random() * 3000); })(bm2);
-        continue;
-      }
-      bm2.x = nextBallistic.x;
-      bm2.y = nextBallistic.y;
-      bm2.z = nextBallistic.z;
+      bm2.y -= bm2.speed * dt;
+      bm2.x += (bm2.tx - bm2.x) * 0.01;
+      bm2.z += (bm2.tz - bm2.z) * 0.01;
       bm2.mesh.position.set(bm2.x, bm2.y, bm2.z);
       // 지면 도달
       if (bm2.y <= 5) {
         bm2.alive = false; bm2.mesh.visible = false;
-        cityExplosions.push(_createExplosion(scene, bm2.x, 5, bm2.z, 0xff2222, true));
-        breachMarkers.push(_createBreachMarker(scene, bm2.x, bm2.z));
+        var bInt = false;
+        for (var zb = 0; zb < zoneData.length; zb++) {
+          if (zoneData[zb].cap > 0 && pointInPolygon(bm2.x, bm2.z, zoneData[zb].poly)) {
+            bInt = true; zoneData[zb].cap -= 3;
+            cityExplosions.push(_createExplosion(scene, bm2.x, 300, bm2.z, 0xdd2222, true));
+            break;
+          }
+        }
+        if (!bInt) {
+          cityExplosions.push(_createExplosion(scene, bm2.x, 5, bm2.z, 0xff2222, true));
+          breachMarkers.push(_createBreachMarker(scene, bm2.x, bm2.z));
+        }
         (function(bb) { setTimeout(function() { _resetBallistic3d(bb, false); }, 2000 + Math.random() * 3000); })(bm2);
       }
     }
@@ -2934,119 +2866,102 @@ function TestView(props) {
 }
 
 function BriefingView(props) {
-  var coreCards = [
+  var chips = ['Virtual DOM', 'Scenario timeline', '2D sector editor', '3D extrusion', 'Validation'];
+  var kpis = [
+    { value: '1', label: 'Custom UI engine', detail: 'diff + render + patch in plain JavaScript' },
+    { value: String(props.cityCount || 0), label: 'Defense cities', detail: 'each city keeps its own sector state and 3D scene' },
+    { value: String(props.scenarioCount || 0), label: 'Scenario sets', detail: 'national attacks route into city-level views' },
+    { value: String(props.testCount || 0), label: 'Validation checks', detail: 'patch behavior is proven in the Tests tab' }
+  ];
+  var architectureCards = [
     {
-      title: '커스텀 렌더러가 핵심',
-      copy: '이 프로젝트의 핵심 가치는 커스텀 가상 DOM 흐름입니다. 시뮬레이터는 그 렌더링 엔진이 복잡한 인터페이스를 실제로 구동할 수 있음을 보여주는 증명 화면입니다.'
+      eyebrow: 'ASSIGNMENT FIT',
+      title: 'Why this is more than a map demo',
+      text: 'The course core is the virtual DOM pipeline. This project uses that custom diff and patch engine to drive a multi-view defense simulator instead of relying on React or another framework.'
     },
     {
-      title: '하나의 도형이 전체에 재사용됨',
-      copy: '섹터 폴리곤은 화면에만 그려지는 것이 아닙니다. 같은 데이터가 방어 로직이 되고 3D 방어 형상이 됩니다.'
+      eyebrow: 'STATE MODEL',
+      title: 'How complexity is managed',
+      text: 'National threats, city sectors, 3D scenes, siren state, breach markers, and timing all live in coordinated state. Each city keeps its own simulation snapshot so zooming in and out stays consistent.'
     },
     {
-      title: '공유 상태가 모든 화면을 묶음',
-      copy: '국가 화면, 섹터 화면, 3D 장면, 테스트 화면은 각각 따로 노는 것이 아니라 같은 시뮬레이션 상태를 함께 사용합니다.'
+      eyebrow: 'GEOMETRY',
+      title: 'Why the drawn sectors matter',
+      text: 'The sector editor is not cosmetic. The polygon drawn in the 2D sector screen is the same defense geometry used for interception checks and the same shape extruded into the 3D city volume.'
+    },
+    {
+      eyebrow: 'VALIDATION',
+      title: 'What proves the implementation',
+      text: 'The Tests screen shows the low-level engine behavior: no-op patches, text changes, attribute updates, create/remove, replace, and undo/redo. That gives the simulator a solid technical base.'
     }
   ];
-
-  function svgArrow(x1, y1, x2, y2) {
-    var dx = x2 - x1;
-    var dy = y2 - y1;
-    var len = Math.sqrt(dx * dx + dy * dy) || 1;
-    var ux = dx / len;
-    var uy = dy / len;
-    var hx = x2 - ux * 16;
-    var hy = y2 - uy * 16;
-    var px = -uy;
-    var py = ux;
-    var points = [
-      x2 + ',' + y2,
-      (hx + px * 6) + ',' + (hy + py * 6),
-      (hx - px * 6) + ',' + (hy - py * 6)
-    ].join(' ');
-    return createVNode('g', {}, [
-      createVNode('line', { x1: String(x1), y1: String(y1), x2: String(x2), y2: String(y2), class: 'briefing-svg-arrow' }, []),
-      createVNode('polygon', { points: points, class: 'briefing-svg-arrowhead' }, [])
-    ]);
-  }
-
-  function svgNode(x, y, w, h, label, title, lines, variant) {
-    var kids = [
-      createVNode('rect', { x: String(x), y: String(y), width: String(w), height: String(h), rx: '18', class: 'briefing-svg-box ' + (variant || '') }, []),
-      createVNode('text', { x: String(x + 20), y: String(y + 28), class: 'briefing-svg-label' }, [createTextVNode(label)]),
-      createVNode('text', { x: String(x + 20), y: String(y + 58), class: 'briefing-svg-title' }, [createTextVNode(title)])
-    ];
-    for (var li = 0; li < lines.length; li++) {
-      kids.push(createVNode('text', { x: String(x + 20), y: String(y + 84 + li * 20), class: 'briefing-svg-copy' }, [createTextVNode(lines[li]) ]));
-    }
-    return createVNode('g', {}, kids);
-  }
-
-  function svgSlot(x, y, w, h, title) {
-    return createVNode('g', {}, [
-      createVNode('rect', { x: String(x), y: String(y), width: String(w), height: String(h), rx: '12', class: 'briefing-svg-slot' }, []),
-      createVNode('text', { x: String(x + 14), y: String(y + 28), class: 'briefing-svg-small' }, [createTextVNode(title)])
-    ]);
-  }
-
-  var architectureFigure = createVNode('svg', { class: 'briefing-svg', viewBox: '0 0 980 340', xmlns: SVG_NS }, [
-    svgArrow(250, 155, 300, 155),
-    svgArrow(520, 155, 570, 155),
-    svgArrow(790, 155, 840, 155),
-    svgNode(30, 95, 220, 132, '입력', '운용자 조작', ['시나리오 시작', '섹터 그리기', '표적 배치'], 'briefing-svg-box-strong'),
-    svgNode(300, 95, 220, 132, '상태', '시뮬레이션 데이터', ['도시와 방어 구역', '미사일과 관통 지점', '시간 흐름과 경보'], ''),
-    svgNode(570, 95, 220, 132, '엔진', '커스텀 VDOM', ['createVNode', 'diff', 'applyPatch'], 'briefing-svg-box-strong'),
-    createVNode('g', {}, [
-      createVNode('rect', { x: '840', y: '58', width: '110', height: '194', rx: '18', class: 'briefing-svg-box briefing-svg-box-accent' }, []),
-      createVNode('text', { x: '860', y: '88', class: 'briefing-svg-label' }, [createTextVNode('화면')]),
-      createVNode('text', { x: '860', y: '118', class: 'briefing-svg-title' }, [createTextVNode('출력')]),
-      svgSlot(856, 136, 78, 34, '국가'),
-      svgSlot(856, 175, 78, 34, '섹터'),
-      svgSlot(856, 214, 78, 34, '3D / 테스트')
-    ]),
-    createVNode('rect', { x: '300', y: '254', width: '490', height: '52', rx: '16', class: 'briefing-svg-box' }, []),
-    createVNode('text', { x: '324', y: '278', class: 'briefing-svg-callout' }, [createTextVNode('하나의 시나리오 상태가 각 화면의 내용과 확대 시점을 함께 결정합니다.')])
-  ]);
-
-  var geometryFigure = createVNode('svg', { class: 'briefing-svg', viewBox: '0 0 980 230', xmlns: SVG_NS }, [
-    svgArrow(295, 102, 370, 102),
-    svgArrow(610, 102, 685, 102),
-    svgNode(35, 46, 260, 108, '2D 입력', '섹터 폴리곤', ['에디터에서 한 번 그림'], 'briefing-svg-box-strong'),
-    svgNode(370, 46, 240, 108, '로직', '방어 판정 로직', ['같은 점 데이터가', '방어 위치를 결정함'], ''),
-    svgNode(685, 46, 260, 108, '3D 형상', '돔 / 기둥 형태', ['같은 바닥 윤곽이', '보이는 방어 볼륨이 됨'], 'briefing-svg-box-accent'),
-    createVNode('rect', { x: '180', y: '176', width: '620', height: '36', rx: '14', class: 'briefing-svg-box' }, []),
-    createVNode('text', { x: '212', y: '199', class: 'briefing-svg-callout' }, [createTextVNode('하나의 도형 데이터가 입력, 로직, 시각화 전부에 재사용됩니다.')])
-  ]);
+  var flowSteps = [
+    { num: '01', title: 'National detection', copy: 'Long-range threats appear on the country view first. This establishes the big-picture operating picture.' },
+    { num: '02', title: 'Scenario routing', copy: 'When impact is near, the system focuses the threatened city instead of waiting until after the breach. This mirrors a control-room workflow.' },
+    { num: '03', title: 'City defense simulation', copy: 'Each city uses stored sector geometry, interception capacity, breach tracking, and local 3D rendering to show the active air-defense state.' },
+    { num: '04', title: 'Explainability', copy: 'Because every layer is connected to the same underlying state and renderer, we can explain exactly how a national event becomes a city-level visual response.' }
+  ];
+  var talkTrack = [
+    'Open with the engine: this project implements a custom virtual DOM renderer and patcher, then applies it to a real-time simulation UI.',
+    'Show continuity: the same defense polygon appears in the sector editor, the interception logic, and the 3D city volume.',
+    'Show orchestration: the national map, zoom-in flow, siren, and per-city views are coordinated by one scenario timeline.',
+    'Close with proof: the Tests tab demonstrates that the diff and patch primitives behave correctly under updates and reversals.'
+  ];
 
   return createVNode('div', { class: 'briefing-view' + (props.visible ? ' show' : '') }, [
     createVNode('div', { class: 'briefing-hero' }, [
-      createVNode('div', { class: 'briefing-overline' }, [createTextVNode('프로젝트 브리핑')]),
-      createVNode('div', { class: 'briefing-title' }, [createTextVNode('아키텍처 우선')])
-    ]),
-    createVNode('div', { class: 'briefing-section' }, [
-      createVNode('div', { class: 'briefing-section-title' }, [createTextVNode('시스템 구조')]),
-      createVNode('div', { class: 'briefing-figure' }, [
-        createVNode('div', { class: 'briefing-figure-title' }, [createTextVNode('입력에서 화면까지 이어지는 하나의 흐름')]),
-        architectureFigure
-      ])
-    ]),
-    createVNode('div', { class: 'briefing-section' }, [
-      createVNode('div', { class: 'briefing-section-title' }, [createTextVNode('도형 재사용 구조')]),
-      createVNode('div', { class: 'briefing-figure' }, [
-        createVNode('div', { class: 'briefing-figure-title' }, [createTextVNode('하나의 폴리곤, 세 가지 역할')]),
-        geometryFigure
-      ])
-    ]),
-    createVNode('div', { class: 'briefing-section' }, [
-      createVNode('div', { class: 'briefing-section-title' }, [createTextVNode('핵심 주장')]),
-      createVNode('div', { class: 'briefing-core-grid' }, coreCards.map(function(card) {
-        return createVNode('div', { class: 'briefing-core-card' }, [
-          createVNode('div', { class: 'briefing-core-title' }, [createTextVNode(card.title)]),
-          createVNode('div', { class: 'briefing-core-copy' }, [createTextVNode(card.copy)])
-        ]);
+      createVNode('div', { class: 'briefing-title' }, [createTextVNode('Project Briefing')]),
+      createVNode('div', { class: 'briefing-subtitle' }, [createTextVNode('Use this screen to explain why the simulator fits the assignment and how the more complex parts work. It frames the project as a custom virtual DOM system with layered simulation, geometry, and visualization rather than as a simple defense-themed animation.')]),
+      createVNode('div', { class: 'briefing-chip-row' }, chips.map(function(chip) {
+        return createVNode('span', { class: 'briefing-chip' }, [createTextVNode(chip)]);
       })),
-      createVNode('div', { class: 'briefing-claim' }, [
-        createVNode('div', { class: 'briefing-claim-copy' }, [createTextVNode('시뮬레이터는 시연 화면이고, 진짜 프로젝트 가치는 커스텀 렌더러와 모든 화면에 공통으로 쓰이는 상태·도형 구조에 있습니다.')])
+      createVNode('div', { class: 'briefing-kpis' }, kpis.map(function(kpi) {
+        return createVNode('div', { class: 'briefing-kpi' }, [
+          createVNode('div', { class: 'briefing-kpi-value' }, [createTextVNode(kpi.value)]),
+          createVNode('div', { class: 'briefing-kpi-label' }, [createTextVNode(kpi.label)]),
+          createVNode('div', { class: 'briefing-kpi-detail' }, [createTextVNode(kpi.detail)])
+        ]);
+      }))
+    ]),
+    createVNode('div', { class: 'briefing-section' }, [
+      createVNode('div', { class: 'briefing-section-title' }, [createTextVNode('Architecture Overview')]),
+      createVNode('div', { class: 'briefing-grid' }, architectureCards.map(function(card) {
+        return createVNode('div', { class: 'briefing-card' }, [
+          createVNode('div', { class: 'briefing-card-eyebrow' }, [createTextVNode(card.eyebrow)]),
+          createVNode('div', { class: 'briefing-card-title' }, [createTextVNode(card.title)]),
+          createVNode('div', { class: 'briefing-card-text' }, [createTextVNode(card.text)])
+        ]);
+      }))
+    ]),
+    createVNode('div', { class: 'briefing-section' }, [
+      createVNode('div', { class: 'briefing-section-title' }, [createTextVNode('Operational Flow')]),
+      createVNode('div', { class: 'briefing-flow' }, flowSteps.map(function(step) {
+        return createVNode('div', { class: 'briefing-flow-step' }, [
+          createVNode('div', { class: 'briefing-step-num' }, [createTextVNode(step.num)]),
+          createVNode('div', { class: 'briefing-step-title' }, [createTextVNode(step.title)]),
+          createVNode('div', { class: 'briefing-step-copy' }, [createTextVNode(step.copy)])
+        ]);
+      }))
+    ]),
+    createVNode('div', { class: 'briefing-section' }, [
+      createVNode('div', { class: 'briefing-section-title' }, [createTextVNode('Suggested Presentation Track')]),
+      createVNode('div', { class: 'briefing-grid' }, [
+        createVNode('div', { class: 'briefing-card' }, [
+          createVNode('div', { class: 'briefing-card-eyebrow' }, [createTextVNode('HOW TO TALK THROUGH IT')]),
+          createVNode('div', { class: 'briefing-card-title' }, [createTextVNode('Four points to use when presenting')]),
+          createVNode('div', { class: 'briefing-list' }, talkTrack.map(function(line, idx) {
+            return createVNode('div', { class: 'briefing-list-row' }, [
+              createVNode('div', { class: 'briefing-list-mark' }, [createTextVNode(String(idx + 1))]),
+              createVNode('div', { class: 'briefing-list-copy' }, [createTextVNode(line)])
+            ]);
+          }))
+        ]),
+        createVNode('div', { class: 'briefing-card' }, [
+          createVNode('div', { class: 'briefing-card-eyebrow' }, [createTextVNode('WHAT THE SCREEN PROVES')]),
+          createVNode('div', { class: 'briefing-card-title' }, [createTextVNode('Why this helps with the assignment explanation')]),
+          createVNode('div', { class: 'briefing-card-text' }, [createTextVNode('This page gives you a clean narrative: core engine, synchronized state, geometry reuse, and validation. That makes the project easier to justify as a technically grounded weekly assignment instead of a UI-only prototype.')]),
+          createVNode('div', { class: 'briefing-callout' }, [createTextVNode('Recommended demo order: National map -> city zoom -> sector editing -> 3D city volume -> Tests -> Briefing. That sequence shows both spectacle and technical depth.')])
+        ])
       ])
     ])
   ]);

@@ -208,21 +208,26 @@ html,body{width:100%;height:100%;overflow:hidden;font-family:var(--sans);backgro
 .briefing-view{position:fixed;inset:52px 0 44px 0;background:var(--bg);overflow-y:auto;padding:34px 34px 56px;display:none}
 .briefing-view.show{display:block}
 .briefing-hero{
-  padding:26px 28px;border-radius:18px;border:1px solid var(--border);
-  background:linear-gradient(180deg,rgba(148,163,184,.10),rgba(15,23,42,.32));
+  padding:28px;border-radius:18px;border:1px solid var(--border);
+  background:linear-gradient(180deg,rgba(148,163,184,.10),rgba(15,23,42,.34));
   margin-bottom:20px;
 }
 .briefing-overline{font:700 11px var(--mono);letter-spacing:.14em;color:var(--text3);margin-bottom:10px}
-.briefing-title{font:700 32px var(--sans);color:var(--text);letter-spacing:.01em;margin-bottom:2px;line-height:1.08}
-.briefing-subtitle{display:none}
+.briefing-title{font:700 34px var(--sans);color:var(--text);letter-spacing:.01em;margin-bottom:10px;line-height:1.08}
+.briefing-subtitle{font:500 14px var(--sans);color:var(--text2);line-height:1.75;max-width:920px}
+.briefing-chip-row{display:flex;flex-wrap:wrap;gap:9px;margin-top:18px}
+.briefing-chip{
+  padding:7px 11px;border-radius:999px;border:1px solid var(--border);
+  background:rgba(148,163,184,.08);color:var(--text2);font:700 11px var(--mono);letter-spacing:.04em;
+}
 .briefing-section{margin-top:20px}
-.briefing-section-title{font:700 18px var(--sans);color:var(--text);margin-bottom:12px;letter-spacing:.01em}
+.briefing-section-title{font:700 19px var(--sans);color:var(--text);margin-bottom:12px;letter-spacing:.01em}
 .briefing-figure{
   padding:22px;border-radius:18px;border:1px solid var(--border);
   background:rgba(15,23,42,.24);
 }
-.briefing-figure-title{font:700 18px var(--sans);color:var(--text);margin-bottom:14px}
-.briefing-figure-note{display:none}
+.briefing-figure-title{font:700 18px var(--sans);color:var(--text);margin-bottom:8px}
+.briefing-figure-note{font:500 13px var(--sans);color:var(--text3);line-height:1.75;margin-bottom:16px}
 .briefing-svg{width:100%;height:auto;display:block}
 .briefing-svg-box{fill:rgba(148,163,184,.06);stroke:rgba(148,163,184,.22);stroke-width:2}
 .briefing-svg-box-strong{fill:rgba(148,163,184,.10);stroke:rgba(184,200,220,.28)}
@@ -230,23 +235,33 @@ html,body{width:100%;height:100%;overflow:hidden;font-family:var(--sans);backgro
 .briefing-svg-slot{fill:rgba(255,255,255,.03);stroke:rgba(148,163,184,.16);stroke-width:1.5}
 .briefing-svg-arrow{stroke:rgba(184,200,220,.5);stroke-width:3;fill:none;stroke-linecap:round}
 .briefing-svg-arrowhead{fill:rgba(184,200,220,.6)}
-.briefing-svg-label{font:700 10px var(--mono);letter-spacing:.10em;fill:var(--text3)}
-.briefing-svg-title{font:700 20px var(--sans);fill:var(--text)}
-.briefing-svg-copy{font:500 12px var(--sans);fill:var(--text2)}
-.briefing-svg-small{font:600 11px var(--sans);fill:var(--text2)}
-.briefing-svg-callout{font:700 12px var(--sans);fill:var(--text)}
-.briefing-core-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px;margin-top:18px}
+.briefing-svg-label{font:700 11px var(--mono);letter-spacing:.10em;fill:var(--text3)}
+.briefing-svg-title{font:700 22px var(--sans);fill:var(--text)}
+.briefing-svg-copy{font:500 13px var(--sans);fill:var(--text2)}
+.briefing-svg-small{font:600 12px var(--sans);fill:var(--text2)}
+.briefing-svg-callout{font:700 13px var(--sans);fill:var(--text)}
+.briefing-board-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px;margin-top:18px}
 .briefing-core-card{
-  padding:26px;border-radius:16px;border:1px solid var(--border);
-  background:rgba(148,163,184,.05);min-height:196px;
+  padding:18px;border-radius:16px;border:1px solid var(--border);
+  background:rgba(148,163,184,.05);min-height:150px;
 }
-.briefing-core-title{font:700 24px var(--sans);color:var(--text);margin-bottom:14px;line-height:1.28}
-.briefing-core-copy{font:520 18px var(--sans);color:var(--text2);line-height:1.78}
+.briefing-core-kicker{font:700 10px var(--mono);letter-spacing:.10em;color:var(--text3);margin-bottom:10px}
+.briefing-core-title{font:700 20px var(--sans);color:var(--text);margin-bottom:10px;line-height:1.25}
+.briefing-core-copy{font:500 13px var(--sans);color:var(--text2);line-height:1.75}
+.briefing-demo-strip{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px;margin-top:18px}
+.briefing-demo-tile{
+  padding:18px;border-radius:16px;border:1px solid var(--border);
+  background:rgba(15,23,42,.20);min-height:155px;
+}
+.briefing-demo-step{font:700 11px var(--mono);letter-spacing:.10em;color:var(--text3);margin-bottom:10px}
+.briefing-demo-title{font:700 18px var(--sans);color:var(--text);margin-bottom:10px;line-height:1.25}
+.briefing-demo-copy{font:500 13px var(--sans);color:var(--text2);line-height:1.75}
 .briefing-claim{
   margin-top:18px;padding:18px 20px;border-radius:16px;border:1px solid rgba(248,113,113,.18);
   background:rgba(127,29,29,.08);
 }
-.briefing-claim-copy{font:700 21px var(--sans);color:#f8e4e4;line-height:1.45}
+.briefing-claim-title{font:700 11px var(--mono);letter-spacing:.12em;color:#f0c4c4;margin-bottom:10px}
+.briefing-claim-copy{font:700 22px var(--sans);color:#f8e4e4;line-height:1.45}
 /* Controls help */
 .controls-help{
   position:fixed;bottom:54px;right:12px;z-index:50;
@@ -1621,8 +1636,8 @@ function initThreeScene(container, cityId) {
   scene.fog = new THREE.FogExp2(0x0a1208, 0.0003);
 
   var camera = new THREE.PerspectiveCamera(56, w / h, 1, 5000);
-  camera.position.set(0, 340, 620);
-  camera.lookAt(0, 50, 0);
+  camera.position.set(0, 320, 560);
+  camera.lookAt(0, 45, 0);
 
   var renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false });
   renderer.setSize(w, h);
@@ -1678,9 +1693,9 @@ function initThreeScene(container, cityId) {
   function animate() {
     _threeAnimId = requestAnimationFrame(animate);
     camAngle += 0.0015;
-    _threeCamera.position.x = 620 * Math.sin(camAngle);
-    _threeCamera.position.z = 620 * Math.cos(camAngle);
-    _threeCamera.position.y = 320 + 35 * Math.sin(camAngle * 2);
+    _threeCamera.position.x = 560 * Math.sin(camAngle);
+    _threeCamera.position.z = 560 * Math.cos(camAngle);
+    _threeCamera.position.y = 300 + 35 * Math.sin(camAngle * 2);
     _threeCamera.lookAt(0, 50, 0);
 
     // 폭발 파티클 업데이트
@@ -2001,9 +2016,9 @@ function initMulti3dScene(cityId, container, zones2d) {
   scene.fog = new THREE.FogExp2(0x080c08, 0.0004);
 
   var camera = new THREE.PerspectiveCamera(52, w / h, 1, 10000);
-  camera.position.set(0, 545, 680);
-  camera.lookAt(0, 105, 0);
-  var _camBaseY = 545, _camBaseR = 680, _camLookY = 105;
+  camera.position.set(0, 520, 620);
+  camera.lookAt(0, 100, 0);
+  var _camBaseY = 520, _camBaseR = 620, _camLookY = 100;
   var _camTargetY = _camBaseY, _camTargetR = _camBaseR, _camTargetLookY = _camLookY;
 
   var renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false });
@@ -2934,19 +2949,22 @@ function TestView(props) {
 }
 
 function BriefingView(props) {
+  var chips = [
+    'ENGINE 1',
+    String(props.cityCount || 0) + ' CITIES',
+    String(props.scenarioCount || 0) + ' SCENARIOS',
+    String(props.testCount || 0) + ' TEST CHECKS'
+  ];
+  var demoTiles = [
+    { step: 'STEP 01', title: 'Show the country board', copy: 'Start from the national screen so the audience sees the large operating picture first.' },
+    { step: 'STEP 02', title: 'Zoom into one city', copy: 'Use the city view to show that the simulation is not a single flat screen but a layered system.' },
+    { step: 'STEP 03', title: 'Point at the sector shape', copy: 'Explain that one polygon becomes coverage logic and a real 3D defense body.' },
+    { step: 'STEP 04', title: 'Finish on the Tests tab', copy: 'Close by showing that the patch engine is verified instead of assumed.' }
+  ];
   var coreCards = [
-    {
-      title: '커스텀 렌더러가 핵심',
-      copy: '이 프로젝트의 핵심 가치는 커스텀 가상 DOM 흐름입니다. 시뮬레이터는 그 렌더링 엔진이 복잡한 인터페이스를 실제로 구동할 수 있음을 보여주는 증명 화면입니다.'
-    },
-    {
-      title: '하나의 도형이 전체에 재사용됨',
-      copy: '섹터 폴리곤은 화면에만 그려지는 것이 아닙니다. 같은 데이터가 방어 로직이 되고 3D 방어 형상이 됩니다.'
-    },
-    {
-      title: '공유 상태가 모든 화면을 묶음',
-      copy: '국가 화면, 섹터 화면, 3D 장면, 테스트 화면은 각각 따로 노는 것이 아니라 같은 시뮬레이션 상태를 함께 사용합니다.'
-    }
+    { kicker: 'WHY IT COUNTS', title: 'This is a renderer project first', copy: 'The visible simulator exists to prove a custom virtual DOM engine can drive a complex interactive interface.' },
+    { kicker: 'WHAT IS REUSED', title: 'One geometry travels through every layer', copy: 'The same sector data appears in editor input, interception logic, and 3D visualization.' },
+    { kicker: 'WHAT TO SAY', title: 'Present the architecture, not the cosmetics', copy: 'Frame the project as state flow, render flow, and geometry reuse. The defense theme is the demonstration layer.' }
   ];
 
   function svgArrow(x1, y1, x2, y2) {
@@ -2977,7 +2995,7 @@ function BriefingView(props) {
       createVNode('text', { x: String(x + 20), y: String(y + 58), class: 'briefing-svg-title' }, [createTextVNode(title)])
     ];
     for (var li = 0; li < lines.length; li++) {
-      kids.push(createVNode('text', { x: String(x + 20), y: String(y + 84 + li * 20), class: 'briefing-svg-copy' }, [createTextVNode(lines[li]) ]));
+      kids.push(createVNode('text', { x: String(x + 20), y: String(y + 88 + li * 22), class: 'briefing-svg-copy' }, [createTextVNode(lines[li])]));
     }
     return createVNode('g', {}, kids);
   }
@@ -2989,64 +3007,83 @@ function BriefingView(props) {
     ]);
   }
 
-  var architectureFigure = createVNode('svg', { class: 'briefing-svg', viewBox: '0 0 980 340', xmlns: SVG_NS }, [
-    svgArrow(250, 155, 300, 155),
-    svgArrow(520, 155, 570, 155),
-    svgArrow(790, 155, 840, 155),
-    svgNode(30, 95, 220, 132, '입력', '운용자 조작', ['시나리오 시작', '섹터 그리기', '표적 배치'], 'briefing-svg-box-strong'),
-    svgNode(300, 95, 220, 132, '상태', '시뮬레이션 데이터', ['도시와 방어 구역', '미사일과 관통 지점', '시간 흐름과 경보'], ''),
-    svgNode(570, 95, 220, 132, '엔진', '커스텀 VDOM', ['createVNode', 'diff', 'applyPatch'], 'briefing-svg-box-strong'),
+  var architectureFigure = createVNode('svg', { class: 'briefing-svg', viewBox: '0 0 980 360', xmlns: SVG_NS }, [
+    svgArrow(250, 165, 300, 165),
+    svgArrow(520, 165, 570, 165),
+    svgArrow(790, 165, 840, 165),
+    svgNode(30, 105, 220, 120, 'OPERATOR INPUT', 'Control actions', ['Scenario launch', 'Sector draw', 'Target placement'], 'briefing-svg-box-strong'),
+    svgNode(300, 105, 220, 120, 'SHARED STATE', 'Simulation data', ['Cities and sectors', 'Missiles and breaches', 'Siren and timing'], ''),
+    svgNode(570, 105, 220, 120, 'CUSTOM VDOM', 'Render engine', ['createVNode', 'diff', 'applyPatch'], 'briefing-svg-box-strong'),
     createVNode('g', {}, [
-      createVNode('rect', { x: '840', y: '58', width: '110', height: '194', rx: '18', class: 'briefing-svg-box briefing-svg-box-accent' }, []),
-      createVNode('text', { x: '860', y: '88', class: 'briefing-svg-label' }, [createTextVNode('화면')]),
-      createVNode('text', { x: '860', y: '118', class: 'briefing-svg-title' }, [createTextVNode('출력')]),
-      svgSlot(856, 136, 78, 34, '국가'),
-      svgSlot(856, 175, 78, 34, '섹터'),
-      svgSlot(856, 214, 78, 34, '3D / 테스트')
+      createVNode('rect', { x: '840', y: '65', width: '110', height: '200', rx: '18', class: 'briefing-svg-box briefing-svg-box-accent' }, []),
+      createVNode('text', { x: '860', y: '95', class: 'briefing-svg-label' }, [createTextVNode('OUTPUTS')]),
+      createVNode('text', { x: '860', y: '126', class: 'briefing-svg-title' }, [createTextVNode('Views')]),
+      svgSlot(856, 146, 78, 34, 'National'),
+      svgSlot(856, 185, 78, 34, 'Sector'),
+      svgSlot(856, 224, 78, 34, '3D / Tests')
     ]),
-    createVNode('rect', { x: '300', y: '254', width: '490', height: '52', rx: '16', class: 'briefing-svg-box' }, []),
-    createVNode('text', { x: '324', y: '278', class: 'briefing-svg-callout' }, [createTextVNode('하나의 시나리오 상태가 각 화면의 내용과 확대 시점을 함께 결정합니다.')])
+    createVNode('rect', { x: '300', y: '264', width: '490', height: '58', rx: '16', class: 'briefing-svg-box' }, []),
+    createVNode('text', { x: '324', y: '290', class: 'briefing-svg-label' }, [createTextVNode('ONE TIMELINE')]),
+    createVNode('text', { x: '324', y: '313', class: 'briefing-svg-callout' }, [createTextVNode('The same scenario state drives zoom-in timing, city focus, and every rendered view.')])
   ]);
 
-  var geometryFigure = createVNode('svg', { class: 'briefing-svg', viewBox: '0 0 980 230', xmlns: SVG_NS }, [
-    svgArrow(295, 102, 370, 102),
-    svgArrow(610, 102, 685, 102),
-    svgNode(35, 46, 260, 108, '2D 입력', '섹터 폴리곤', ['에디터에서 한 번 그림'], 'briefing-svg-box-strong'),
-    svgNode(370, 46, 240, 108, '로직', '방어 판정 로직', ['같은 점 데이터가', '방어 위치를 결정함'], ''),
-    svgNode(685, 46, 260, 108, '3D 형상', '돔 / 기둥 형태', ['같은 바닥 윤곽이', '보이는 방어 볼륨이 됨'], 'briefing-svg-box-accent'),
-    createVNode('rect', { x: '180', y: '176', width: '620', height: '36', rx: '14', class: 'briefing-svg-box' }, []),
-    createVNode('text', { x: '212', y: '199', class: 'briefing-svg-callout' }, [createTextVNode('하나의 도형 데이터가 입력, 로직, 시각화 전부에 재사용됩니다.')])
+  var geometryFigure = createVNode('svg', { class: 'briefing-svg', viewBox: '0 0 980 250', xmlns: SVG_NS }, [
+    svgArrow(295, 110, 370, 110),
+    svgArrow(610, 110, 685, 110),
+    svgNode(35, 55, 260, 110, '2D INPUT', 'Sector polygon', ['Draw once in the editor'], 'briefing-svg-box-strong'),
+    svgNode(370, 55, 240, 110, 'DEFENSE LOGIC', 'Coverage math', ['Same points decide', 'where interception happens'], ''),
+    svgNode(685, 55, 260, 110, '3D FORM', 'Dome / pillar body', ['Same footprint becomes', 'the visible defense volume'], 'briefing-svg-box-accent'),
+    createVNode('rect', { x: '170', y: '186', width: '640', height: '40', rx: '14', class: 'briefing-svg-box' }, []),
+    createVNode('text', { x: '200', y: '212', class: 'briefing-svg-callout' }, [createTextVNode('One geometry dataset is reused across input, logic, and visualization.')])
   ]);
 
   return createVNode('div', { class: 'briefing-view' + (props.visible ? ' show' : '') }, [
     createVNode('div', { class: 'briefing-hero' }, [
-      createVNode('div', { class: 'briefing-overline' }, [createTextVNode('프로젝트 브리핑')]),
-      createVNode('div', { class: 'briefing-title' }, [createTextVNode('아키텍처 우선')])
+      createVNode('div', { class: 'briefing-overline' }, [createTextVNode('PROJECT BRIEFING')]),
+      createVNode('div', { class: 'briefing-title' }, [createTextVNode('Architecture First, Explanation Second')]),
+      createVNode('div', { class: 'briefing-subtitle' }, [createTextVNode('This screen is now for presenting the core idea at a glance: what the system is, how the data moves, and why the project is clearly tied to the assignment.')]),
+      createVNode('div', { class: 'briefing-chip-row' }, chips.map(function(chip) {
+        return createVNode('span', { class: 'briefing-chip' }, [createTextVNode(chip)]);
+      }))
     ]),
     createVNode('div', { class: 'briefing-section' }, [
-      createVNode('div', { class: 'briefing-section-title' }, [createTextVNode('시스템 구조')]),
+      createVNode('div', { class: 'briefing-section-title' }, [createTextVNode('System Architecture')]),
       createVNode('div', { class: 'briefing-figure' }, [
-        createVNode('div', { class: 'briefing-figure-title' }, [createTextVNode('입력에서 화면까지 이어지는 하나의 흐름')]),
+        createVNode('div', { class: 'briefing-figure-title' }, [createTextVNode('How the project is organized')]),
+        createVNode('div', { class: 'briefing-figure-note' }, [createTextVNode('Use this as the main board when someone asks what is actually being built here. It shows the operator actions, shared simulation state, custom render engine, and final views in one picture.')]),
         architectureFigure
       ])
     ]),
     createVNode('div', { class: 'briefing-section' }, [
-      createVNode('div', { class: 'briefing-section-title' }, [createTextVNode('도형 재사용 구조')]),
+      createVNode('div', { class: 'briefing-section-title' }, [createTextVNode('Why The Geometry Matters')]),
       createVNode('div', { class: 'briefing-figure' }, [
-        createVNode('div', { class: 'briefing-figure-title' }, [createTextVNode('하나의 폴리곤, 세 가지 역할')]),
+        createVNode('div', { class: 'briefing-figure-title' }, [createTextVNode('One polygon, three jobs')]),
+        createVNode('div', { class: 'briefing-figure-note' }, [createTextVNode('This is the shortest and strongest architecture argument in the whole project: one drawn sector becomes the defense logic and the visible 3D defense shape.')]),
         geometryFigure
       ])
     ]),
     createVNode('div', { class: 'briefing-section' }, [
-      createVNode('div', { class: 'briefing-section-title' }, [createTextVNode('핵심 주장')]),
-      createVNode('div', { class: 'briefing-core-grid' }, coreCards.map(function(card) {
+      createVNode('div', { class: 'briefing-section-title' }, [createTextVNode('Core Talking Points')]),
+      createVNode('div', { class: 'briefing-board-grid' }, coreCards.map(function(card) {
         return createVNode('div', { class: 'briefing-core-card' }, [
+          createVNode('div', { class: 'briefing-core-kicker' }, [createTextVNode(card.kicker)]),
           createVNode('div', { class: 'briefing-core-title' }, [createTextVNode(card.title)]),
           createVNode('div', { class: 'briefing-core-copy' }, [createTextVNode(card.copy)])
         ]);
+      }))
+    ]),
+    createVNode('div', { class: 'briefing-section' }, [
+      createVNode('div', { class: 'briefing-section-title' }, [createTextVNode('Demo Sequence')]),
+      createVNode('div', { class: 'briefing-demo-strip' }, demoTiles.map(function(tile) {
+        return createVNode('div', { class: 'briefing-demo-tile' }, [
+          createVNode('div', { class: 'briefing-demo-step' }, [createTextVNode(tile.step)]),
+          createVNode('div', { class: 'briefing-demo-title' }, [createTextVNode(tile.title)]),
+          createVNode('div', { class: 'briefing-demo-copy' }, [createTextVNode(tile.copy)])
+        ]);
       })),
       createVNode('div', { class: 'briefing-claim' }, [
-        createVNode('div', { class: 'briefing-claim-copy' }, [createTextVNode('시뮬레이터는 시연 화면이고, 진짜 프로젝트 가치는 커스텀 렌더러와 모든 화면에 공통으로 쓰이는 상태·도형 구조에 있습니다.')])
+        createVNode('div', { class: 'briefing-claim-title' }, [createTextVNode('MAIN CLAIM')]),
+        createVNode('div', { class: 'briefing-claim-copy' }, [createTextVNode('The simulator is the demonstration surface. The real assignment value is the custom virtual DOM engine plus the reuse of shared geometry and shared state across every view.')])
       ])
     ])
   ]);
