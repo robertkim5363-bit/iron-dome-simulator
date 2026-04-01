@@ -1852,140 +1852,6 @@ var _pressedKeys = {}, _radarZones = [], _zoneId = 1;
 var _missiles = [], _missileId = 1;
 var _scenarioTimers = [];
 var _multi3dScenes = {}; // cityId → { scene, renderer, camera, animId }
-var _alertAudio = {
-  ctx: null,
-  master: null,
-  filter: null,
-  compressor: null,
-  mix: null,
-  oscA: null,
-  oscB: null,
-  lfo: null,
-  lfoGainA: null,
-  lfoGainB: null,
-  armed: false,
-  active: false,
-  wanted: false
-};
-
-function ensureAlertAudio() {
-  if (_alertAudio.ctx) return _alertAudio;
-  var Ctx = window.AudioContext || window.webkitAudioContext;
-  if (!Ctx) return null;
-  var ctx = new Ctx();
-  var master = ctx.createGain();
-  var filter = ctx.createBiquadFilter();
-  var compressor = ctx.createDynamicsCompressor();
-  master.gain.value = 0.0001;
-  filter.type = 'lowpass';
-  filter.frequency.value = 1500;
-  compressor.threshold.value = -24;
-  compressor.knee.value = 10;
-  compressor.ratio.value = 3;
-  compressor.attack.value = 0.003;
-  compressor.release.value = 0.25;
-  master.connect(filter);
-  filter.connect(compressor);
-  compressor.connect(ctx.destination);
-  _alertAudio.ctx = ctx;
-  _alertAudio.master = master;
-  _alertAudio.filter = filter;
-  _alertAudio.compressor = compressor;
-  return _alertAudio;
-}
-
-function armAlertAudio() {
-  var state = ensureAlertAudio();
-  if (!state) return;
-  state.armed = true;
-  if (state.ctx && state.ctx.state === 'suspended') state.ctx.resume();
-  if (state.wanted) startAlertSiren();
-}
-
-function startAlertSiren() {
-  var state = ensureAlertAudio();
-  if (!state) return;
-  state.wanted = true;
-  if (state.active) {
-    if (state.ctx && state.ctx.state === 'suspended') state.ctx.resume();
-    return;
-  }
-  if (!state.armed) return;
-  var ctx = state.ctx;
-  if (ctx.state === 'suspended') ctx.resume();
-  var now = ctx.currentTime;
-  var mix = ctx.createGain();
-  var oscA = ctx.createOscillator();
-  var oscB = ctx.createOscillator();
-  var lfo = ctx.createOscillator();
-  var lfoGainA = ctx.createGain();
-  var lfoGainB = ctx.createGain();
-
-  mix.gain.value = 0.15;
-  oscA.type = 'sawtooth';
-  oscA.frequency.value = 530;
-  oscB.type = 'triangle';
-  oscB.frequency.value = 690;
-  oscB.detune.value = 6;
-  lfo.type = 'sine';
-  lfo.frequency.value = 0.68;
-  lfoGainA.gain.value = 180;
-  lfoGainB.gain.value = 150;
-
-  lfo.connect(lfoGainA);
-  lfo.connect(lfoGainB);
-  lfoGainA.connect(oscA.frequency);
-  lfoGainB.connect(oscB.frequency);
-  oscA.connect(mix);
-  oscB.connect(mix);
-  mix.connect(state.master);
-
-  state.master.gain.cancelScheduledValues(now);
-  state.master.gain.setValueAtTime(0.0001, now);
-  state.master.gain.linearRampToValueAtTime(0.18, now + 0.18);
-
-  oscA.start(now);
-  oscB.start(now);
-  lfo.start(now);
-
-  state.mix = mix;
-  state.oscA = oscA;
-  state.oscB = oscB;
-  state.lfo = lfo;
-  state.lfoGainA = lfoGainA;
-  state.lfoGainB = lfoGainB;
-  state.active = true;
-}
-
-function stopAlertSiren() {
-  var state = _alertAudio;
-  state.wanted = false;
-  if (!state.active || !state.ctx) return;
-  var now = state.ctx.currentTime;
-  var stopAt = now + 0.3;
-
-  state.master.gain.cancelScheduledValues(now);
-  state.master.gain.setValueAtTime(Math.max(0.0001, state.master.gain.value || 0.0001), now);
-  state.master.gain.linearRampToValueAtTime(0.0001, stopAt);
-
-  try { state.oscA.stop(stopAt); } catch (e) {}
-  try { state.oscB.stop(stopAt); } catch (e) {}
-  try { state.lfo.stop(stopAt); } catch (e) {}
-
-  state.active = false;
-  state.mix = null;
-  state.oscA = null;
-  state.oscB = null;
-  state.lfo = null;
-  state.lfoGainA = null;
-  state.lfoGainB = null;
-}
-
-function setAlertSirenActive(active) {
-  _alertAudio.wanted = active;
-  if (active) startAlertSiren();
-  else stopAlertSiren();
-}
 
 function App() {
   var _s = function(v) { var r = useState(v); return r; };
@@ -2036,18 +1902,6 @@ function App() {
   useEffect(function() {
     var simH = window.innerHeight - SIM_TOP - SIM_BOTTOM;
     setDronePos({ x: Math.round(window.innerWidth / 2), y: Math.round(simH / 2) });
-  }, []);
-
-  // 경보 오디오 활성화
-  useEffect(function() {
-    function arm() { armAlertAudio(); }
-    document.addEventListener('pointerdown', arm, true);
-    document.addEventListener('keydown', arm, true);
-    return function() {
-      document.removeEventListener('pointerdown', arm, true);
-      document.removeEventListener('keydown', arm, true);
-      stopAlertSiren();
-    };
   }, []);
 
   // 키보드 + 게임루프
@@ -2523,14 +2377,6 @@ function App() {
   var activeMissiles = useMemo(function() {
     return missiles.filter(function(m) { return m.active && !m.intercepted; }).length;
   }, [missiles]);
-
-  var alertSirenActive = useMemo(function() {
-    return natMissiles.length > 0 || activeMissiles > 0 || attackedCities.length > 0;
-  }, [natMissiles, activeMissiles, attackedCities]);
-
-  useEffect(function() {
-    setAlertSirenActive(alertSirenActive);
-  }, [alertSirenActive]);
 
   // 3D 씬 초기화/파괴
   useEffect(function() {

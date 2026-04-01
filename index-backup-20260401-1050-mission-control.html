@@ -3,9 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>National Air Defense Command Console</title>
+<title>National Air Defense Operations Console</title>
 <style>
-@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=IBM+Plex+Sans:wght@300;400;500;600;700&family=Rajdhani:wght@500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=IBM+Plex+Sans:wght@300;400;500;600;700&display=swap');
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
 :root{
   --surface:rgba(12,18,12,.88);--surface2:rgba(18,28,18,.92);
@@ -14,7 +14,7 @@
   --radar-green:#00ff41;--radar-dim:rgba(0,255,65,.08);
   --alert-red:#ff4444;--drone-blue:#00e5ff;--missile-orange:#ff9100;
   --radius:8px;--radius-lg:20px;
-  --mono:'IBM Plex Mono',monospace;--sans:'IBM Plex Sans',system-ui,sans-serif;--display:'Rajdhani',var(--sans);
+  --mono:'IBM Plex Mono',monospace;--sans:'IBM Plex Sans',system-ui,sans-serif;
 }
 html,body{width:100%;height:100%;overflow:hidden;font-family:var(--sans);background:#080c08;color:var(--text)}
 
@@ -25,14 +25,14 @@ html,body{width:100%;height:100%;overflow:hidden;font-family:var(--sans);backgro
   background:var(--surface2);border-bottom:1px solid var(--border);
   backdrop-filter:blur(16px);
 }
-.topbar-logo{font:700 15px var(--display);color:var(--radar-green);letter-spacing:.14em;display:flex;align-items:center;gap:8px;text-transform:uppercase}
+.topbar-logo{font:700 13px var(--mono);color:var(--radar-green);letter-spacing:.08em;display:flex;align-items:center;gap:8px}
 .topbar-logo .dot{width:8px;height:8px;border-radius:50%;background:var(--radar-green);animation:pulse-dot 2s ease infinite}
 @keyframes pulse-dot{0%,100%{opacity:1;box-shadow:0 0 4px var(--radar-green)}50%{opacity:.4;box-shadow:0 0 12px var(--radar-green)}}
 .topbar-loc{font:400 11px var(--mono);color:var(--text3);margin-left:4px}
 .topbar-tabs{display:flex;gap:2px;margin-left:auto;background:rgba(0,0,0,.3);border-radius:var(--radius);padding:3px;border:1px solid var(--border)}
 .tab-btn{
-  padding:5px 14px;border:none;border-radius:6px;font:600 12px var(--display);
-  letter-spacing:.08em;text-transform:uppercase;color:var(--text3);background:transparent;cursor:pointer;transition:all .2s;
+  padding:5px 14px;border:none;border-radius:6px;font:500 11px var(--sans);
+  color:var(--text3);background:transparent;cursor:pointer;transition:all .2s;
 }
 .tab-btn.active{background:rgba(0,255,65,.12);color:var(--radar-green)}
 .tab-btn:hover:not(.active){color:var(--text2)}
@@ -132,13 +132,13 @@ html,body{width:100%;height:100%;overflow:hidden;font-family:var(--sans);backgro
   position:fixed;top:62px;left:50%;transform:translateX(-50%);z-index:90;
   padding:8px 20px;border-radius:var(--radius-lg);
   background:rgba(255,200,0,.12);border:1px solid rgba(255,200,0,.3);
-  font:600 12px var(--display);letter-spacing:.08em;text-transform:uppercase;color:#ffe38a;pointer-events:none;
+  font:500 12px var(--sans);color:#ffe38a;pointer-events:none;
 }
 .ratio-warn{
   position:fixed;top:62px;left:50%;transform:translateX(-50%);z-index:91;
   padding:8px 20px;border-radius:var(--radius-lg);
   background:rgba(255,68,68,.15);border:1px solid rgba(255,68,68,.35);
-  font:600 12px var(--display);letter-spacing:.08em;text-transform:uppercase;color:#ff8a8a;pointer-events:none;
+  font:500 12px var(--sans);color:#ff8a8a;pointer-events:none;
 }
 
 /* ═══ STATUS BAR ═══ */
@@ -155,8 +155,8 @@ html,body{width:100%;height:100%;overflow:hidden;font-family:var(--sans);backgro
 .indicator.orange{background:var(--missile-orange);box-shadow:0 0 6px var(--missile-orange)}
 .status-btn{
   padding:5px 12px;border:1px solid var(--border);border-radius:var(--radius);
-  background:rgba(0,255,65,.06);color:var(--text2);font:600 11px var(--display);
-  letter-spacing:.08em;text-transform:uppercase;cursor:pointer;transition:all .2s;white-space:nowrap;
+  background:rgba(0,255,65,.06);color:var(--text2);font:500 10px var(--sans);
+  cursor:pointer;transition:all .2s;white-space:nowrap;
 }
 .status-btn:hover{background:rgba(0,255,65,.14);border-color:var(--border2);color:var(--radar-green)}
 .status-btn.active{background:rgba(255,200,0,.12);border-color:rgba(255,200,0,.3);color:#ffe38a}
@@ -197,8 +197,8 @@ html,body{width:100%;height:100%;overflow:hidden;font-family:var(--sans);backgro
 .test-view{position:fixed;inset:52px 0 44px 0;background:var(--surface);overflow-y:auto;padding:32px;display:none}
 .test-view.show{display:block}
 .sim-view.hidden{display:none}
-.test-title{font:700 22px var(--display);color:var(--radar-green);letter-spacing:.12em;text-transform:uppercase;margin-bottom:8px}
-.test-subtitle{font:600 13px var(--display);color:var(--text3);letter-spacing:.08em;text-transform:uppercase;margin-bottom:28px}
+.test-title{font:700 20px var(--mono);color:var(--radar-green);margin-bottom:8px}
+.test-subtitle{font:400 13px var(--sans);color:var(--text3);margin-bottom:28px}
 .test-card{
   padding:14px 18px;margin-bottom:8px;border-radius:var(--radius);
   border:1px solid var(--border);background:rgba(0,255,65,.03);
@@ -211,7 +211,7 @@ html,body{width:100%;height:100%;overflow:hidden;font-family:var(--sans);backgro
 }
 .test-badge.pass{background:rgba(0,255,65,.14);color:var(--radar-green);border:1px solid rgba(0,255,65,.3)}
 .test-badge.fail{background:rgba(255,68,68,.14);color:var(--alert-red);border:1px solid rgba(255,68,68,.3)}
-.test-name{font:600 14px var(--display);color:var(--text);letter-spacing:.05em;text-transform:uppercase;flex:1}
+.test-name{font:500 13px var(--sans);color:var(--text);flex:1}
 .test-detail{font:400 11px var(--mono);color:var(--text3)}
 .test-type-badge{
   padding:2px 8px;border-radius:4px;font:600 9px var(--mono);letter-spacing:.06em;
@@ -252,7 +252,7 @@ html,body{width:100%;height:100%;overflow:hidden;font-family:var(--sans);backgro
 @keyframes dash-flow{to{stroke-dashoffset:-14}}
 .alert-banner{
   position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);z-index:50;
-  font:700 30px var(--display);letter-spacing:.12em;color:var(--alert-red);text-align:center;
+  font:700 28px var(--mono);color:var(--alert-red);text-align:center;
   text-shadow:0 0 30px var(--alert-red),0 0 60px rgba(255,68,68,.4);
   animation:alert-flash .5s ease infinite alternate;pointer-events:none;
   background:rgba(0,0,0,.6);padding:16px 40px;border:2px solid var(--alert-red);border-radius:var(--radius-lg);
@@ -789,27 +789,27 @@ var _natMissileId = 0;
 
 function TopBar(props) {
   var modeEl = [];
-  if (props.activeView === '3d' && props.targetMode) modeEl.push(createVNode('span', { class: 'topbar-mode mode-target' }, [createTextVNode('TARGET DESIGNATION')]));
-  else if (props.activeView === '3d') modeEl.push(createVNode('span', { class: 'topbar-mode mode-fly' }, [createTextVNode('TERMINAL TRACKING')]));
+  if (props.activeView === '3d' && props.targetMode) modeEl.push(createVNode('span', { class: 'topbar-mode mode-target' }, [createTextVNode('ENGAGEMENT CONTROL')]));
+  else if (props.activeView === '3d') modeEl.push(createVNode('span', { class: 'topbar-mode mode-fly' }, [createTextVNode('3D ANALYSIS')]));
   else if (props.isDrawing) modeEl.push(createVNode('span', { class: 'topbar-mode mode-draw' }, [createTextVNode('SECTOR CONFIGURATION')]));
-  else modeEl.push(createVNode('span', { class: 'topbar-mode mode-fly' }, [createTextVNode('MISSION SURVEILLANCE')]));
+  else modeEl.push(createVNode('span', { class: 'topbar-mode mode-fly' }, [createTextVNode('SURVEILLANCE TRACK')]));
 
   return createVNode('div', { class: 'topbar' }, [
     createVNode('div', { class: 'topbar-logo' }, [
       createVNode('span', { class: 'dot' }, []),
-      createTextVNode('AIR DEFENSE COMMAND')
+      createTextVNode('AIR DEFENSE OPERATIONS')
     ]),
     createVNode('span', { class: 'topbar-loc' }, [createTextVNode(
-      props.activeView === 'national' ? 'Israel · National Air Defense Command Center' :
-      props.activeView === 'multi3d' ? 'Israel · Terminal Intercept Tracking Grid' :
-      'Israel · Urban Defense Sector Console'
+      props.activeView === 'national' ? 'Israel · National Air Defense Operations Center' :
+      props.activeView === 'multi3d' ? 'Israel · Terminal Intercept Analysis Grid' :
+      'Israel · Urban Terminal Defense Sector'
     )]),
   ].concat(modeEl).concat([
     createVNode('div', { class: 'topbar-tabs' }, [
-      createVNode('button', { class: 'tab-btn' + (props.activeView === 'national' ? ' active' : ''), 'data-action': 'view-national' }, [createTextVNode('Command Overview')]),
-      createVNode('button', { class: 'tab-btn' + (props.activeView === 'sim' ? ' active' : ''), 'data-action': 'view-sim' }, [createTextVNode('Sector Control')]),
-      createVNode('button', { class: 'tab-btn' + (props.activeView === '3d' || props.activeView === 'multi3d' ? ' active' : ''), 'data-action': 'view-3d' }, [createTextVNode('3D Tracking')]),
-      createVNode('button', { class: 'tab-btn' + (props.activeView === 'test' ? ' active' : ''), 'data-action': 'view-test' }, [createTextVNode('Systems Check')])
+      createVNode('button', { class: 'tab-btn' + (props.activeView === 'national' ? ' active' : ''), 'data-action': 'view-national' }, [createTextVNode('National Command')]),
+      createVNode('button', { class: 'tab-btn' + (props.activeView === 'sim' ? ' active' : ''), 'data-action': 'view-sim' }, [createTextVNode('Urban Sector')]),
+      createVNode('button', { class: 'tab-btn' + (props.activeView === '3d' || props.activeView === 'multi3d' ? ' active' : ''), 'data-action': 'view-3d' }, [createTextVNode('3D Analysis')]),
+      createVNode('button', { class: 'tab-btn' + (props.activeView === 'test' ? ' active' : ''), 'data-action': 'view-test' }, [createTextVNode('Diagnostics')])
     ])
   ]));
 }
@@ -831,8 +831,8 @@ function SimView(props) {
     var capColor = capPct > 50 ? 'rgba(0,255,65,' : (capPct > 20 ? 'rgba(255,145,0,' : 'rgba(255,68,68,');
     zoneEls.push(createVNode('g', {}, [
       createVNode('polygon', { points: pts, fill: capColor + '0.25)', stroke: capColor + '0.85)', 'stroke-width': '3', 'stroke-dasharray': '10,5', class: 'radar-zone' }, []),
-      createVNode('text', { x: String(zone.center.x), y: String(zone.center.y - 8), fill: capColor + '0.7)', 'font-size': '9', 'font-family': 'IBM Plex Mono', 'text-anchor': 'middle' }, [createTextVNode('SECTOR ' + zone.id)]),
-      createVNode('text', { x: String(zone.center.x), y: String(zone.center.y + 6), fill: capColor + '0.9)', 'font-size': '11', 'font-family': 'IBM Plex Mono', 'font-weight': '700', 'text-anchor': 'middle' }, [createTextVNode(zone.capacity + '/5000')])
+      createVNode('text', { x: String(zone.center.x), y: String(zone.center.y - 8), fill: capColor + '0.7)', 'font-size': '9', 'font-family': 'Roboto Mono', 'text-anchor': 'middle' }, [createTextVNode('SECTOR ' + zone.id)]),
+      createVNode('text', { x: String(zone.center.x), y: String(zone.center.y + 6), fill: capColor + '0.9)', 'font-size': '11', 'font-family': 'Roboto Mono', 'font-weight': '700', 'text-anchor': 'middle' }, [createTextVNode(zone.capacity + '/5000')])
     ]));
   }
 
@@ -903,7 +903,7 @@ function SimView(props) {
   // Intercept messages
   var msgEls = [];
   if (props.interceptPos) {
-    msgEls.push(createVNode('div', { class: 'intercept-msg', style: 'left:' + props.interceptPos.x + 'px;top:' + props.interceptPos.y + 'px' }, [createTextVNode('INTERCEPT CONFIRMED')]));
+    msgEls.push(createVNode('div', { class: 'intercept-msg', style: 'left:' + props.interceptPos.x + 'px;top:' + props.interceptPos.y + 'px' }, [createTextVNode('INTERCEPTED')]));
   }
 
   return createVNode('div', { class: cls, style: satStyle, 'data-sim': 'true' },
@@ -928,7 +928,7 @@ function InfoPanel(props) {
   return createVNode('div', { class: 'info-panel' }, [
     createVNode('div', { class: 'info-section' }, [
       createVNode('div', { class: 'info-label' }, [createTextVNode('DISPLAY MODE')]),
-      createVNode('div', { class: 'info-value' }, [createTextVNode(props.activeView === '3d' ? 'Terminal Intercept Tracking' : 'Urban Sector Control')])
+      createVNode('div', { class: 'info-value' }, [createTextVNode(props.activeView === '3d' ? 'Terminal Intercept Analysis' : 'Urban Sector Simulation')])
     ]),
     createVNode('div', { class: 'info-section' }, [
       createVNode('div', { class: 'info-label' }, [createTextVNode('CURRENT TIME')]),
@@ -936,7 +936,7 @@ function InfoPanel(props) {
     ]),
     createVNode('div', { class: 'info-section' }, [
       createVNode('div', { class: 'info-label' }, [createTextVNode('INTERCEPT CAPACITY')]),
-      createVNode('div', { class: 'info-value' }, [createTextVNode(totalCap + ' rounds available')]),
+      createVNode('div', { class: 'info-value' }, [createTextVNode(totalCap + ' intercepts')]),
       createVNode('div', { class: 'info-bar' }, [
         createVNode('div', { class: 'info-bar-fill green', style: 'width:' + Math.min(100, totalCap / 3) + '%' }, [])
       ])
@@ -944,19 +944,19 @@ function InfoPanel(props) {
     createVNode('div', { class: 'info-section' }, [
       createVNode('div', { class: 'info-label' }, [createTextVNode('TOTAL THREAT TRACKS')]),
       createVNode('div', { class: 'info-value', style: props.totalAttacks > 0 ? 'color:var(--missile-orange)' : '' }, [
-        createTextVNode(props.totalAttacks + ' registered')
+        createTextVNode(props.totalAttacks + ' tracked')
       ])
     ]),
     createVNode('div', { class: 'info-section' }, [
       createVNode('div', { class: 'info-label' }, [createTextVNode('ACTIVE INBOUND TRACKS')]),
       createVNode('div', { class: 'info-value', style: props.activeMissiles > 0 ? 'color:var(--missile-orange)' : '' }, [
-        createTextVNode(props.activeMissiles + ' inbound')
+        createTextVNode(props.activeMissiles + ' active')
       ])
     ]),
     createVNode('div', { class: 'info-section' }, [
       createVNode('div', { class: 'info-label' }, [createTextVNode('CONFIRMED PENETRATIONS')]),
       createVNode('div', { class: 'info-value', style: props.breachCount > 0 ? 'color:var(--alert-red)' : '' }, [
-        createTextVNode(props.breachCount + ' penetrations')
+        createTextVNode(props.breachCount + ' confirmed')
       ])
     ]),
     createVNode('div', { class: 'info-section' }, [
@@ -970,48 +970,48 @@ function StatusBar(props) {
   var items = [
     createVNode('span', { class: 'status-item' }, [
       createVNode('span', { class: 'indicator ' + (props.droneAlive ? 'green' : 'red') }, []),
-      createTextVNode('UAV STATUS:' + (props.droneAlive ? 'ONLINE' : 'OFFLINE'))
+      createTextVNode('UAV:' + (props.droneAlive ? 'ONLINE' : 'OFFLINE'))
     ]),
     createVNode('span', { class: 'status-item' }, [
       createVNode('span', { class: 'indicator green' }, []),
-      createTextVNode('SECTORS:' + props.zoneCount)
+      createTextVNode('Sectors:' + props.zoneCount)
     ])
   ];
 
   items.push(createVNode('span', { class: 'status-item' }, [
     createVNode('span', { class: 'indicator green' }, []),
-    createTextVNode('LOCAL:' + props.currentTimeLabel)
+    createTextVNode('Local:' + props.currentTimeLabel)
   ]));
 
   items.push(createVNode('span', { class: 'status-item' }, [
     createVNode('span', { class: 'indicator orange' }, []),
-    createTextVNode('THREATS:' + props.totalAttacks)
+    createTextVNode('Threats:' + props.totalAttacks)
   ]));
 
   if (props.activeMissiles > 0) {
     items.push(createVNode('span', { class: 'status-item' }, [
       createVNode('span', { class: 'indicator orange' }, []),
-      createTextVNode('INBOUND:' + props.activeMissiles)
+      createTextVNode('Inbound:' + props.activeMissiles)
     ]));
   }
 
   if (props.activeView === 'sim') {
     items.push(createVNode('button', { class: 'status-btn' + (props.isDrawing ? ' active' : ''), 'data-action': 'toggle-draw' }, [
-      createTextVNode(props.isDrawing ? 'CONFIGURING' : 'ESTABLISH SECTOR')
+      createTextVNode(props.isDrawing ? 'CONFIGURING' : 'DEFINE SECTOR')
     ]));
     if (!props.droneAlive) {
-      items.push(createVNode('button', { class: 'status-btn respawn', 'data-action': 'respawn' }, [createTextVNode('RESTORE UAV')]));
+      items.push(createVNode('button', { class: 'status-btn respawn', 'data-action': 'respawn' }, [createTextVNode('RESET UAV')]));
     }
     if (props.zoneCount > 0) {
-      items.push(createVNode('button', { class: 'status-btn clear', 'data-action': 'clear-all' }, [createTextVNode('CLEAR OVERLAY')]));
+      items.push(createVNode('button', { class: 'status-btn clear', 'data-action': 'clear-all' }, [createTextVNode('CLEAR TRACKS')]));
     }
   }
   if (props.activeView === '3d') {
     items.push(createVNode('button', { class: 'status-btn' + (props.targetMode ? ' target-active' : ''), 'data-action': 'toggle-target' }, [
-      createTextVNode(props.targetMode ? 'TARGET DESIGNATION ARMED' : 'DESIGNATE TARGET')
+      createTextVNode(props.targetMode ? 'ENGAGEMENT ARMED' : 'ENGAGE')
     ]));
     if (props.zoneCount > 0) {
-      items.push(createVNode('button', { class: 'status-btn clear', 'data-action': 'clear-all' }, [createTextVNode('CLEAR ANALYSIS')]));
+      items.push(createVNode('button', { class: 'status-btn clear', 'data-action': 'clear-all' }, [createTextVNode('✕ Clear')]));
     }
   }
 
@@ -1028,21 +1028,21 @@ function ControlsHelp(props) {
   return createVNode('div', { class: 'controls-help' }, [
     createVNode('div', {}, [
       createVNode('span', { class: 'key' }, [createTextVNode('↑↓←→')]),
-      createTextVNode(' Reposition reconnaissance vehicle')
+      createTextVNode(' Maneuver reconnaissance vehicle')
     ]),
     createVNode('div', {}, [
-      createTextVNode('Select a map point to assign an inbound threat track')
+      createTextVNode('Select a map point to assign an inbound strike package')
     ]),
     createVNode('div', {}, [
-      createTextVNode('Press and drag to establish a defended sector')
+      createTextVNode('Press and drag to define a defended sector')
     ])
   ]);
 }
 
 function DrawHint(props) {
-  if (props.ratioWarn) return createVNode('div', { class: 'ratio-warn' }, [createTextVNode(typeof props.ratioWarn === 'string' ? props.ratioWarn : 'Sector boundary invalid')]);
+  if (props.ratioWarn) return createVNode('div', { class: 'ratio-warn' }, [createTextVNode(typeof props.ratioWarn === 'string' ? props.ratioWarn : 'Sector geometry invalid')]);
   if (!props.isDrawing || props.activeView !== 'sim') return createVNode('div', { style: 'display:none' }, []);
-  return createVNode('div', { class: 'draw-hint' }, [createTextVNode('Press and drag to establish a defended sector. Release to commit the boundary.')]);
+  return createVNode('div', { class: 'draw-hint' }, [createTextVNode('Press and drag to define a defended sector. Release to commit geometry.')]);
 }
 
 // ══════════════════════════════════════════════════════════
@@ -1735,25 +1735,25 @@ function NationalView(props) {
   if (!props.scenarioRunning) {
     scenarioBtn.push(createVNode('div', { style: 'margin-top:8px' }, [
       createVNode('button', { class: 'status-btn target-active', 'data-action': 'run-scenario', style: 'font-size:10px;padding:4px 10px' }, [
-        createTextVNode('EXECUTE OPERATION TRUE PROMISE')
+        createTextVNode('RUN OPERATION TRUE PROMISE')
       ])
     ]));
   } else {
     scenarioBtn.push(createVNode('div', { style: 'margin-top:6px;color:var(--alert-red)' }, [
-      createTextVNode('SCENARIO EXECUTION ACTIVE')
+      createTextVNode('SCENARIO PLAYBACK ACTIVE')
     ]));
   }
 
   var hudEl = createVNode('div', { class: 'national-hud' }, [
-    createTextVNode('[ NATIONAL AIR DEFENSE COMMAND ]'),
+    createTextVNode('[ NATIONAL AIR DEFENSE OPERATIONS ]'),
     createVNode('br', {}, []),
     createTextVNode('Protected cities: ' + DEFENSE_CITIES.length + '  Threat corridors: ' + THREAT_ORIGINS.length),
     createVNode('br', {}, []),
     createTextVNode('Active threat tracks: ' + props.natMissiles.filter(function(m){return m.active;}).length),
     createVNode('br', {}, []),
-    createTextVNode('Select a launch corridor to initiate an inbound threat package'),
+    createTextVNode('Select a launch corridor to inject a threat package'),
     createVNode('br', {}, []),
-    createTextVNode('Select a city to open terminal intercept tracking')
+    createTextVNode('Select a city to open terminal intercept analysis')
   ].concat(scenarioBtn));
 
   var svgEl = createVNode('svg', { class: 'national-svg', xmlns: SVG_NS }, cityEls.concat(threatEls).concat(missileEls));
@@ -1766,7 +1766,7 @@ function View3D(props) {
   var cls = 'view-3d' + (props.visible ? '' : ' hidden') + (props.targetMode ? ' targeting' : '');
   var stats = 'ATTACKS: ' + props.totalAttacks + '  MISSILES: ' + props.activeMissiles + '  ZONES: ' + props.radarZones.length + '  BREACHES: ' + props.breachCount;
   var hudChildren = [
-    createTextVNode('[ TERMINAL INTERCEPT TRACKING ]'),
+    createTextVNode('[ TERMINAL INTERCEPT ANALYSIS ]'),
     createVNode('br', {}, []),
     createTextVNode('TIME: ' + props.currentTimeLabel),
     createVNode('br', {}, []),
@@ -1774,7 +1774,7 @@ function View3D(props) {
   ];
   if (props.targetMode) {
     hudChildren.push(createVNode('br', {}, []));
-    hudChildren.push(createTextVNode('[ Select an impact point to assign inbound threat tracks ]'));
+    hudChildren.push(createTextVNode('[ Select an impact point to assign inbound tracks ]'));
   }
   return createVNode('div', { class: cls, 'data-3d': 'true' }, [
     createVNode('div', { class: 'view-3d-hud' }, hudChildren)
@@ -1792,8 +1792,8 @@ function TestView(props) {
   });
   var pc = props.results.filter(function(r) { return r.pass; }).length;
   return createVNode('div', { class: 'test-view' + (props.visible ? ' show' : '') }, [
-    createVNode('div', { class: 'test-title' }, [createTextVNode('Virtual DOM Systems Check Suite')]),
-    createVNode('div', { class: 'test-subtitle' }, [createTextVNode(pc + '/' + props.results.length + ' VERIFIED · DIFF ENGINE REGRESSION CHECKS')])
+    createVNode('div', { class: 'test-title' }, [createTextVNode('Virtual DOM Diagnostics Suite')]),
+    createVNode('div', { class: 'test-subtitle' }, [createTextVNode(pc + '/' + props.results.length + ' verified — diff engine regression checks')])
   ].concat(cards));
 }
 
@@ -1852,140 +1852,6 @@ var _pressedKeys = {}, _radarZones = [], _zoneId = 1;
 var _missiles = [], _missileId = 1;
 var _scenarioTimers = [];
 var _multi3dScenes = {}; // cityId → { scene, renderer, camera, animId }
-var _alertAudio = {
-  ctx: null,
-  master: null,
-  filter: null,
-  compressor: null,
-  mix: null,
-  oscA: null,
-  oscB: null,
-  lfo: null,
-  lfoGainA: null,
-  lfoGainB: null,
-  armed: false,
-  active: false,
-  wanted: false
-};
-
-function ensureAlertAudio() {
-  if (_alertAudio.ctx) return _alertAudio;
-  var Ctx = window.AudioContext || window.webkitAudioContext;
-  if (!Ctx) return null;
-  var ctx = new Ctx();
-  var master = ctx.createGain();
-  var filter = ctx.createBiquadFilter();
-  var compressor = ctx.createDynamicsCompressor();
-  master.gain.value = 0.0001;
-  filter.type = 'lowpass';
-  filter.frequency.value = 1500;
-  compressor.threshold.value = -24;
-  compressor.knee.value = 10;
-  compressor.ratio.value = 3;
-  compressor.attack.value = 0.003;
-  compressor.release.value = 0.25;
-  master.connect(filter);
-  filter.connect(compressor);
-  compressor.connect(ctx.destination);
-  _alertAudio.ctx = ctx;
-  _alertAudio.master = master;
-  _alertAudio.filter = filter;
-  _alertAudio.compressor = compressor;
-  return _alertAudio;
-}
-
-function armAlertAudio() {
-  var state = ensureAlertAudio();
-  if (!state) return;
-  state.armed = true;
-  if (state.ctx && state.ctx.state === 'suspended') state.ctx.resume();
-  if (state.wanted) startAlertSiren();
-}
-
-function startAlertSiren() {
-  var state = ensureAlertAudio();
-  if (!state) return;
-  state.wanted = true;
-  if (state.active) {
-    if (state.ctx && state.ctx.state === 'suspended') state.ctx.resume();
-    return;
-  }
-  if (!state.armed) return;
-  var ctx = state.ctx;
-  if (ctx.state === 'suspended') ctx.resume();
-  var now = ctx.currentTime;
-  var mix = ctx.createGain();
-  var oscA = ctx.createOscillator();
-  var oscB = ctx.createOscillator();
-  var lfo = ctx.createOscillator();
-  var lfoGainA = ctx.createGain();
-  var lfoGainB = ctx.createGain();
-
-  mix.gain.value = 0.15;
-  oscA.type = 'sawtooth';
-  oscA.frequency.value = 530;
-  oscB.type = 'triangle';
-  oscB.frequency.value = 690;
-  oscB.detune.value = 6;
-  lfo.type = 'sine';
-  lfo.frequency.value = 0.68;
-  lfoGainA.gain.value = 180;
-  lfoGainB.gain.value = 150;
-
-  lfo.connect(lfoGainA);
-  lfo.connect(lfoGainB);
-  lfoGainA.connect(oscA.frequency);
-  lfoGainB.connect(oscB.frequency);
-  oscA.connect(mix);
-  oscB.connect(mix);
-  mix.connect(state.master);
-
-  state.master.gain.cancelScheduledValues(now);
-  state.master.gain.setValueAtTime(0.0001, now);
-  state.master.gain.linearRampToValueAtTime(0.18, now + 0.18);
-
-  oscA.start(now);
-  oscB.start(now);
-  lfo.start(now);
-
-  state.mix = mix;
-  state.oscA = oscA;
-  state.oscB = oscB;
-  state.lfo = lfo;
-  state.lfoGainA = lfoGainA;
-  state.lfoGainB = lfoGainB;
-  state.active = true;
-}
-
-function stopAlertSiren() {
-  var state = _alertAudio;
-  state.wanted = false;
-  if (!state.active || !state.ctx) return;
-  var now = state.ctx.currentTime;
-  var stopAt = now + 0.3;
-
-  state.master.gain.cancelScheduledValues(now);
-  state.master.gain.setValueAtTime(Math.max(0.0001, state.master.gain.value || 0.0001), now);
-  state.master.gain.linearRampToValueAtTime(0.0001, stopAt);
-
-  try { state.oscA.stop(stopAt); } catch (e) {}
-  try { state.oscB.stop(stopAt); } catch (e) {}
-  try { state.lfo.stop(stopAt); } catch (e) {}
-
-  state.active = false;
-  state.mix = null;
-  state.oscA = null;
-  state.oscB = null;
-  state.lfo = null;
-  state.lfoGainA = null;
-  state.lfoGainB = null;
-}
-
-function setAlertSirenActive(active) {
-  _alertAudio.wanted = active;
-  if (active) startAlertSiren();
-  else stopAlertSiren();
-}
 
 function App() {
   var _s = function(v) { var r = useState(v); return r; };
@@ -2036,18 +1902,6 @@ function App() {
   useEffect(function() {
     var simH = window.innerHeight - SIM_TOP - SIM_BOTTOM;
     setDronePos({ x: Math.round(window.innerWidth / 2), y: Math.round(simH / 2) });
-  }, []);
-
-  // 경보 오디오 활성화
-  useEffect(function() {
-    function arm() { armAlertAudio(); }
-    document.addEventListener('pointerdown', arm, true);
-    document.addEventListener('keydown', arm, true);
-    return function() {
-      document.removeEventListener('pointerdown', arm, true);
-      document.removeEventListener('keydown', arm, true);
-      stopAlertSiren();
-    };
   }, []);
 
   // 키보드 + 게임루프
@@ -2523,14 +2377,6 @@ function App() {
   var activeMissiles = useMemo(function() {
     return missiles.filter(function(m) { return m.active && !m.intercepted; }).length;
   }, [missiles]);
-
-  var alertSirenActive = useMemo(function() {
-    return natMissiles.length > 0 || activeMissiles > 0 || attackedCities.length > 0;
-  }, [natMissiles, activeMissiles, attackedCities]);
-
-  useEffect(function() {
-    setAlertSirenActive(alertSirenActive);
-  }, [alertSirenActive]);
 
   // 3D 씬 초기화/파괴
   useEffect(function() {
