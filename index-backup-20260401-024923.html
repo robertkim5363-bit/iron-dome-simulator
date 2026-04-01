@@ -45,7 +45,7 @@ html,body{width:100%;height:100%;overflow:hidden;font-family:var(--sans);backgro
 .topbar-mode.mode-fly{background:rgba(0,229,255,.12);border:1px solid rgba(0,229,255,.3);color:var(--drone-blue)}
 
 /* ═══ SIM VIEW ═══ */
-.sim-view{position:fixed;inset:52px 0 44px 0;background:#0a1208 no-repeat;background-size:100% 100%;overflow:hidden}
+.sim-view{position:fixed;inset:52px 0 44px 0;background:#0a1208 center/cover no-repeat;overflow:hidden}
 .sim-view.drawing-mode{cursor:crosshair}
 .sim-view.target-mode{cursor:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24'%3E%3Ccircle cx='12' cy='12' r='10' fill='none' stroke='%23ff4444' stroke-width='2'/%3E%3Cline x1='12' y1='2' x2='12' y2='22' stroke='%23ff4444' stroke-width='1'/%3E%3Cline x1='2' y1='12' x2='22' y2='12' stroke='%23ff4444' stroke-width='1'/%3E%3C/svg%3E") 12 12, crosshair}
 
@@ -238,49 +238,6 @@ html,body{width:100%;height:100%;overflow:hidden;font-family:var(--sans);backgro
   transform:translate(-50%,-50%);animation:intercept-fade 1.5s ease forwards;
 }
 @keyframes intercept-fade{0%{opacity:1;transform:translate(-50%,-50%) scale(1)}100%{opacity:0;transform:translate(-50%,-80%) scale(1.3)}}
-
-/* ═══ NATIONAL VIEW ═══ */
-.national-view{position:fixed;inset:52px 0 44px 0;background:#080c08 no-repeat;background-size:100% 100%;overflow:hidden}
-.national-view.hidden{display:none}
-.national-svg{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:10}
-.city-marker{cursor:pointer;pointer-events:all}
-.city-marker:hover .city-ring{stroke-width:3}
-.threat-label{font:600 9px var(--mono);fill:var(--alert-red);opacity:0.7}
-.city-label{font:600 10px var(--mono);fill:var(--radar-green)}
-.city-ring{stroke-width:2;fill-opacity:0.15}
-.missile-path{stroke-dasharray:8,6;animation:dash-flow 1s linear infinite}
-@keyframes dash-flow{to{stroke-dashoffset:-14}}
-.alert-banner{
-  position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);z-index:50;
-  font:700 28px var(--mono);color:var(--alert-red);text-align:center;
-  text-shadow:0 0 30px var(--alert-red),0 0 60px rgba(255,68,68,.4);
-  animation:alert-flash .5s ease infinite alternate;pointer-events:none;
-  background:rgba(0,0,0,.6);padding:16px 40px;border:2px solid var(--alert-red);border-radius:var(--radius-lg);
-}
-@keyframes alert-flash{from{opacity:1}to{opacity:.4}}
-.national-hud{
-  position:absolute;top:16px;left:16px;z-index:20;
-  font:500 11px var(--mono);color:var(--radar-green);
-  background:var(--surface);border:1px solid var(--border);
-  border-radius:var(--radius);padding:10px 14px;line-height:1.7;
-}
-.threat-origin{cursor:pointer;pointer-events:all}
-.threat-origin:hover .threat-ring{stroke-width:3}
-/* 다중 도시 3D 분할 */
-.multi-3d{position:fixed;inset:52px 0 44px 0;display:grid;gap:2px;background:#000;overflow:hidden}
-.multi-3d.hidden{display:none}
-.multi-3d.split-1{grid-template-columns:1fr}
-.multi-3d.split-2{grid-template-columns:1fr 1fr}
-.multi-3d.split-3{grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr}
-.multi-3d.split-4{grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr}
-.multi-3d-cell{position:relative;overflow:hidden;background:#080c08}
-.multi-3d-cell canvas{display:block;width:100%;height:100%}
-.multi-3d-cell .city-3d-label{
-  position:absolute;top:8px;left:8px;z-index:10;
-  font:700 11px var(--mono);color:var(--radar-green);
-  background:var(--surface);border:1px solid var(--border);
-  border-radius:var(--radius);padding:4px 10px;
-}
 
 /* ═══ 3D VIEW ═══ */
 .view-3d{position:fixed;inset:52px 0 44px 0;background:#080c08;overflow:hidden}
@@ -566,32 +523,6 @@ function polygonArea(pts) {
   }
   return Math.abs(a / 2);
 }
-function segmentIntersection(a1, a2, b1, b2) {
-  var aDx = a2.x - a1.x, aDy = a2.y - a1.y;
-  var bDx = b2.x - b1.x, bDy = b2.y - b1.y;
-  var denom = aDx * bDy - aDy * bDx;
-  if (Math.abs(denom) < 0.0001) return null;
-  var sDx = b1.x - a1.x, sDy = b1.y - a1.y;
-  var t = (sDx * bDy - sDy * bDx) / denom;
-  var u = (sDx * aDy - sDy * aDx) / denom;
-  if (t < 0 || t > 1 || u < 0 || u > 1) return null;
-  return { x: a1.x + aDx * t, y: a1.y + aDy * t, t: t };
-}
-function findPolygonImpactPoint(start, end, poly) {
-  var best = null;
-  for (var i = 0, j = poly.length - 1; i < poly.length; j = i++) {
-    var hit = segmentIntersection(start, end, poly[j], poly[i]);
-    if (hit && (!best || hit.t < best.t)) best = hit;
-  }
-  return best ? { x: best.x, y: best.y } : null;
-}
-function findPolygonSurfacePoint(origin, target, poly) {
-  var dx = target.x - origin.x, dy = target.y - origin.y;
-  var len = Math.sqrt(dx * dx + dy * dy);
-  if (len < 0.0001) return null;
-  var farPoint = { x: origin.x + (dx / len) * 4000, y: origin.y + (dy / len) * 4000 };
-  return findPolygonImpactPoint(origin, farPoint, poly);
-}
 /** 비례율(종횡비) 체크 — ratio > limit이면 너무 길쭉 */
 function aspectRatioOk(pts, limit) {
   var minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
@@ -626,8 +557,6 @@ var SIM_TOP = 52, SIM_BOTTOM = 44;
 var _cachedSatUrl = '';
 /** 3D용 위성 텍스처 프리로드 */
 var _preloadedSatTex = null;
-/** 도시별 위성 텍스처 프리로드 캐시 */
-var _cityTexCache = {}; // cityId → THREE.Texture
 (function() {
   if (typeof THREE !== 'undefined') {
     var loader = new THREE.TextureLoader();
@@ -663,125 +592,6 @@ function formatClock(date) {
   return pad2(date.getHours()) + ':' + pad2(date.getMinutes()) + ':' + pad2(date.getSeconds());
 }
 var INTERCEPT_TRAVEL_MS = 260, INTERCEPT_POP_MS = 220;
-var NATIONAL_TRAVEL_SECONDS = {
-  manual: { min: 6.5, max: 8.5 },
-  ballistic: { min: 7.0, max: 9.5 },
-  cruise: { min: 8.0, max: 10.5 },
-  drone: { min: 9.5, max: 12.0 },
-  rocket: { min: 5.5, max: 7.0 }
-};
-var CITY_TERMINAL_SECONDS = { min: 1.8, max: 2.8 };
-function randRange(min, max) {
-  return min + Math.random() * (max - min);
-}
-function computeTravelSpeed(distance, durationSeconds) {
-  return distance / Math.max(0.001, durationSeconds);
-}
-function pickNationalTravelSeconds(type) {
-  var config = NATIONAL_TRAVEL_SECONDS[type] || NATIONAL_TRAVEL_SECONDS.manual;
-  return randRange(config.min, config.max);
-}
-function buildNationalMissileSpeed(startX, startY, targetX, targetY, type) {
-  var dx = targetX - startX, dy = targetY - startY;
-  var dist = Math.sqrt(dx * dx + dy * dy);
-  return computeTravelSpeed(dist, pickNationalTravelSeconds(type));
-}
-
-// ══════════════════════════════════════════════════════════
-// SECTION 6b: NATIONAL DEFENSE DATA
-// ══════════════════════════════════════════════════════════
-
-/** 이스라엘 전체 bbox — 화면 비율에 맞게 동적 계산 */
-var NAT_LAT_MIN = 29.4, NAT_LAT_MAX = 33.5, NAT_LON_CENTER = 35.0;
-var _natBbox = null; // { lonMin, latMin, lonMax, latMax }
-
-function getNationalBbox(w, h) {
-  if (_natBbox) return _natBbox;
-  var latRange = NAT_LAT_MAX - NAT_LAT_MIN; // 4.1
-  var aspect = w / h; // 화면 종횡비
-  var lonRange = latRange * aspect;
-  _natBbox = {
-    lonMin: NAT_LON_CENTER - lonRange / 2,
-    latMin: NAT_LAT_MIN,
-    lonMax: NAT_LON_CENTER + lonRange / 2,
-    latMax: NAT_LAT_MAX
-  };
-  return _natBbox;
-}
-
-function buildNationalSatUrl(w, h) {
-  var bb = getNationalBbox(w, h);
-  var dpr = window.devicePixelRatio || 1;
-  return 'https://services.arcgisonline.com/arcgis/rest/services/World_Imagery/MapServer/export'
-    + '?bbox=' + bb.lonMin + ',' + bb.latMin + ',' + bb.lonMax + ',' + bb.latMax
-    + '&bboxSR=4326&size=' + Math.round(w * dpr) + ',' + Math.round(h * dpr)
-    + '&imageSR=4326&format=jpg&f=image';
-}
-var _cachedNationalUrl = '';
-
-/** 위경도 → 화면 픽셀 변환 (국가 지도용) */
-function geoToScreen(lon, lat, w, h) {
-  var bb = getNationalBbox(w, h);
-  var x = ((lon - bb.lonMin) / (bb.lonMax - bb.lonMin)) * w;
-  var y = ((bb.latMax - lat) / (bb.latMax - bb.latMin)) * h;
-  return { x: Math.round(x), y: Math.round(y) };
-}
-
-/** 방어 도시 데이터 */
-var DEFENSE_CITIES = [
-  { id: 'telaviv', name: 'Tel Aviv', lat: 32.08, lon: 34.78, bbox: '34.748,32.055,34.810,32.100' },
-  { id: 'sderot', name: 'Sderot', lat: 31.52, lon: 34.60, bbox: '34.570,31.500,34.630,31.540' },
-  { id: 'ashkelon', name: 'Ashkelon', lat: 31.67, lon: 34.57, bbox: '34.530,31.645,34.610,31.695' },
-  { id: 'haifa', name: 'Haifa', lat: 32.79, lon: 34.99, bbox: '34.940,32.770,35.040,32.830' },
-  { id: 'jerusalem', name: 'Jerusalem', lat: 31.77, lon: 35.23, bbox: '35.190,31.745,35.270,31.800' }
-];
-
-/** 위협 출발지 데이터 */
-var THREAT_ORIGINS = [
-  { id: 'gaza', name: 'Gaza', lat: 31.42, lon: 34.35, color: '#ff4444' },
-  { id: 'lebanon', name: 'S. Lebanon', lat: 33.35, lon: 35.30, color: '#ff6644' },
-  { id: 'iran', name: 'Iran', lat: 32.5, lon: 36.0, color: '#ff2222', edge: true },
-  { id: 'yemen', name: 'Yemen', lat: 29.5, lon: 35.2, color: '#ff8844', edge: true },
-  { id: 'syria', name: 'Syria/Iraq', lat: 33.4, lon: 36.0, color: '#ff5533', edge: true }
-];
-
-/** True Promise (2024.04.13) 시나리오 — 이란 → 이스라엘 대규모 공격 */
-var SCENARIOS = {
-  'true-promise': {
-    name: 'Operation True Promise — April 13, 2024',
-    desc: 'Iran launches 300+ drones & missiles at Israel',
-    waves: [
-      { time: 0, from: 'iran', targets: ['telaviv', 'jerusalem', 'haifa'], count: 15, type: 'ballistic' },
-      { time: 1200, from: 'iran', targets: ['telaviv', 'jerusalem'], count: 12, type: 'cruise' },
-      { time: 2200, from: 'yemen', targets: ['ashkelon', 'sderot'], count: 8, type: 'drone' },
-      { time: 3000, from: 'lebanon', targets: ['haifa'], count: 10, type: 'rocket' },
-      { time: 3800, from: 'gaza', targets: ['sderot', 'ashkelon', 'telaviv'], count: 12, type: 'rocket' },
-      { time: 5000, from: 'iran', targets: ['telaviv', 'jerusalem', 'haifa'], count: 18, type: 'ballistic' },
-      { time: 6200, from: 'lebanon', targets: ['haifa', 'telaviv'], count: 8, type: 'rocket' },
-      { time: 7500, from: 'iran', targets: ['jerusalem', 'telaviv'], count: 15, type: 'ballistic' }
-    ]
-  }
-};
-
-/** 국가 미사일 데이터 */
-var _natMissileId = 0;
-
-/** 도시별 위성 텍스처 프리로드 — DEFENSE_CITIES 정의 후 실행 */
-(function() {
-  if (typeof THREE !== 'undefined') {
-    var loader = new THREE.TextureLoader();
-    var dpr = Math.min(window.devicePixelRatio || 1, 2);
-    var pw = Math.round(600 * dpr), ph = Math.round(500 * dpr);
-    for (var i = 0; i < DEFENSE_CITIES.length; i++) {
-      (function(city) {
-        var satUrl = 'https://services.arcgisonline.com/arcgis/rest/services/World_Imagery/MapServer/export'
-          + '?bbox=' + city.bbox + '&bboxSR=4326&size=' + pw + ',' + ph
-          + '&imageSR=4326&format=jpg&f=image';
-        loader.load(satUrl, function(tex) { _cityTexCache[city.id] = tex; });
-      })(DEFENSE_CITIES[i]);
-    }
-  }
-})();
 
 // ══════════════════════════════════════════════════════════
 // SECTION 7: CHILD COMPONENTS (Stateless)
@@ -799,17 +609,12 @@ function TopBar(props) {
       createVNode('span', { class: 'dot' }, []),
       createTextVNode('IRON DOME SIM')
     ]),
-    createVNode('span', { class: 'topbar-loc' }, [createTextVNode(
-      props.activeView === 'national' ? 'Israel · National Air Defense Command' :
-      props.activeView === 'multi3d' ? 'Israel · Multi-City Intercept View' :
-      'Israel · Tel Aviv · Iron Dome Defense Sector'
-    )]),
+    createVNode('span', { class: 'topbar-loc' }, [createTextVNode('Israel · Tel Aviv · Iron Dome Defense Sector')]),
   ].concat(modeEl).concat([
     createVNode('div', { class: 'topbar-tabs' }, [
-      createVNode('button', { class: 'tab-btn' + (props.activeView === 'national' ? ' active' : ''), 'data-action': 'view-national' }, [createTextVNode('National')]),
-      createVNode('button', { class: 'tab-btn' + (props.activeView === 'sim' ? ' active' : ''), 'data-action': 'view-sim' }, [createTextVNode('City Sim')]),
-      createVNode('button', { class: 'tab-btn' + (props.activeView === '3d' || props.activeView === 'multi3d' ? ' active' : ''), 'data-action': 'view-3d' }, [createTextVNode('3D View')]),
-      createVNode('button', { class: 'tab-btn' + (props.activeView === 'test' ? ' active' : ''), 'data-action': 'view-test' }, [createTextVNode('Tests')])
+      createVNode('button', { class: 'tab-btn' + (props.activeView === 'sim' ? ' active' : ''), 'data-action': 'view-sim' }, [createTextVNode('Simulation')]),
+      createVNode('button', { class: 'tab-btn' + (props.activeView === '3d' ? ' active' : ''), 'data-action': 'view-3d' }, [createTextVNode('3D View')]),
+      createVNode('button', { class: 'tab-btn' + (props.activeView === 'test' ? ' active' : ''), 'data-action': 'view-test' }, [createTextVNode('VDom Tests')])
     ])
   ]));
 }
@@ -1353,26 +1158,17 @@ function spawn3dExplosion(pos, isIntercept) {
 function remove3dBreachMarker(marker) {
   if (!_threeScene || !marker) return;
   if (marker.mesh) _threeScene.remove(marker.mesh);
-  if (marker.ring) _threeScene.remove(marker.ring);
 }
 
 function create3dBreachMarker(breach2d) {
   if (!_threeScene) return null;
   var bp = to3D(breach2d.x, breach2d.y);
-  // 콘 형태 — 불난 느낌
-  var coneGeo = new THREE.ConeGeometry(10, 35, 6);
-  var coneMat = new THREE.MeshBasicMaterial({ color: 0xff4444, transparent: true, opacity: 0.85 });
-  var cone = new THREE.Mesh(coneGeo, coneMat);
-  cone.position.set(bp.x, 18, bp.z);
-  _threeScene.add(cone);
-  // 빛나는 바닥 링
-  var ringGeo = new THREE.RingGeometry(8, 16, 16);
-  var ringMat = new THREE.MeshBasicMaterial({ color: 0xff6622, transparent: true, opacity: 0.5, side: THREE.DoubleSide });
-  var ring = new THREE.Mesh(ringGeo, ringMat);
-  ring.rotation.x = -Math.PI / 2;
-  ring.position.set(bp.x, 1, bp.z);
-  _threeScene.add(ring);
-  return { mesh: cone, ring: ring };
+  var markerGeo = new THREE.CylinderGeometry(0, 12, 30, 4);
+  var markerMat = new THREE.MeshBasicMaterial({ color: 0xff4444, transparent: true, opacity: 0.8 });
+  var marker = new THREE.Mesh(markerGeo, markerMat);
+  marker.position.set(bp.x, 15, bp.z);
+  _threeScene.add(marker);
+  return { mesh: marker };
 }
 
 /** 2D breaches 배열 → 3D 영구 마커 동기화 */
@@ -1388,8 +1184,7 @@ function syncThreeBreaches(breaches2d) {
       continue;
     }
     var bp = to3D(b.x, b.y);
-    _3dBreachMarkers[i].mesh.position.set(bp.x, 18, bp.z);
-    if (_3dBreachMarkers[i].ring) _3dBreachMarkers[i].ring.position.set(bp.x, 1, bp.z);
+    _3dBreachMarkers[i].mesh.position.set(bp.x, 15, bp.z);
   }
 }
 
@@ -1405,360 +1200,6 @@ function destroyThreeScene() {
   }
   _threeScene = null; _threeRenderer = null; _threeCamera = null;
   _threeInitialized = false;
-}
-
-// ══════════════════════════════════════════════════════════
-// MULTI-3D: Per-city Three.js scenes
-// ══════════════════════════════════════════════════════════
-function initMulti3dScene(cityId, container) {
-  if (_multi3dScenes[cityId]) return;
-  var city = null;
-  for (var i = 0; i < DEFENSE_CITIES.length; i++) {
-    if (DEFENSE_CITIES[i].id === cityId) { city = DEFENSE_CITIES[i]; break; }
-  }
-  if (!city) return;
-  var w = container.clientWidth, h = container.clientHeight;
-  if (w < 10 || h < 10) return;
-
-  var scene = new THREE.Scene();
-  scene.fog = new THREE.FogExp2(0x080c08, 0.0004);
-
-  var camera = new THREE.PerspectiveCamera(55, w / h, 1, 6000);
-  camera.position.set(0, 500, 600);
-  camera.lookAt(0, 0, 0);
-
-  var renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false });
-  renderer.setSize(w, h);
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-  renderer.setClearColor(0x080c08);
-  container.appendChild(renderer.domElement);
-
-  // 조명
-  var ambLight = new THREE.AmbientLight(0xffffff, 0.6);
-  scene.add(ambLight);
-  var dirLight = new THREE.DirectionalLight(0xffffff, 0.8);
-  dirLight.position.set(200, 400, 200);
-  scene.add(dirLight);
-
-  // 위성 바닥 — 프리로드 캐시 우선 사용
-  var groundGeo = new THREE.PlaneGeometry(1200, 1200);
-  var cachedTex = _cityTexCache[cityId];
-  var groundMat;
-  if (cachedTex) {
-    groundMat = new THREE.MeshLambertMaterial({ map: cachedTex });
-  } else {
-    groundMat = new THREE.MeshLambertMaterial({ color: 0x1a331a });
-    var dpr = Math.min(window.devicePixelRatio, 2);
-    var satUrl = 'https://services.arcgisonline.com/arcgis/rest/services/World_Imagery/MapServer/export'
-      + '?bbox=' + city.bbox + '&bboxSR=4326&size=' + Math.round(w * dpr) + ',' + Math.round(h * dpr)
-      + '&imageSR=4326&format=jpg&f=image';
-    var loader = new THREE.TextureLoader();
-    loader.load(satUrl, function(tex) {
-      _cityTexCache[cityId] = tex;
-      groundMat.map = tex;
-      groundMat.color.set(0xffffff);
-      groundMat.needsUpdate = true;
-    });
-  }
-  var ground = new THREE.Mesh(groundGeo, groundMat);
-  ground.rotation.x = -Math.PI / 2;
-  scene.add(ground);
-
-  // ── 4개 방공망 배치 (도시별 Iron Dome 배터리) ──
-  var zonePositions = [
-    { x: -180, z: -120, r: 130 }, // 북서
-    { x:  160, z: -100, r: 120 }, // 북동
-    { x: -100, z:  180, r: 110 }, // 남서
-    { x:  140, z:  160, r: 115 }  // 남동
-  ];
-  var zoneData = [];
-  for (var zi = 0; zi < zonePositions.length; zi++) {
-    var zp = zonePositions[zi];
-    // 반투명 돔
-    var domeGeo = new THREE.SphereGeometry(zp.r, 20, 12, 0, Math.PI * 2, 0, Math.PI / 2);
-    var domeMat = new THREE.MeshBasicMaterial({ color: 0x00ff41, transparent: true, opacity: 0.08, side: THREE.DoubleSide });
-    var dome = new THREE.Mesh(domeGeo, domeMat);
-    dome.position.set(zp.x, 0, zp.z);
-    scene.add(dome);
-    // 와이어프레임
-    var wireGeo = new THREE.SphereGeometry(zp.r + 1, 12, 8, 0, Math.PI * 2, 0, Math.PI / 2);
-    var wireMat = new THREE.MeshBasicMaterial({ color: 0x00ff41, transparent: true, opacity: 0.25, wireframe: true });
-    var wire = new THREE.Mesh(wireGeo, wireMat);
-    wire.position.set(zp.x, 0, zp.z);
-    scene.add(wire);
-    // 바닥 링
-    var ringGeo = new THREE.RingGeometry(zp.r - 2, zp.r, 32);
-    var ringMat = new THREE.MeshBasicMaterial({ color: 0x00ff41, transparent: true, opacity: 0.15, side: THREE.DoubleSide });
-    var ring = new THREE.Mesh(ringGeo, ringMat);
-    ring.rotation.x = -Math.PI / 2; ring.position.set(zp.x, 0.5, zp.z);
-    scene.add(ring);
-    zoneData.push({ cx: zp.x, cz: zp.z, r: zp.r, cap: 500 });
-  }
-
-  // ── 미사일 생성: 70% 방공망 내부, 30% 방공망 밖 노림 ──
-  var cityMissiles = [];
-  var cityExplosions = [];
-  var breachMarkers = [];
-  var MISSILE_COUNT = 12;
-
-  function _resetCityMissile(mm) {
-    var spawnAngle = Math.random() * Math.PI * 2;
-    var spawnR = 450 + Math.random() * 150;
-    mm.x = Math.cos(spawnAngle) * spawnR;
-    mm.y = 300 + Math.random() * 200;
-    mm.z = Math.sin(spawnAngle) * spawnR;
-
-    if (Math.random() < 0.7) {
-      // 방공망 내부를 노리는 최종 종말 단계
-      var zoneIdx = Math.floor(Math.random() * zoneData.length);
-      var zone = zoneData[zoneIdx];
-      var ra = Math.random() * Math.PI * 2, rr = Math.random() * zone.r * 0.7;
-      mm.tx = zone.cx + Math.cos(ra) * rr;
-      mm.tz = zone.cz + Math.sin(ra) * rr;
-      mm.hitsZone = true;
-    } else {
-      // 방공망 밖 — 도시 빈틈 노림
-      mm.tx = (Math.random() - 0.5) * 500;
-      mm.tz = (Math.random() - 0.5) * 500;
-      for (var zci = 0; zci < zoneData.length; zci++) {
-        var ddx = mm.tx - zoneData[zci].cx, ddz = mm.tz - zoneData[zci].cz;
-        if (Math.sqrt(ddx * ddx + ddz * ddz) < zoneData[zci].r) {
-          mm.tx = mm.tx + (ddx > 0 ? 1 : -1) * zoneData[zci].r;
-          mm.tz = mm.tz + (ddz > 0 ? 1 : -1) * zoneData[zci].r * 0.5;
-        }
-      }
-      mm.hitsZone = false;
-    }
-
-    var dx = mm.tx - mm.x, dy = -mm.y, dz = mm.tz - mm.z;
-    var dist = Math.sqrt(dx * dx + dy * dy + dz * dz);
-    mm.speed = computeTravelSpeed(dist, randRange(CITY_TERMINAL_SECONDS.min, CITY_TERMINAL_SECONDS.max));
-    mm.alive = true;
-    mm.mesh.visible = true;
-  }
-
-  for (var mi = 0; mi < MISSILE_COUNT; mi++) {
-    var missile = { mesh: _createMissileMesh(scene) };
-    _resetCityMissile(missile);
-    cityMissiles.push(missile);
-  }
-
-  function _createMissileMesh(s) {
-    var geo = new THREE.SphereGeometry(5, 6, 6);
-    var mat = new THREE.MeshBasicMaterial({ color: 0xff9100 });
-    var mesh = new THREE.Mesh(geo, mat);
-    s.add(mesh);
-    return mesh;
-  }
-  function _createExplosion(s, x, y, z, color) {
-    var geo = new THREE.SphereGeometry(8, 8, 8);
-    var mat = new THREE.MeshBasicMaterial({ color: color, transparent: true, opacity: 1.0 });
-    var mesh = new THREE.Mesh(geo, mat);
-    mesh.position.set(x, y, z);
-    s.add(mesh);
-    return { mesh: mesh, born: Date.now(), duration: 600 };
-  }
-  function _createBreachMarker(s, x, z) {
-    var cGeo = new THREE.ConeGeometry(8, 25, 6);
-    var cMat = new THREE.MeshBasicMaterial({ color: 0xff4444, transparent: true, opacity: 0.85 });
-    var cone = new THREE.Mesh(cGeo, cMat);
-    cone.position.set(x, 12, z);
-    s.add(cone);
-    var rGeo = new THREE.RingGeometry(6, 14, 16);
-    var rMat = new THREE.MeshBasicMaterial({ color: 0xff6622, transparent: true, opacity: 0.4, side: THREE.DoubleSide });
-    var ring = new THREE.Mesh(rGeo, rMat);
-    ring.rotation.x = -Math.PI / 2; ring.position.set(x, 0.5, z);
-    s.add(ring);
-    return { cone: cone, ring: ring };
-  }
-
-  var animId, lastFrameTs = 0;
-  function animate(ts) {
-    animId = requestAnimationFrame(animate);
-    var now = Date.now();
-    var dt = lastFrameTs ? Math.min(0.05, (ts - lastFrameTs) / 1000) : (1 / 60);
-    lastFrameTs = ts;
-    for (var i = 0; i < cityMissiles.length; i++) {
-      var m = cityMissiles[i];
-      if (!m.alive) continue;
-      var dx = m.tx - m.x, dy = -m.y, dz = m.tz - m.z;
-      var dist = Math.sqrt(dx * dx + dy * dy + dz * dz);
-      var step = m.speed * dt;
-      // 지면 도달 체크
-      if (m.y <= 3 || dist < Math.max(15, step * 1.1)) {
-        m.alive = false; m.mesh.visible = false;
-        // 방공망 요격 체크
-        var intercepted = false;
-        for (var zci = 0; zci < zoneData.length; zci++) {
-          var zdx = m.x - zoneData[zci].cx, zdz = m.z - zoneData[zci].cz;
-          var zDist = Math.sqrt(zdx * zdx + zdz * zdz);
-          if (zDist < zoneData[zci].r && zoneData[zci].cap > 0) {
-            intercepted = true; zoneData[zci].cap--;
-            cityExplosions.push(_createExplosion(scene, m.x, m.y, m.z, 0x00ff41));
-            break;
-          }
-        }
-        if (!intercepted) {
-          // 관통! 빨간 폭발 + breach 마커
-          cityExplosions.push(_createExplosion(scene, m.x, Math.max(1, m.y), m.z, 0xff4444));
-          breachMarkers.push(_createBreachMarker(scene, m.x, m.z));
-        }
-        // 리스폰
-        (function(mm) {
-          setTimeout(function() {
-            _resetCityMissile(mm);
-          }, 800 + Math.random() * 1500);
-        })(m);
-        continue;
-      }
-      m.x += (dx / dist) * step;
-      m.y += (dy / dist) * step;
-      m.z += (dz / dist) * step;
-      m.mesh.position.set(m.x, m.y, m.z);
-    }
-    // 폭발
-    for (var ei = cityExplosions.length - 1; ei >= 0; ei--) {
-      var ex = cityExplosions[ei];
-      var age = now - ex.born;
-      if (age > ex.duration) { scene.remove(ex.mesh); cityExplosions.splice(ei, 1); continue; }
-      var t = age / ex.duration;
-      ex.mesh.scale.set(1 + t * 3, 1 + t * 3, 1 + t * 3);
-      ex.mesh.material.opacity = 1 - t;
-    }
-    // 카메라 회전
-    var ct = now * 0.00008;
-    camera.position.x = Math.sin(ct) * 650;
-    camera.position.z = Math.cos(ct) * 650;
-    camera.lookAt(0, 0, 0);
-    renderer.render(scene, camera);
-  }
-  animId = requestAnimationFrame(animate);
-
-  _multi3dScenes[cityId] = { scene: scene, renderer: renderer, camera: camera, animId: animId, missiles: cityMissiles, explosions: cityExplosions };
-}
-
-function destroyMulti3dScene(cityId) {
-  var entry = _multi3dScenes[cityId];
-  if (!entry) return;
-  if (entry.animId) cancelAnimationFrame(entry.animId);
-  if (entry.renderer) {
-    entry.renderer.dispose();
-    if (entry.renderer.domElement && entry.renderer.domElement.parentNode)
-      entry.renderer.domElement.parentNode.removeChild(entry.renderer.domElement);
-  }
-  delete _multi3dScenes[cityId];
-}
-
-// ══════════════════════════════════════════════════════════
-// NATIONAL VIEW COMPONENT
-// ══════════════════════════════════════════════════════════
-function NationalView(props) {
-  if (!props.visible) return createVNode('div', { class: 'national-view hidden' }, []);
-
-  var w = window.innerWidth, h = window.innerHeight - SIM_TOP - SIM_BOTTOM;
-  if (!_cachedNationalUrl) _cachedNationalUrl = buildNationalSatUrl(w, h);
-  var bgStyle = 'background-image:url(' + _cachedNationalUrl + ')';
-
-  // 도시 마커 SVG
-  var cityEls = [];
-  for (var ci = 0; ci < DEFENSE_CITIES.length; ci++) {
-    var c = DEFENSE_CITIES[ci];
-    var cp = geoToScreen(c.lon, c.lat, w, h);
-    // 공격받는 도시는 빨간색, 아니면 초록색
-    var isUnderAttack = false;
-    for (var ai = 0; ai < props.natMissiles.length; ai++) {
-      if (props.natMissiles[ai].targetCity === c.id && props.natMissiles[ai].active) { isUnderAttack = true; break; }
-    }
-    var ringColor = isUnderAttack ? '#ff4444' : '#00ff41';
-    var ringAnim = isUnderAttack ? ';animation:alert-flash .3s ease infinite alternate' : '';
-    cityEls.push(createVNode('g', { class: 'city-marker', 'data-action': 'select-city-' + c.id }, [
-      createVNode('circle', { cx: String(cp.x), cy: String(cp.y), r: isUnderAttack ? '14' : '10', class: 'city-ring',
-        fill: ringColor, stroke: ringColor, 'fill-opacity': isUnderAttack ? '0.3' : '0.15', style: ringAnim }, []),
-      createVNode('circle', { cx: String(cp.x), cy: String(cp.y), r: '4', fill: ringColor }, []),
-      createVNode('text', { x: String(cp.x), y: String(cp.y - 18), class: 'city-label', 'text-anchor': 'middle', fill: ringColor }, [
-        createTextVNode(c.name)
-      ])
-    ]));
-  }
-
-  // 위협 출발지 마커
-  var threatEls = [];
-  for (var ti = 0; ti < THREAT_ORIGINS.length; ti++) {
-    var t = THREAT_ORIGINS[ti];
-    var tp = geoToScreen(t.lon, t.lat, w, h);
-    // 화면 밖이면 가장자리에 고정
-    tp.x = Math.max(30, Math.min(w - 30, tp.x));
-    tp.y = Math.max(30, Math.min(h - 30, tp.y));
-    threatEls.push(createVNode('g', { class: 'threat-origin', 'data-action': 'attack-from-' + t.id }, [
-      createVNode('circle', { cx: String(tp.x), cy: String(tp.y), r: '8', class: 'threat-ring',
-        fill: t.color, stroke: t.color, 'fill-opacity': '0.25', 'stroke-width': '2' }, []),
-      createVNode('text', { x: String(tp.x), y: String(tp.y - 14), class: 'threat-label', 'text-anchor': 'middle', fill: t.color }, [
-        createTextVNode(t.id === 'iran' ? 'IRAN →' : t.id === 'yemen' ? 'YEMEN ↗' : t.id === 'syria' ? 'SYRIA →' : t.name.toUpperCase())
-      ])
-    ]));
-  }
-
-  // 비행 중인 미사일 궤적
-  var missileEls = [];
-  for (var mi = 0; mi < props.natMissiles.length; mi++) {
-    var nm = props.natMissiles[mi];
-    if (!nm.active) continue;
-    // 출발지 → 현재 위치 라인
-    missileEls.push(createVNode('line', {
-      x1: String(nm.sx), y1: String(nm.sy), x2: String(Math.round(nm.x)), y2: String(Math.round(nm.y)),
-      stroke: nm.color || '#ff4444', 'stroke-width': '2', 'stroke-opacity': '0.5', class: 'missile-path'
-    }, []));
-    // 미사일 점
-    missileEls.push(createVNode('circle', {
-      cx: String(Math.round(nm.x)), cy: String(Math.round(nm.y)), r: '4',
-      fill: nm.color || '#ff4444', stroke: '#fff', 'stroke-width': '1'
-    }, []));
-  }
-
-  // 경보 배너
-  var alertEl = [];
-  var attackCities = [];
-  for (var aci = 0; aci < props.natMissiles.length; aci++) {
-    var am = props.natMissiles[aci];
-    if (am.active && attackCities.indexOf(am.targetCityName) < 0) attackCities.push(am.targetCityName);
-  }
-  if (attackCities.length > 0) {
-    alertEl.push(createVNode('div', { class: 'alert-banner' }, [
-      createTextVNode('⚠ INCOMING MISSILES'),
-      createVNode('br', {}, []),
-      createTextVNode(attackCities.join(' · '))
-    ]));
-  }
-
-  // HUD
-  var scenarioBtn = [];
-  if (!props.scenarioRunning) {
-    scenarioBtn.push(createVNode('div', { style: 'margin-top:8px' }, [
-      createVNode('button', { class: 'status-btn target-active', 'data-action': 'run-scenario', style: 'font-size:10px;padding:4px 10px' }, [
-        createTextVNode('▶ True Promise Scenario')
-      ])
-    ]));
-  } else {
-    scenarioBtn.push(createVNode('div', { style: 'margin-top:6px;color:var(--alert-red)' }, [
-      createTextVNode('● SCENARIO ACTIVE')
-    ]));
-  }
-
-  var hudEl = createVNode('div', { class: 'national-hud' }, [
-    createTextVNode('[ NATIONAL AIR DEFENSE ]'),
-    createVNode('br', {}, []),
-    createTextVNode('Cities: ' + DEFENSE_CITIES.length + '  Threats: ' + THREAT_ORIGINS.length),
-    createVNode('br', {}, []),
-    createTextVNode('Active missiles: ' + props.natMissiles.filter(function(m){return m.active;}).length),
-    createVNode('br', {}, []),
-    createTextVNode('Click threat origin to fire missiles'),
-    createVNode('br', {}, []),
-    createTextVNode('Click city to enter 3D view')
-  ].concat(scenarioBtn));
-
-  var svgEl = createVNode('svg', { class: 'national-svg', xmlns: SVG_NS }, cityEls.concat(threatEls).concat(missileEls));
-
-  return createVNode('div', { class: 'national-view', style: bgStyle, 'data-national': 'true' }, [svgEl, hudEl].concat(alertEl));
 }
 
 // 3D VNode 컴포넌트
@@ -1850,13 +1291,11 @@ function runVDomTests() {
 var _droneAlive = true, _isDrawing = false, _targetMode = false;
 var _pressedKeys = {}, _radarZones = [], _zoneId = 1;
 var _missiles = [], _missileId = 1;
-var _scenarioTimers = [];
-var _multi3dScenes = {}; // cityId → { scene, renderer, camera, animId }
 
 function App() {
   var _s = function(v) { var r = useState(v); return r; };
 
-  var s1 = useState('national');    var activeView = s1[0], setActiveView = s1[1];
+  var s1 = useState('sim');        var activeView = s1[0], setActiveView = s1[1];
   var s2 = useState({ x: 0, y: 0 }); var dronePos = s2[0], setDronePos = s2[1];
   var s3 = useState(false);        var droneAlive = s3[0], setDroneAlive = s3[1];
   var s4 = useState(0);            var droneAngle = s4[0], setDroneAngle = s4[1];
@@ -1872,10 +1311,6 @@ function App() {
   var s14 = useState(0);           var totalAttacks = s14[0], setTotalAttacks = s14[1];
   var s15 = useState(new Date());  var currentTime = s15[0], setCurrentTime = s15[1];
   var s16 = useState([]);          var interceptors = s16[0], setInterceptors = s16[1];
-  var s17 = useState([]);          var natMissiles = s17[0], setNatMissiles = s17[1];
-  var s18 = useState(false);       var scenarioRunning = s18[0], setScenarioRunning = s18[1];
-  var s19 = useState([]);          var attackedCities = s19[0], setAttackedCities = s19[1];
-  var s20 = useState(null);        var multiCities = s20[0], setMultiCities = s20[1];
 
   _droneAlive = droneAlive; _isDrawing = isDrawing; _targetMode = targetMode; _radarZones = radarZones;
 
@@ -1993,19 +1428,12 @@ function App() {
             var concurrent = (zoneUpdates[z.id] || 0) + (z.active || 0);
             if (z.capacity > 0 && concurrent < (z.maxConcurrent || 100) && pointInPolygon(nx, ny, z.points)) {
               var cdx = nx - z.center.x, cdy = ny - z.center.y;
-              var impactPoint = findPolygonImpactPoint({ x: m.x, y: m.y }, { x: nx, y: ny }, z.points)
-                || findPolygonSurfacePoint(z.center, { x: nx, y: ny }, z.points)
-                || { x: nx, y: ny };
-              hitZones.push({ zone: z, dist: cdx * cdx + cdy * cdy, impactPoint: impactPoint });
+              hitZones.push({ zone: z, dist: cdx * cdx + cdy * cdy });
             }
           }
           if (hitZones.length > 0) {
             hitZones.sort(function(a, b) { return a.dist - b.dist; });
-            var closestHit = hitZones[0];
-            var closest = closestHit.zone;
-            var impactPoint = closestHit.impactPoint;
-            var travelDx = impactPoint.x - closest.center.x, travelDy = impactPoint.y - closest.center.y;
-            var travelMs = Math.max(140, Math.min(320, Math.round(Math.sqrt(travelDx * travelDx + travelDy * travelDy) * 1.25)));
+            var closest = hitZones[0].zone;
             var interceptTime = now;
             changed = true;
             if (!zoneUpdates[closest.id]) zoneUpdates[closest.id] = 0;
@@ -2014,19 +1442,19 @@ function App() {
               id: 'int-' + m.id + '-' + interceptTime,
               startX: closest.center.x,
               startY: closest.center.y,
-              targetX: impactPoint.x,
-              targetY: impactPoint.y,
+              targetX: nx,
+              targetY: ny,
               launchedAt: interceptTime,
-              travelMs: travelMs,
-              expiresAt: interceptTime + travelMs
+              travelMs: INTERCEPT_TRAVEL_MS,
+              expiresAt: interceptTime + INTERCEPT_TRAVEL_MS
             });
             return Object.assign({}, m, {
-              x: impactPoint.x,
-              y: impactPoint.y,
+              x: nx,
+              y: ny,
               active: false,
               intercepted: true,
               interceptTime: interceptTime,
-              interceptorTravelMs: travelMs,
+              interceptorTravelMs: INTERCEPT_TRAVEL_MS,
               interceptorPopMs: INTERCEPT_POP_MS
             });
           }
@@ -2075,9 +1503,7 @@ function App() {
     function handleClick(e) {
       var a = e.target.closest('[data-action]');
       if (!a) return;
-      var action = a.getAttribute('data-action');
-      switch (action) {
-        case 'view-national': setActiveView('national'); setTargetMode(false); setIsDrawing(false); break;
+      switch (a.getAttribute('data-action')) {
         case 'view-sim': setActiveView('sim'); setTargetMode(false); break;
         case 'view-3d': setActiveView('3d'); setIsDrawing(false); setDrawPoints([]); break;
         case 'view-test': setActiveView('test'); setTargetMode(false); setIsDrawing(false); break;
@@ -2088,22 +1514,7 @@ function App() {
         case 'respawn':
           setDroneAlive(true); setDronePos({ x: Math.round(window.innerWidth / 2), y: Math.round((window.innerHeight - SIM_TOP - SIM_BOTTOM) / 2) }); setDroneAngle(0); break;
         case 'clear-all':
-          setRadarZones([]); setBreaches([]); setTargets([]); setMissiles([]); setInterceptors([]); setTotalAttacks(0); setNatMissiles([]); setScenarioRunning(false); setAttackedCities([]); break;
-        case 'run-scenario':
-          launchScenario('true-promise'); break;
-        default:
-          // attack-from-{id} 핸들러
-          if (action && action.indexOf('attack-from-') === 0) {
-            var originId = action.replace('attack-from-', '');
-            launchNatAttack(originId);
-          }
-          // select-city-{id} 핸들러 — 해당 도시 3D 뷰
-          if (action && action.indexOf('select-city-') === 0) {
-            var cityId = action.replace('select-city-', '');
-            setMultiCities([cityId]);
-            setActiveView('multi3d');
-          }
-          break;
+          setRadarZones([]); setBreaches([]); setTargets([]); setMissiles([]); setInterceptors([]); setTotalAttacks(0); break;
       }
     }
     document.addEventListener('click', handleClick);
@@ -2213,166 +1624,6 @@ function App() {
     return function() { document.removeEventListener('click', onClick); };
   }, [targetMode, activeView]);
 
-  // ── National: 수동 공격 함수 ──
-  function launchNatAttack(originId) {
-    var origin = null;
-    for (var i = 0; i < THREAT_ORIGINS.length; i++) {
-      if (THREAT_ORIGINS[i].id === originId) { origin = THREAT_ORIGINS[i]; break; }
-    }
-    if (!origin) return;
-    var w = window.innerWidth, h = window.innerHeight - SIM_TOP - SIM_BOTTOM;
-    var sp = geoToScreen(origin.lon, origin.lat, w, h);
-    sp.x = Math.max(30, Math.min(w - 30, sp.x));
-    sp.y = Math.max(30, Math.min(h - 30, sp.y));
-    // 랜덤 도시 1~2개 선택
-    var shuffled = DEFENSE_CITIES.slice().sort(function() { return Math.random() - 0.5; });
-    var numCities = 1 + Math.floor(Math.random() * 2);
-    var newMs = [];
-    for (var ci = 0; ci < numCities && ci < shuffled.length; ci++) {
-      var city = shuffled[ci];
-      var cp = geoToScreen(city.lon, city.lat, w, h);
-      var count = 3 + Math.floor(Math.random() * 5);
-      var attackType = originId === 'iran' ? 'ballistic' : (originId === 'yemen' ? 'drone' : 'rocket');
-      for (var mi = 0; mi < count; mi++) {
-        var spreadX = (Math.random() - 0.5) * 20;
-        var spreadY = (Math.random() - 0.5) * 20;
-        var targetX = cp.x + spreadX, targetY = cp.y + spreadY;
-        newMs.push({
-          id: _natMissileId++, sx: sp.x, sy: sp.y,
-          x: sp.x, y: sp.y,
-          targetX: targetX, targetY: targetY,
-          targetCity: city.id, targetCityName: city.name,
-          type: attackType,
-          color: origin.color,
-          active: true,
-          speed: buildNationalMissileSpeed(sp.x, sp.y, targetX, targetY, attackType)
-        });
-      }
-    }
-    setNatMissiles(function(p) { return p.concat(newMs); });
-  }
-
-  // ── National: 시나리오 재생 ──
-  function launchScenario(scenarioId) {
-    var sc = SCENARIOS[scenarioId];
-    if (!sc) return;
-    setScenarioRunning(true);
-    setNatMissiles([]);
-    setAttackedCities([]);
-    var w = window.innerWidth, h = window.innerHeight - SIM_TOP - SIM_BOTTOM;
-    var timers = [];
-    for (var wi = 0; wi < sc.waves.length; wi++) {
-      (function(wave) {
-        var tid = setTimeout(function() {
-          var origin = null;
-          for (var oi = 0; oi < THREAT_ORIGINS.length; oi++) {
-            if (THREAT_ORIGINS[oi].id === wave.from) { origin = THREAT_ORIGINS[oi]; break; }
-          }
-          if (!origin) return;
-          var sp = geoToScreen(origin.lon, origin.lat, w, h);
-          sp.x = Math.max(30, Math.min(w - 30, sp.x));
-          sp.y = Math.max(30, Math.min(h - 30, sp.y));
-          var newMs = [];
-          for (var ti = 0; ti < wave.targets.length; ti++) {
-            var cityId = wave.targets[ti];
-            var city = null;
-            for (var ci = 0; ci < DEFENSE_CITIES.length; ci++) {
-              if (DEFENSE_CITIES[ci].id === cityId) { city = DEFENSE_CITIES[ci]; break; }
-            }
-            if (!city) continue;
-            var cp = geoToScreen(city.lon, city.lat, w, h);
-            var perCity = Math.max(1, Math.round(wave.count / wave.targets.length));
-            for (var mi = 0; mi < perCity; mi++) {
-              var spawnX = sp.x + (Math.random() - 0.5) * 10;
-              var spawnY = sp.y + (Math.random() - 0.5) * 10;
-              var spreadX = (Math.random() - 0.5) * 20;
-              var spreadY = (Math.random() - 0.5) * 20;
-              var targetX = cp.x + spreadX, targetY = cp.y + spreadY;
-              newMs.push({
-                id: _natMissileId++, sx: sp.x, sy: sp.y,
-                x: spawnX, y: spawnY,
-                targetX: targetX, targetY: targetY,
-                targetCity: city.id, targetCityName: city.name,
-                type: wave.type,
-                color: origin.color,
-                active: true,
-                speed: buildNationalMissileSpeed(spawnX, spawnY, targetX, targetY, wave.type)
-              });
-            }
-          }
-          setNatMissiles(function(p) { return p.concat(newMs); });
-        }, wave.time);
-        timers.push(tid);
-      })(sc.waves[wi]);
-    }
-    // 시나리오 종료 타이머
-    var lastTime = sc.waves[sc.waves.length - 1].time;
-    var endTid = setTimeout(function() { setScenarioRunning(false); }, lastTime + 8000);
-    timers.push(endTid);
-    _scenarioTimers = timers;
-  }
-
-  // ── National 미사일 애니메이션 루프 ──
-  useEffect(function() {
-    var animId, lastTs = 0;
-    function natLoop(ts) {
-      animId = requestAnimationFrame(natLoop);
-      var dt = lastTs ? Math.min(0.05, (ts - lastTs) / 1000) : (1 / 60);
-      lastTs = ts;
-      setNatMissiles(function(prev) {
-        if (prev.length === 0) return prev;
-        var changed = false;
-        var arrivedCities = {};
-        var newMissiles = prev.map(function(m) {
-          if (!m.active) return m;
-          var dx = m.targetX - m.x, dy = m.targetY - m.y;
-          var dist = Math.sqrt(dx * dx + dy * dy);
-          var step = m.speed * dt;
-          if (dist < Math.max(6, step)) {
-            changed = true;
-            arrivedCities[m.targetCity] = m.targetCityName;
-            return Object.assign({}, m, { x: m.targetX, y: m.targetY, active: false });
-          }
-          changed = true;
-          return Object.assign({}, m, {
-            x: m.x + (dx / dist) * step,
-            y: m.y + (dy / dist) * step
-          });
-        });
-        var arrivedIds = Object.keys(arrivedCities);
-        if (arrivedIds.length > 0) {
-          setAttackedCities(function(ac) {
-            var updated = ac.slice();
-            for (var i = 0; i < arrivedIds.length; i++) {
-              if (updated.indexOf(arrivedIds[i]) < 0) updated.push(arrivedIds[i]);
-            }
-            return updated;
-          });
-        }
-        newMissiles = newMissiles.filter(function(m) { return m.active; });
-        return changed ? newMissiles : prev;
-      });
-    }
-    animId = requestAnimationFrame(natLoop);
-    return function() { cancelAnimationFrame(animId); };
-  }, []);
-
-  // ── 도시에 미사일 도착 시 multi3d 전환 ──
-  useEffect(function() {
-    if (activeView !== 'national' || attackedCities.length === 0) return;
-    // 2초 딜레이 후 multi3d로 전환 (경보 보여준 뒤)
-    var tid = setTimeout(function() {
-      setMultiCities(attackedCities.slice(0, 4));
-      setActiveView('multi3d');
-      // multi3d로 전환 후 5초 뒤 national로 복귀
-      setTimeout(function() {
-        setActiveView('national');
-        setAttackedCities([]);
-      }, 6000);
-    }, 2000);
-    return function() { clearTimeout(tid); };
-  }, [attackedCities, activeView]);
-
   // 활성 미사일 수
   var activeMissiles = useMemo(function() {
     return missiles.filter(function(m) { return m.active && !m.intercepted; }).length;
@@ -2404,51 +1655,9 @@ function App() {
     syncThreeDrone(dronePos, droneAlive, droneAngle);
   }, [radarZones, missiles, breaches, dronePos, droneAlive, droneAngle]);
 
-  // ── Multi3D 뷰 초기화/파괴 ──
-  useEffect(function() {
-    if (activeView !== 'multi3d' || !multiCities || multiCities.length === 0) {
-      // 정리
-      var keys = Object.keys(_multi3dScenes);
-      for (var i = 0; i < keys.length; i++) destroyMulti3dScene(keys[i]);
-      return;
-    }
-    // 약간의 딜레이 후 초기화 (DOM 생성 대기)
-    var tid = setTimeout(function() {
-      for (var ci = 0; ci < multiCities.length; ci++) {
-        var cid = multiCities[ci];
-        var el = document.querySelector('[data-multi3d-cell="' + cid + '"]');
-        if (el && !_multi3dScenes[cid]) {
-          initMulti3dScene(cid, el);
-        }
-      }
-    }, 100);
-    return function() {
-      clearTimeout(tid);
-      var keys = Object.keys(_multi3dScenes);
-      for (var i = 0; i < keys.length; i++) destroyMulti3dScene(keys[i]);
-    };
-  }, [activeView, multiCities]);
-
   // VNode 트리
-  var multi3dCells = [];
-  if (multiCities && multiCities.length > 0) {
-    for (var mci = 0; mci < multiCities.length; mci++) {
-      var mcId = multiCities[mci];
-      var mcName = '';
-      for (var mni = 0; mni < DEFENSE_CITIES.length; mni++) {
-        if (DEFENSE_CITIES[mni].id === mcId) { mcName = DEFENSE_CITIES[mni].name; break; }
-      }
-      multi3dCells.push(createVNode('div', { class: 'multi-3d-cell', 'data-multi3d-cell': mcId }, [
-        createVNode('div', { class: 'city-3d-label' }, [createTextVNode(mcName + ' — INTERCEPT VIEW')])
-      ]));
-    }
-  }
-  var splitClass = 'multi-3d split-' + Math.min(4, (multiCities || []).length);
-  if (activeView !== 'multi3d') splitClass += ' hidden';
-
   return createVNode('div', { class: 'app' }, [
     TopBar({ activeView: activeView, isDrawing: isDrawing, targetMode: targetMode }),
-    NationalView({ visible: activeView === 'national', natMissiles: natMissiles, scenarioRunning: scenarioRunning }),
     SimView({
       dronePos: dronePos, droneAlive: droneAlive, droneAngle: droneAngle,
       radarZones: radarZones, isDrawing: isDrawing, drawPoints: drawPoints,
@@ -2456,7 +1665,6 @@ function App() {
       missiles: missiles, breaches: breaches, targets: targets,
       vulnPoints: vulnPoints, targetMode: targetMode, interceptors: interceptors
     }),
-    createVNode('div', { class: splitClass }, multi3dCells),
     View3D({ visible: activeView === '3d', activeMissiles: activeMissiles, radarZones: radarZones, breachCount: breaches.length, targetMode: targetMode, totalAttacks: totalAttacks, currentTimeLabel: currentTimeLabel }),
     TestView({ results: testResults, visible: activeView === 'test' }),
     InfoPanel({ activeView: activeView, radarZones: radarZones, breachCount: breaches.length, activeMissiles: activeMissiles, totalAttacks: totalAttacks, currentTimeLabel: currentTimeLabel }),
