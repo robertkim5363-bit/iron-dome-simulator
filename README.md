@@ -1,10 +1,6 @@
 # Iron Dome Defense Simulator
 
-Vanilla JavaScript로 직접 구현한 **커스텀 Virtual DOM 엔진** 위에, 국가 단위 방공 상황과 도시 단위 방어 시뮬레이션을 올린 발표용 프로젝트입니다.
-
-## 한 줄 설명
-
-이 프로젝트는 단순한 미사일 데모가 아니라, **직접 만든 렌더링 엔진이 복잡한 상태 기반 인터페이스를 실제로 구동할 수 있음을 보여주는 증명 화면**입니다.
+Vanilla JavaScript로 직접 구현한 **커스텀 Virtual DOM 엔진** 위에, 국가 단위 방공 상황과 도시 단위 방어 시뮬레이션을 올린 발표용 프로젝트입니다. 이 프로젝트는 단순한 미사일 데모가 아니라, **직접 만든 렌더링 엔진이 복잡한 상태 기반 인터페이스를 실제로 구동할 수 있음을 보여줍니다.**
 
 ## 왜 이 프로젝트가 과제에 맞는가
 
@@ -61,16 +57,6 @@ flowchart LR
     A --> D["용량 및 breach 계산"]
 ```
 
-## 발표에서 보여줄 흐름
-
-| 단계 | 화면 | 보여줄 핵심 |
-|------|------|-------------|
-| 1 | `National` | 국가 단위 위협 감시와 다중 도시 상황 인식 |
-| 2 | `Sector` | 운용자가 직접 방어 구역을 그리는 입력 단계 |
-| 3 | `3D View` | 같은 데이터가 실제 방어 볼륨으로 재구성되는 시각화 |
-| 4 | `Tests` | 엔진이 최소 DOM 갱신과 상태 복원을 수행한다는 검증 |
-| 5 | `Briefing` | 이 프로젝트가 과제와 어떻게 연결되는지 구조적으로 설명 |
-
 ## 구현 포인트
 
 - **Virtual DOM**: `createVNode`, `renderVNode`, `diff`, `applyPatch`
@@ -79,27 +65,6 @@ flowchart LR
 - **단일 데이터 재사용**: 동일한 섹터 폴리곤이 입력, 방어 로직, 3D 형상에 재사용
 - **복합 뷰 동기화**: National / Sector / 3D / Tests / Briefing이 하나의 시뮬레이션 흐름을 공유
 
-## 실행 방법
-
-가장 간단한 실행 방법은 [index.html](./index.html)을 브라우저에서 여는 것입니다.
-
-로컬 서버로 볼 때는 예를 들어 아래처럼 실행할 수 있습니다.
-
-```bash
-cd domproject
-python3 -m http.server 8000
-```
-
-그 다음 브라우저에서 `http://127.0.0.1:8000/index.html` 로 접속하면 됩니다.
-
-## 파일 구성
-
-```text
-README.md
-index.html
-index2.html
-week3-camp-david.html
-week3-norfolk.html
 ```
 
 ## 핵심 메시지
