@@ -1,8 +1,8 @@
 ﻿'use strict';
 
-// ?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧
+// ══════════════════════════════════════════════════════════
 // SECTION 1: VIRTUAL DOM CORE  (Week 3)
-// ?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧
+// ══════════════════════════════════════════════════════════
 
 function createVNode(type, props, children) {
   return { type: type, props: props || {}, children: children || [] };
@@ -38,9 +38,9 @@ function cloneVNode(vnode) {
   return createVNode(vnode.type, JSON.parse(JSON.stringify(vnode.props)), vnode.children.map(cloneVNode).filter(Boolean));
 }
 
-// ?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧
+// ══════════════════════════════════════════════════════════
 // SECTION 2: DIFF ALGORITHM  (Week 3)
-// ?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧
+// ══════════════════════════════════════════════════════════
 
 var CREATE = 'CREATE', REMOVE = 'REMOVE', REPLACE = 'REPLACE', UPDATE = 'UPDATE';
 
@@ -79,9 +79,9 @@ function diffChildren(oldC, newC) {
   return patches;
 }
 
-// ?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧
+// ══════════════════════════════════════════════════════════
 // SECTION 3: PATCH SYSTEM  (Week 3)
-// ?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧
+// ══════════════════════════════════════════════════════════
 
 function realChildren(parent) {
   var result = [];
@@ -140,9 +140,9 @@ function applyChildPatches(parent, childPatches) {
   }
 }
 
-// ?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧
+// ══════════════════════════════════════════════════════════
 // SECTION 4: MINI REACT FRAMEWORK  (Week 4)
-// ?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧
+// ══════════════════════════════════════════════════════════
 
 var currentComponent = null;
 
@@ -196,9 +196,9 @@ class FunctionComponent {
   }
 }
 
-// ?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧
+// ══════════════════════════════════════════════════════════
 // SECTION 5: HOOKS  (Week 4)
-// ?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧
+// ══════════════════════════════════════════════════════════
 
 function useState(init) {
   var comp = currentComponent, idx = comp.hookIndex++;
@@ -244,9 +244,9 @@ function _depsEq(a, b) {
   return true;
 }
 
-// ?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧
+// ══════════════════════════════════════════════════════════
 // SECTION 6: UTILITIES
-// ?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧
+// ══════════════════════════════════════════════════════════
 
 function pointInPolygon(px, py, poly) {
   var inside = false;
@@ -289,7 +289,7 @@ function findPolygonSurfacePoint(origin, target, poly) {
   var farPoint = { x: origin.x + (dx / len) * 4000, y: origin.y + (dy / len) * 4000 };
   return findPolygonImpactPoint(origin, farPoint, poly);
 }
-/** 鍮꾨???醫낇슒鍮? 泥댄겕 ??ratio > limit?대㈃ ?덈Т 湲몄춬 */
+/** 비례율(종횡비) 체크 — ratio > limit이면 너무 길쭉 */
 function aspectRatioOk(pts, limit) {
   var minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
   for (var i = 0; i < pts.length; i++) {
@@ -297,11 +297,11 @@ function aspectRatioOk(pts, limit) {
     if (pts[i].y < minY) minY = pts[i].y; if (pts[i].y > maxY) maxY = pts[i].y;
   }
   var w = maxX - minX, h = maxY - minY;
-  if (w < 30 || h < 30) return false; // ?덈Т ?묒쓬
+  if (w < 30 || h < 30) return false; // 너무 작음
   var ratio = Math.max(w, h) / Math.max(1, Math.min(w, h));
   return ratio <= (limit || 4);
 }
-/** ?ъ씤?멸? ?대뼡 zone ?대????덈뒗吏 寃????寃뱀튂??zone ??諛섑솚 */
+/** 포인트가 어떤 zone 내부에 있는지 검사 — 겹치는 zone 수 반환 */
 function countCoverage(px, py, zones) {
   var count = 0;
   for (var i = 0; i < zones.length; i++) {
@@ -320,13 +320,13 @@ function buildSatUrl(w, h, cityId) {
     + '?bbox=' + bbox + '&bboxSR=4326&size=' + rw + ',' + rh
     + '&imageSR=4326&format=jpg&f=image';
 }
-/** sim-view ?곸뿭 ?ㅽ봽???곸닔 */
+/** sim-view 영역 오프셋 상수 */
 var SIM_TOP = 52, SIM_BOTTOM = 44;
-/** ?꾩꽦 ?대?吏 URL 罹먯떆 */
+/** 위성 이미지 URL 캐시 */
 var _cachedSatUrl = '';
 var _cachedSatKey = '';
-/** ?꾩떆蹂??꾩꽦 ?띿뒪泥??꾨━濡쒕뱶 罹먯떆 */
-var _cityTexCache = {}; // cityId ??THREE.Texture
+/** 도시별 위성 텍스처 프리로드 캐시 */
+var _cityTexCache = {}; // cityId → THREE.Texture
 function getSimSatUrl(w, h, cityId) {
   var dpr = Math.min(window.devicePixelRatio || 1, 2);
   var key = (cityId || DEFAULT_SIM_CITY_ID) + ':' + Math.round(w) + 'x' + Math.round(h) + '@' + dpr;
@@ -348,7 +348,7 @@ function _makeCirclePoints(cx, cy, rx, ry, n) {
   }
   return pts;
 }
-// 諛섏썝 (?댁븞??吏곸꽑 而ㅽ똿?? ??angle from~to in radians
+// 반원 (해안선 직선 커팅용) — angle from~to in radians
 function _makeArcPoints(cx, cy, rx, ry, n, fromAngle, toAngle) {
   var pts = [];
   for (var i = 0; i <= n; i++) {
@@ -547,9 +547,9 @@ function buildZoneSignature(zones) {
     return [z.id, z.capacity || 0, z.renderMode || 'extrude', z.height || 0, pts].join(':');
   }).join('|');
 }
-/** clientY ??sim-view ?대? 醫뚰몴 蹂??*/
+/** clientY → sim-view 내부 좌표 변환 */
 function toSimY(clientY) { return clientY - SIM_TOP; }
-/** 痍⑥빟 吏??洹몃━??怨꾩궛 ???덉씠??而ㅻ쾭 ???섎뒗 怨?*/
+/** 취약 지점 그리드 계산 — 레이더 커버 안 되는 곳 */
 function computeVulnerableGrid(zones, w, simH, step) {
   var pts = [];
   for (var x = step; x < w; x += step) {
@@ -588,26 +588,26 @@ function computeTravelSpeed(distance, durationSeconds) {
   return distance / Math.max(0.001, durationSeconds);
 }
 function buildNationalMissileSpeed(startX, startY, targetX, targetY, type) {
-  // ?꾨룄誘몄궗?? ?쇰컲蹂대떎 ?쎄컙 ?먮━寃?(?쒓컖???꾪삊媛?
+  // 탄도미사일: 일반보다 약간 느리게 (시각적 위협감)
   if (type === 'ballistic') return NATIONAL_MISSILE_SPEED * 0.9;
   if (type === 'drone') return NATIONAL_MISSILE_SPEED * 0.85;
   return NATIONAL_MISSILE_SPEED;
 }
-/** 誘몄궗????낆씠 ?꾨룄(BALLISTIC)?몄? ?먮퀎 */
+/** 미사일 타입이 탄도(BALLISTIC)인지 판별 */
 function isBallistic(type) { return type === 'ballistic'; }
 
-// ?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧
+// ══════════════════════════════════════════════════════════
 // SECTION 6b: NATIONAL DEFENSE DATA
-// ?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧
+// ══════════════════════════════════════════════════════════
 
-/** ?댁뒪?쇱뿕 ?꾩껜 bbox ???붾㈃ 鍮꾩쑉??留욊쾶 ?숈쟻 怨꾩궛 */
+/** 이스라엘 전체 bbox — 화면 비율에 맞게 동적 계산 */
 var NAT_LAT_MIN = 29.4, NAT_LAT_MAX = 33.5, NAT_LON_CENTER = 35.0;
 var _cachedNationalUrl = '';
 var _cachedNationalKey = '';
 
 function getNationalBbox(w, h) {
   var latRange = NAT_LAT_MAX - NAT_LAT_MIN; // 4.1
-  var aspect = w / Math.max(1, h); // ?붾㈃ 醫낇슒鍮?
+  var aspect = w / Math.max(1, h); // 화면 종횡비
   var lonRange = latRange * aspect;
   return {
     lonMin: NAT_LON_CENTER - lonRange / 2,
@@ -635,7 +635,7 @@ function getNationalSatUrl(w, h) {
   return _cachedNationalUrl;
 }
 
-/** ?꾧꼍?????붾㈃ ?쎌? 蹂??(援?? 吏?꾩슜) */
+/** 위경도 → 화면 픽셀 변환 (국가 지도용) */
 function geoToScreen(lon, lat, w, h) {
   var bb = getNationalBbox(w, h);
   var x = ((lon - bb.lonMin) / (bb.lonMax - bb.lonMin)) * w;
@@ -643,7 +643,7 @@ function geoToScreen(lon, lat, w, h) {
   return { x: Math.round(x), y: Math.round(y) };
 }
 
-/** 諛⑹뼱 ?꾩떆 ?곗씠??*/
+/** 방어 도시 데이터 */
 var DEFENSE_CITIES = [
   { id: 'telaviv', name: 'Tel Aviv', lat: 32.08, lon: 34.78, bbox: '34.748,32.055,34.810,32.100' },
   { id: 'sderot', name: 'Sderot', lat: 31.52, lon: 34.60, bbox: '34.570,31.500,34.630,31.540' },
@@ -690,7 +690,7 @@ function buildCityFocusList(primaryIds, secondaryIds, limit) {
   return result;
 }
 
-/** ?꾪삊 異쒕컻吏 ?곗씠??*/
+/** 위협 출발지 데이터 */
 var THREAT_ORIGINS = [
   { id: 'gaza', name: 'Gaza', lat: 31.42, lon: 34.35, color: '#ff4444' },
   { id: 'lebanon', name: 'S. Lebanon', lat: 33.35, lon: 35.30, color: '#ff6644' },
@@ -699,40 +699,40 @@ var THREAT_ORIGINS = [
   { id: 'syria', name: 'Syria/Iraq', lat: 33.4, lon: 36.0, color: '#ff5533', edge: true }
 ];
 
-/** True Promise (2024.04.13) ?쒕굹由ъ삤 ???대? ???댁뒪?쇱뿕 ?洹쒕え 怨듦꺽 */
+/** True Promise (2024.04.13) 시나리오 — 이란 → 이스라엘 대규모 공격 */
 var SCENARIOS = {
   'true-promise': {
-    name: 'Operation True Promise ??April 13, 2024',
+    name: 'Operation True Promise — April 13, 2024',
     desc: 'Iran launches 300+ drones & missiles at Israel',
     waves: [
-      // ?? 1?ъ씠?? ?대? ?좎젣?寃? 3?꾩떆 遺꾩궛 ??
+      // ── 1사이클: 이란 선제타격, 3도시 분산 ──
       { time: 0,     from: 'iran',    targets: ['telaviv', 'jerusalem', 'haifa'], count: 8,  type: 'ballistic' },
-      // ?? 2?ъ씠?? ?붿븘鍮꾨툕 臾댁옄鍮?吏묒쨷??꺽 (1?꾩떆, 3諛⑺뼢 ?숈떆) ??
+      // ── 2사이클: 텔아비브 무자비 집중폭격 (1도시, 3방향 동시) ──
       { time: 4000,  from: 'iran',    targets: ['telaviv'],                       count: 20, type: 'ballistic' },
       { time: 4300,  from: 'gaza',    targets: ['telaviv'],                       count: 14, type: 'rocket' },
       { time: 4600,  from: 'lebanon', targets: ['telaviv'],                       count: 10, type: 'cruise' },
-      // ?? 3?ъ씠?? ?⑤? 2?꾩떆 ??
+      // ── 3사이클: 남부 2도시 ──
       { time: 9000,  from: 'yemen',   targets: ['ashkelon', 'sderot'],            count: 8,  type: 'drone' },
       { time: 10000, from: 'gaza',    targets: ['sderot'],                        count: 8,  type: 'rocket' },
-      // ?? 4?ъ씠?? ?섏씠???ы솕怨듦꺽 ??諛⑷났留?珥덇낵, ???愿????
+      // ── 4사이클: 하이파 포화공격 — 방공망 초과, 대량 관통 ──
       { time: 14000, from: 'lebanon', targets: ['haifa'],                         count: 25, type: 'rocket' },
       { time: 14400, from: 'syria',   targets: ['haifa'],                         count: 18, type: 'cruise' },
       { time: 14800, from: 'iran',    targets: ['haifa'],                         count: 12, type: 'ballistic' },
-      // ?? 5?ъ씠?? ?꾨㈃??4?꾩떆 ?숈떆 ??
+      // ── 5사이클: 전면전 4도시 동시 ──
       { time: 19500, from: 'iran',    targets: ['telaviv', 'jerusalem', 'haifa'], count: 10, type: 'ballistic' },
       { time: 20000, from: 'gaza',    targets: ['sderot', 'ashkelon'],            count: 10, type: 'rocket' },
       { time: 20500, from: 'lebanon', targets: ['haifa'],                         count: 8,  type: 'rocket' },
-      // ?? 6?ъ씠?? ?덈（?대젞 理쒖쥌 ?寃???
+      // ── 6사이클: 예루살렘 최종 타격 ──
       { time: 25000, from: 'iran',    targets: ['jerusalem'],                     count: 16, type: 'ballistic' },
       { time: 25300, from: 'syria',   targets: ['jerusalem'],                     count: 12, type: 'cruise' }
     ]
   }
 };
 
-/** 援?? 誘몄궗???곗씠??*/
+/** 국가 미사일 데이터 */
 var _natMissileId = 0;
 
-/** ?꾩떆蹂??꾩꽦 ?띿뒪泥??꾨━濡쒕뱶 ??DEFENSE_CITIES ?뺤쓽 ???ㅽ뻾 */
+/** 도시별 위성 텍스처 프리로드 — DEFENSE_CITIES 정의 후 실행 */
 (function() {
   if (typeof THREE !== 'undefined') {
     var loader = new THREE.TextureLoader();
@@ -749,9 +749,9 @@ var _natMissileId = 0;
   }
 })();
 
-// ?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧
+// ══════════════════════════════════════════════════════════
 // SECTION 7: CHILD COMPONENTS (Stateless)
-// ?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧
+// ══════════════════════════════════════════════════════════
 
 function TopBar(props) {
   var modeEl = [];
@@ -966,7 +966,7 @@ function StatusBar(props) {
 
   items.push(createVNode('span', { class: 'status-spacer' }, []));
   if (props.totalArea > 0) {
-    items.push(createVNode('span', { class: 'status-area' }, [createTextVNode(Math.round(props.totalArea).toLocaleString() + 'px짼')]));
+    items.push(createVNode('span', { class: 'status-area' }, [createTextVNode(Math.round(props.totalArea).toLocaleString() + 'px²')]));
   }
 
   return createVNode('div', { class: 'statusbar' }, items);
@@ -1007,17 +1007,17 @@ function DrawHint(props) {
   return createVNode('div', { class: 'draw-hint' }, [createTextVNode('Press and drag to establish a defended sector. Release to commit the boundary.')]);
 }
 
-// ?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧
-// 3D VIEW ??Three.js (2D ?쒕??덉씠???곗씠???ㅼ떆媛??곕룞)
-// ?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧
+// ══════════════════════════════════════════════════════════
+// 3D VIEW — Three.js (2D 시뮬레이션 데이터 실시간 연동)
+// ══════════════════════════════════════════════════════════
 var _threeScene = null, _threeRenderer = null, _threeCamera = null;
 var _threeAnimId = null, _threeInitialized = false;
-var _3dMissileMap = {};   // 2D missile id ??{ meshes }
-var _3dZoneMap = {};      // 2D zone id ??{ dome, outline }
+var _3dMissileMap = {};   // 2D missile id → { meshes }
+var _3dZoneMap = {};      // 2D zone id → { dome, outline }
 var _3dExplosions = [];
 var _3dBreachMarkers = [];
 
-/** 2D ?붾㈃ 醫뚰몴(px) ??3D ?붾뱶 醫뚰몴 留ㅽ븨 */
+/** 2D 화면 좌표(px) → 3D 월드 좌표 매핑 */
 var _3dScaleX = 1, _3dScaleZ = 1;
 function to3D(px2d, py2d) {
   var w = window.innerWidth, h = window.innerHeight - SIM_TOP - SIM_BOTTOM;
@@ -1169,7 +1169,7 @@ function _pickBuildingPointForCity(cityId, placed, minSpacing) {
 }
 function _addCityBuildings(scene, cityId, count, footprintScale, heightScale) {
   if (cityId === 'haifa') return;
-  // ?ㅻ뜲濡? ?띿큿 ?뚮룄????嫄대Ъ ?곴퀬 ??쓬
+  // 스데롯: 농촌 소도시 — 건물 적고 낮음
   var isSderot = cityId === 'sderot';
   var total = isSderot ? 35 : (count || 140);
   var fpScale = isSderot ? 0.7 : (footprintScale || 1);
@@ -1183,10 +1183,10 @@ function _addCityBuildings(scene, cityId, count, footprintScale, heightScale) {
     var centerBias = 1 - Math.min(0.78, Math.sqrt(pos.x * pos.x + pos.z * pos.z) / 860);
     var bw, bd, bh;
     if (isSderot) {
-      // ?띿큿 嫄대Ъ: ??퀬 ?볦쟻??1-2痢?二쇳깮
+      // 농촌 건물: 낮고 넓적한 1-2층 주택
       bw = (8 + Math.random() * 10) * fpScale;
       bd = (8 + Math.random() * 10) * fpScale;
-      bh = (4 + Math.random() * 6) * htScale; // 理쒕? 2.5m ?섏?
+      bh = (4 + Math.random() * 6) * htScale; // 최대 2.5m 수준
     } else {
       bw = (6 + Math.random() * 12) * fpScale;
       bd = (6 + Math.random() * 12) * fpScale;
@@ -1227,7 +1227,7 @@ function initThreeScene(container, cityId) {
   renderer.setClearColor(0x080c08);
   container.appendChild(renderer.domElement);
 
-  // 諛붾떏 ???꾩꽦 ?대?吏 ?띿뒪泥?
+  // 바닥 — 위성 이미지 텍스처
   var groundGeo = new THREE.PlaneGeometry(1200, 1200);
   var groundMat;
   var simCity = getDefenseCityById(cityId);
@@ -1245,21 +1245,21 @@ function initThreeScene(container, cityId) {
   ground.position.y = -0.5;
   scene.add(ground);
 
-  // 洹몃━???ㅻ쾭?덉씠
+  // 그리드 오버레이
   var grid = new THREE.GridHelper(1200, 40, 0x00ff41, 0x0a2a0a);
   grid.material.transparent = true; grid.material.opacity = 0.15;
   scene.add(grid);
 
-  // ?꾩떆 嫄대Ъ?????≪? ?곸뿭?먮쭔 諛곗튂
+  // 도시 건물들 — 육지 영역에만 배치
   _addCityBuildings(scene, cityId, 180, 1, 1);
 
-  // 議곕챸
+  // 조명
   scene.add(new THREE.AmbientLight(0xffffff, 1.2));
   var dirLight = new THREE.DirectionalLight(0xffffff, 0.8);
   dirLight.position.set(200, 500, 200);
   scene.add(dirLight);
 
-  // 蹂?
+  // 별
   var starGeo = new THREE.BufferGeometry();
   var sv = [];
   for (var si = 0; si < 400; si++) sv.push((Math.random()-0.5)*4000, 600+Math.random()*1500, (Math.random()-0.5)*4000);
@@ -1270,7 +1270,7 @@ function initThreeScene(container, cityId) {
   _threeRenderer = renderer;
   _threeCamera = camera;
 
-  // ?좊땲硫붿씠????移대찓???먮룞 ?뚯쟾 + ??컻 ?낅뜲?댄듃
+  // 애니메이션 — 카메라 자동 회전 + 폭발 업데이트
   var camAngle = 0;
   function animate() {
     _threeAnimId = requestAnimationFrame(animate);
@@ -1280,7 +1280,7 @@ function initThreeScene(container, cityId) {
     _threeCamera.position.y = 300 + 35 * Math.sin(camAngle * 2);
     _threeCamera.lookAt(0, 50, 0);
 
-    // ??컻 ?뚰떚???낅뜲?댄듃
+    // 폭발 파티클 업데이트
     for (var ei = _3dExplosions.length - 1; ei >= 0; ei--) {
       var ex = _3dExplosions[ei];
       ex.life -= 0.015;
@@ -1299,7 +1299,7 @@ function initThreeScene(container, cityId) {
   animate();
 }
 
-/** 2D 誘몄궗???곗씠?곕? 3D???숆린??*/
+/** 2D 미사일 데이터를 3D에 동기화 */
 function syncThreeMissiles(missiles2d) {
   if (!_threeScene) return;
   var seen = {};
@@ -1307,11 +1307,11 @@ function syncThreeMissiles(missiles2d) {
     var m = missiles2d[i];
     seen[m.id] = true;
     if (_3dMissileMap[m.id]) {
-      // 湲곗〈 誘몄궗???꾩튂 ?낅뜲?댄듃
+      // 기존 미사일 위치 업데이트
       var obj = _3dMissileMap[m.id];
       var p3 = to3D(m.x, m.y);
-      // 誘몄궗?쇱? 怨좊룄瑜??쒓컙???곕씪 ?대젮?ㅻ뒗 寃껋쿂???쒗쁽
-      var progress = 1; // 湲곕낯
+      // 미사일은 고도를 시간에 따라 내려오는 것처럼 표현
+      var progress = 1; // 기본
       if (m.active && !m.intercepted) {
         var tdx = m.targetX - m.x, tdy = m.targetY - m.y;
         var tDist = Math.sqrt(tdx*tdx + tdy*tdy);
@@ -1320,21 +1320,21 @@ function syncThreeMissiles(missiles2d) {
       }
       if (m.intercepted && !obj.exploded) {
         obj.exploded = true;
-        // ??컻 ??珥덈줉??(?붽꺽 ?깃났)
+        // 폭발 — 초록색 (요격 성공)
         spawn3dExplosion(obj.mesh.position.clone(), true);
         _threeScene.remove(obj.mesh);
         if (obj.trail) _threeScene.remove(obj.trail);
       }
       if (!m.active && !m.intercepted && !obj.exploded) {
         obj.exploded = true;
-        // ?꾩갑 ??鍮④컙????컻 (breach)
+        // 도착 — 빨간색 폭발 (breach)
         var bp = to3D(m.targetX, m.targetY);
         spawn3dExplosion(new THREE.Vector3(bp.x, 5, bp.z), false);
         _threeScene.remove(obj.mesh);
         if (obj.trail) _threeScene.remove(obj.trail);
       }
     } else if (m.active) {
-      // ??誘몄궗???앹꽦
+      // 새 미사일 생성
       var startPos = to3D(m.x, m.y);
       var mGeo = new THREE.SphereGeometry(3, 6, 6);
       var mMat = new THREE.MeshBasicMaterial({ color: 0xff4444 });
@@ -1342,7 +1342,7 @@ function syncThreeMissiles(missiles2d) {
       mMesh.position.set(startPos.x, 520, startPos.z);
       _threeScene.add(mMesh);
 
-      // 沅ㅼ쟻 ???寃잕퉴吏 媛?대뱶 ?쇱씤
+      // 궤적 — 타겟까지 가이드 라인
       var tgtPos = to3D(m.targetX, m.targetY);
       var trGeo = new THREE.BufferGeometry();
       trGeo.setAttribute('position', new THREE.Float32BufferAttribute([
@@ -1354,7 +1354,7 @@ function syncThreeMissiles(missiles2d) {
 
       _3dMissileMap[m.id] = { mesh: mMesh, trail: trail, exploded: false };
 
-      // ?붽꺽 誘몄궗?쇰룄 ?앹꽦 (?덉씠??議댁씠 ?덉쑝硫?
+      // 요격 미사일도 생성 (레이더 존이 있으면)
       if (_radarZones.length > 0) {
         var iGeo = new THREE.SphereGeometry(2, 6, 6);
         var iMat = new THREE.MeshBasicMaterial({ color: 0x00ff41 });
@@ -1362,7 +1362,7 @@ function syncThreeMissiles(missiles2d) {
         var zc = to3D(_radarZones[0].center.x, _radarZones[0].center.y);
         iMesh.position.set(zc.x, 5, zc.z);
         _threeScene.add(iMesh);
-        // ?붽꺽 誘몄궗?쇱? 以묎컙 怨좊룄 履쎌쑝濡??ν븯寃?
+        // 요격 미사일은 중간 고도 쪽으로 향하게
         var igTrailGeo = new THREE.BufferGeometry();
         igTrailGeo.setAttribute('position', new THREE.Float32BufferAttribute([
           zc.x, 5, zc.z, (startPos.x+tgtPos.x)/2, 250, (startPos.z+tgtPos.z)/2
@@ -1372,7 +1372,7 @@ function syncThreeMissiles(missiles2d) {
       }
     }
   }
-  // ?щ씪吏?誘몄궗???뺣━
+  // 사라진 미사일 정리
   var ids = Object.keys(_3dMissileMap);
   for (var k = 0; k < ids.length; k++) {
     if (!seen[ids[k]]) {
@@ -1384,7 +1384,7 @@ function syncThreeMissiles(missiles2d) {
   }
 }
 
-/** 2D ?덉씠??議???3D ???숆린??*/
+/** 2D 레이더 존 → 3D 돔 동기화 */
 function syncThreeZones(zones2d) {
   if (!_threeScene) return;
   var seen = {};
@@ -1534,13 +1534,13 @@ function remove3dBreachMarker(marker) {
 function create3dBreachMarker(breach2d) {
   if (!_threeScene) return null;
   var bp = to3D(breach2d.x, breach2d.y);
-  // 肄??뺥깭 ??遺덈궃 ?먮굦
+  // 콘 형태 — 불난 느낌
   var coneGeo = new THREE.ConeGeometry(10, 35, 6);
   var coneMat = new THREE.MeshBasicMaterial({ color: 0xff4444, transparent: true, opacity: 0.85 });
   var cone = new THREE.Mesh(coneGeo, coneMat);
   cone.position.set(bp.x, 18, bp.z);
   _threeScene.add(cone);
-  // 鍮쏅굹??諛붾떏 留?
+  // 빛나는 바닥 링
   var ringGeo = new THREE.RingGeometry(8, 16, 16);
   var ringMat = new THREE.MeshBasicMaterial({ color: 0xff6622, transparent: true, opacity: 0.5, side: THREE.DoubleSide });
   var ring = new THREE.Mesh(ringGeo, ringMat);
@@ -1550,7 +1550,7 @@ function create3dBreachMarker(breach2d) {
   return { mesh: cone, ring: ring };
 }
 
-/** 2D breaches 諛곗뿴 ??3D ?곴뎄 留덉빱 ?숆린??*/
+/** 2D breaches 배열 → 3D 영구 마커 동기화 */
 function syncThreeBreaches(breaches2d) {
   if (!_threeScene) return;
   while (_3dBreachMarkers.length > breaches2d.length) {
@@ -1581,9 +1581,9 @@ function destroyThreeScene() {
   _threeInitialized = false;
 }
 
-// ?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧
+// ══════════════════════════════════════════════════════════
 // MULTI-3D: Per-city Three.js scenes
-// ?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧
+// ══════════════════════════════════════════════════════════
 function initMulti3dScene(cityId, container, zones2d) {
   if (_multi3dScenes[cityId]) return;
   var city = null;
@@ -1609,14 +1609,14 @@ function initMulti3dScene(cityId, container, zones2d) {
   renderer.setClearColor(0x080c08);
   container.appendChild(renderer.domElement);
 
-  // 議곕챸
+  // 조명
   var ambLight = new THREE.AmbientLight(0xffffff, 0.6);
   scene.add(ambLight);
   var dirLight = new THREE.DirectionalLight(0xffffff, 0.8);
   dirLight.position.set(200, 400, 200);
   scene.add(dirLight);
 
-  // ?꾩꽦 諛붾떏 ???꾨━濡쒕뱶 罹먯떆 ?곗꽑 ?ъ슜
+  // 위성 바닥 — 프리로드 캐시 우선 사용
   var groundGeo = new THREE.PlaneGeometry(1200, 1200);
   var cachedTex = _cityTexCache[cityId];
   var groundMat;
@@ -1642,7 +1642,7 @@ function initMulti3dScene(cityId, container, zones2d) {
 
   _addCityBuildings(scene, cityId, 110, 0.9, 0.92);
 
-  // ?? ?꾩떆蹂?2D 諛⑷났 援ъ뿭??洹몃?濡?3D濡??몄? ??
+  // ── 도시별 2D 방공 구역을 그대로 3D로 세움 ──
   var zoneSource = zones2d || [];
   var zoneData = [];
   var ZONE_HEIGHT = 180;
@@ -1762,9 +1762,9 @@ function initMulti3dScene(cityId, container, zones2d) {
 
   for (var zi = 0; zi < zoneSource.length; zi++) _addExtrudedZone(zoneSource[zi]);
 
-  // ?먥븧 Multi-3D ?꾩떆酉? ?쇰컲(Iron Dome) + 怨좉퀬???곕묠媛꾩젏) ?먥븧
+  // ══ Multi-3D 도시뷰: 일반(Iron Dome) + 고고도(큰빨간점) ══
   var cityMissiles = [];
-  var ballisticMissiles3d = []; // 怨좉퀬???꾩슜
+  var ballisticMissiles3d = []; // 고고도 전용
   var cityExplosions = [];
   var breachMarkers = [];
   var MISSILE_COUNT = 12;
@@ -1873,12 +1873,12 @@ function initMulti3dScene(cityId, container, zones2d) {
     cityMissiles.push(missile);
   }
 
-  // ?? 怨좉퀬???꾨룄誘몄궗??(??鍮④컙 援ъ껜, ?섏쭅 ?숉븯) ??
+  // ── 고고도 탄도미사일 (큰 빨간 구체, 수직 낙하) ──
   function _createBallisticMesh3d(s) {
     var geo = new THREE.SphereGeometry(10, 10, 10);
     var mat = new THREE.MeshBasicMaterial({ color: 0xdd2222 });
     var mesh = new THREE.Mesh(geo, mat);
-    // 湲濡쒖슦 留?
+    // 글로우 링
     var glowGeo = new THREE.RingGeometry(14, 22, 16);
     var glowMat = new THREE.MeshBasicMaterial({ color: 0xff4444, transparent: true, opacity: 0.3, side: THREE.DoubleSide });
     var glow = new THREE.Mesh(glowGeo, glowMat);
@@ -1914,7 +1914,7 @@ function initMulti3dScene(cityId, container, zones2d) {
     var dt = lastFrameTs ? Math.min(0.05, (ts - lastFrameTs) / 1000) : (1 / 60);
     lastFrameTs = ts;
 
-    // ?? ?쇰컲 誘몄궗??(Iron Dome) ??
+    // ── 일반 미사일 (Iron Dome) ──
     for (var i = 0; i < cityMissiles.length; i++) {
       var m = cityMissiles[i];
       if (m.pendingLaunch) {
@@ -1952,7 +1952,7 @@ function initMulti3dScene(cityId, container, zones2d) {
       m.mesh.position.set(m.x, m.y, m.z);
     }
 
-    // ?? 怨좉퀬???꾨룄誘몄궗??(?섏쭅 ?숉븯, 諛⑷났援ъ뿭?먯꽌 ?붽꺽 ???????컻) ??
+    // ── 고고도 탄도미사일 (수직 낙하, 방공구역에서 요격 시 대형 폭발) ──
     for (var bi2 = 0; bi2 < ballisticMissiles3d.length; bi2++) {
       var bm2 = ballisticMissiles3d[bi2];
       if (bm2.pendingLaunch) {
@@ -1961,12 +1961,12 @@ function initMulti3dScene(cityId, container, zones2d) {
         bm2.mesh.visible = true;
       }
       if (!bm2.alive) continue;
-      // 嫄곗쓽 ?섏쭅 ?숉븯
+      // 거의 수직 낙하
       bm2.y -= bm2.speed * dt;
       bm2.x += (bm2.tx - bm2.x) * 0.01;
       bm2.z += (bm2.tz - bm2.z) * 0.01;
       bm2.mesh.position.set(bm2.x, bm2.y, bm2.z);
-      // 吏硫??꾨떖
+      // 지면 도달
       if (bm2.y <= 5) {
         bm2.alive = false; bm2.mesh.visible = false;
         var bInt = false;
@@ -2031,16 +2031,16 @@ function destroyMulti3dScene(cityId) {
   delete _multi3dScenes[cityId];
 }
 
-// ?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧
+// ══════════════════════════════════════════════════════════
 // NATIONAL VIEW COMPONENT
-// ?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧
+// ══════════════════════════════════════════════════════════
 function NationalView(props) {
   if (!props.visible) return createVNode('div', { class: 'national-view hidden' }, []);
 
   var w = window.innerWidth, h = window.innerHeight - SIM_TOP - SIM_BOTTOM;
   var bgStyle = 'background-image:url(' + getNationalSatUrl(w, h) + ')';
 
-  // ?꾩떆 留덉빱 SVG
+  // 도시 마커 SVG
   var cityEls = [];
   var cityMeta = [];
   var CITY_LABEL_NUDGE_Y = {
@@ -2156,7 +2156,7 @@ function NationalView(props) {
     ]));
   }
 
-  // ?꾪삊 異쒕컻吏 留덉빱
+  // 위협 출발지 마커
   var threatEls = [];
   var threatMeta = [];
   var THREAT_LABEL_NUDGE_Y = {
@@ -2270,9 +2270,9 @@ function NationalView(props) {
     ]));
   }
 
-  // ?먥븧 鍮꾪뻾 以묒씤 誘몄궗??沅ㅼ쟻 ??BALLISTIC(??? vs NORMAL ?쒓컖 ?꾩쟾 遺꾨━ ?먥븧
+  // ══ 비행 중인 미사일 궤적 — BALLISTIC(대왕) vs NORMAL 시각 완전 분리 ══
 
-  // SVG defs: ?꾨룄誘몄궗???꾩슜 湲濡쒖슦 ?꾪꽣 + 誘몄궗???꾩씠肄??щ낵
+  // SVG defs: 탄도미사일 전용 글로우 필터 + 미사일 아이콘 심볼
   var defsChildren = [];
   defsChildren.push(createVNode('filter', { id: 'ballistic-glow', x: '-120%', y: '-120%', width: '340%', height: '340%' }, [
     createVNode('feGaussianBlur', { stdDeviation: '7', result: 'blur' }, []),
@@ -2315,7 +2315,7 @@ function NationalView(props) {
     var mx = Math.round(nm.x), my = Math.round(nm.y);
 
     if (ball) {
-      // ?? 怨좉퀬???꾨룄誘몄궗?? ?몃젅???놁쓬, ??鍮④컙 ??+ 湲濡쒖슦留???
+      // ── 고고도 탄도미사일: 트레일 없음, 큰 빨간 점 + 글로우만 ──
       missileEls.push(createVNode('circle', {
         cx: String(mx), cy: String(my), r: '7',
         fill: '#dc2626', stroke: '#fca5a5', 'stroke-width': '2'
@@ -2345,7 +2345,7 @@ function NationalView(props) {
     }
   }
 
-  // 寃쎈낫 諛곕꼫
+  // 경보 배너
   var alertEl = [];
   var attackCities = [];
   for (var aci = 0; aci < props.natMissiles.length; aci++) {
@@ -2356,7 +2356,7 @@ function NationalView(props) {
     alertEl.push(createVNode('div', { class: 'alert-banner' }, [
       createTextVNode('Inbound threats detected'),
       createVNode('br', {}, []),
-      createTextVNode(attackCities.join(' 쨌 '))
+      createTextVNode(attackCities.join(' · '))
     ]));
   }
 
@@ -2366,12 +2366,12 @@ function NationalView(props) {
   if (!props.scenarioRunning) {
     scenarioBtn.push(createVNode('div', { style: 'margin-top:8px' }, [
       createVNode('button', { class: 'status-btn target-active', 'data-action': 'run-scenario', style: 'font-size:14px;padding:8px 16px' }, [
-        createTextVNode('?? Run True Promise scenario')
+        createTextVNode('▶  Run True Promise scenario')
       ])
     ]));
   } else {
     scenarioBtn.push(createVNode('div', { style: 'margin-top:8px;color:var(--alert-red);font-size:14px;font-weight:700;letter-spacing:1px' }, [
-      createTextVNode('??SCENARIO ACTIVE')
+      createTextVNode('⚠ SCENARIO ACTIVE')
     ]));
   }
 
@@ -2379,7 +2379,7 @@ function NationalView(props) {
     createTextVNode('Israel Iron Dome')
   ].concat(scenarioBtn));
 
-  // ?? ?쒕굹由ъ삤 ?뺣낫 ?⑤꼸 (?ㅽ뻾 以묒씪 ?뚮쭔) ??
+  // ── 시나리오 정보 패널 (실행 중일 때만) ──
   var scenarioInfoEl = [];
   if (props.scenarioRunning) {
     var elapsed = props.scenarioElapsed || 0;
@@ -2393,7 +2393,7 @@ function NationalView(props) {
 
     scenarioInfoEl.push(createVNode('div', { class: 'scenario-info-panel' }, [
       createVNode('div', { class: 'scenario-info-subtitle' }, [
-        createTextVNode('April 13-14, 2024  쨌  01:45 AM Israel Time')
+        createTextVNode('April 13-14, 2024  ·  01:45 AM Israel Time')
       ]),
       createVNode('div', { class: 'scenario-info-sep' }, []),
       createVNode('div', { class: 'scenario-info-row' }, [
@@ -2416,7 +2416,7 @@ function NationalView(props) {
   return createVNode('div', { class: 'national-view', style: bgStyle, 'data-national': 'true' }, [svgEl, hudEl].concat(scenarioInfoEl).concat(alertEl));
 }
 
-// 3D VNode 而댄룷?뚰듃
+// 3D VNode 컴포넌트
 function View3D(props) {
   var cls = 'view-3d' + (props.visible ? '' : ' hidden') + (props.targetMode ? ' targeting' : '');
   var stats = 'Threats ' + props.totalAttacks + '  Inbound ' + props.activeMissiles + '  Sectors ' + props.radarZones.length + '  Breaches ' + props.breachCount;
@@ -2448,7 +2448,7 @@ function TestView(props) {
   var pc = props.results.filter(function(r) { return r.pass; }).length;
   return createVNode('div', { class: 'test-view' + (props.visible ? ' show' : '') }, [
     createVNode('div', { class: 'test-title' }, [createTextVNode('Validation')]),
-    createVNode('div', { class: 'test-subtitle' }, [createTextVNode(pc + '/' + props.results.length + ' passed 쨌 diff engine checks')])
+    createVNode('div', { class: 'test-subtitle' }, [createTextVNode(pc + '/' + props.results.length + ' passed · diff engine checks')])
   ].concat(cards));
 }
 
@@ -2554,9 +2554,9 @@ function BriefingView(props) {
   ]);
 }
 
-// ?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧
+// ══════════════════════════════════════════════════════════
 // SECTION 8: TEST SUITE
-// ?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧
+// ══════════════════════════════════════════════════════════
 
 function runVDomTests() {
   var R = [];
@@ -2582,7 +2582,7 @@ function runVDomTests() {
   R.push({ name: 'Node Remove', expected: 'REMOVE', pass: p5.length > 0 && p5[p5.length - 1].patch.type === REMOVE, detail: p5.length ? p5[p5.length - 1].patch.type : 'none' });
 
   var p6 = diff(createVNode('h3', {}, []), createVNode('h2', {}, []));
-  R.push({ name: 'Element Replace', expected: 'REPLACE', pass: p6 !== null && p6.type === REPLACE, detail: p6 ? 'h3?뭜2' : 'none' });
+  R.push({ name: 'Element Replace', expected: 'REPLACE', pass: p6 !== null && p6.type === REPLACE, detail: p6 ? 'h3→h2' : 'none' });
 
   var box = document.createElement('div');
   var ov = createVNode('div', { class: 'a' }, [createTextVNode('X')]);
@@ -2600,15 +2600,15 @@ function runVDomTests() {
   return R;
 }
 
-// ?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧
-// SECTION 9: ROOT COMPONENT ??App
-// ?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧
+// ══════════════════════════════════════════════════════════
+// SECTION 9: ROOT COMPONENT — App
+// ══════════════════════════════════════════════════════════
 
 var _droneAlive = true, _isDrawing = false, _targetMode = false;
 var _pressedKeys = {}, _radarZones = [], _zoneId = 1;
 var _missiles = [], _missileId = 1;
 var _scenarioTimers = [];
-var _multi3dScenes = {}; // cityId ??{ scene, renderer, camera, animId }
+var _multi3dScenes = {}; // cityId → { scene, renderer, camera, animId }
 var _alertAudio = {
   ctx: null,
   master: null,
@@ -2842,19 +2842,19 @@ function App() {
     return radarZones.reduce(function(s, z) { return s + polygonArea(z.points); }, 0);
   }, [radarZones]);
 
-  // 痍⑥빟 吏??怨꾩궛 (?덉씠???녿뒗 怨?鍮④컙??
+  // 취약 지점 계산 (레이더 없는 곳 빨간점)
   var vulnPoints = useMemo(function() {
     if (radarZones.length === 0) return [];
     return computeVulnerableGrid(radarZones, window.innerWidth, window.innerHeight - SIM_TOP - SIM_BOTTOM, 60);
   }, [radarZones]);
 
-  // ?쒓퀎 ?낅뜲?댄듃
+  // 시계 업데이트
   useEffect(function() {
     var timerId = setInterval(function() { setCurrentTime(new Date()); }, 1000);
     return function() { clearInterval(timerId); };
   }, []);
 
-  // ?쒕굹由ъ삤 寃쎄낵?쒓컙 移댁슫??
+  // 시나리오 경과시간 카운터
   useEffect(function() {
     if (!scenarioRunning) return;
     setScenarioElapsed(0);
@@ -2864,7 +2864,7 @@ function App() {
     return function() { clearInterval(timerId); };
   }, [scenarioRunning]);
 
-  // ?좏깮???꾩떆???쒕??덉씠???곹깭 濡쒕뱶
+  // 선택된 도시의 시뮬레이션 상태 로드
   useEffect(function() {
     var snapshot = cloneSimState(simCityStore[selectedSimCityId] || createDefaultSimState(selectedSimCityId));
     setDronePos(snapshot.dronePos);
@@ -2883,7 +2883,7 @@ function App() {
     setRatioWarn(false);
   }, [selectedSimCityId]);
 
-  // 寃쎈낫 ?ㅻ뵒???쒖꽦??
+  // 경보 오디오 활성화
   useEffect(function() {
     function arm() { armAlertAudio(); }
     document.addEventListener('pointerdown', arm, true);
@@ -2895,7 +2895,7 @@ function App() {
     };
   }, []);
 
-  // 誘몄궗???쒕??덉씠??猷⑦봽
+  // 미사일 시뮬레이션 루프
   useEffect(function() {
     var animId;
     var mSpeed = 3;
@@ -2914,18 +2914,18 @@ function App() {
             return m;
           }
           if (!m.active) return m;
-          // ?대룞
+          // 이동
           var dx = m.targetX - m.x, dy = m.targetY - m.y;
           var dist = Math.sqrt(dx * dx + dy * dy);
           if (dist < 5) {
-            // ?꾩갑 ??breach!
+            // 도착 — breach!
             changed = true;
             newBreaches.push({ x: m.targetX, y: m.targetY });
             return Object.assign({}, m, { active: false });
           }
           var nx = m.x + (dx / dist) * mSpeed;
           var ny = m.y + (dy / dist) * mSpeed;
-          // ?덉씠??泥댄겕 ??寃뱀튂??議댁씠 ?щ윭 媛쒕㈃ 以묒떖??媛??媛源뚯슫 議댁씠 ?곗꽑 ?붽꺽
+          // 레이더 체크 — 겹치는 존이 여러 개면 중심이 가장 가까운 존이 우선 요격
           var hitZones = [];
           for (var zi = 0; zi < _radarZones.length; zi++) {
             var z = _radarZones[zi];
@@ -2973,7 +2973,7 @@ function App() {
           return Object.assign({}, m, { x: nx, y: ny });
         });
 
-        // zone capacity ?낅뜲?댄듃
+        // zone capacity 업데이트
         var zIds = Object.keys(zoneUpdates);
         if (zIds.length > 0) {
           setRadarZones(function(zp) {
@@ -2982,7 +2982,7 @@ function App() {
             });
           });
         }
-        // breach 異붽?
+        // breach 추가
         if (newBreaches.length > 0) {
           setBreaches(function(bp) { return bp.concat(newBreaches); });
         }
@@ -2991,7 +2991,7 @@ function App() {
           return newInterceptors.length > 0 ? liveInts.concat(newInterceptors) : liveInts;
         });
 
-        // ?앸궃 誘몄궗???쒓굅 (?붽꺽 鍮꾪뻾 + ??컻 ?쒗쁽 ??
+        // 끝난 미사일 제거 (요격 비행 + 폭발 표현 후)
         newMissiles = newMissiles.filter(function(m) {
           if (m.intercepted) {
             var travelMs = m.interceptorTravelMs || INTERCEPT_TRAVEL_MS;
@@ -3009,7 +3009,7 @@ function App() {
     return function() { cancelAnimationFrame(animId); };
   }, []);
 
-  // ?대┃ ?꾩엫
+  // 클릭 위임
   useEffect(function() {
     function handleClick(e) {
       var a = e.target.closest('[data-action]');
@@ -3037,7 +3037,7 @@ function App() {
         case 'run-scenario':
           launchScenario('true-promise'); break;
         default:
-          // attack-from-{id} ?몃뱾??
+          // attack-from-{id} 핸들러
           if (action && action.indexOf('attack-from-') === 0) {
             var originId = action.replace('attack-from-', '');
             launchNatAttack(originId);
@@ -3050,7 +3050,7 @@ function App() {
               setActiveView('sim');
             }
           }
-          // select-city-{id} ?몃뱾?????대떦 ?꾩떆 3D 酉?
+          // select-city-{id} 핸들러 — 해당 도시 3D 뷰
           if (action && action.indexOf('select-city-') === 0) {
             var cityId = action.replace('select-city-', '');
             setMultiCities([cityId]);
@@ -3063,12 +3063,12 @@ function App() {
     return function() { document.removeEventListener('click', handleClick); };
   }, []);
 
-  // ?덉씠??洹몃━湲?
+  // 레이더 그리기
   useEffect(function() {
     if (!isDrawing) return;
     var drawing = false, pts = [];
     var simW = window.innerWidth, simH = window.innerHeight - SIM_TOP - SIM_BOTTOM;
-    var maxArea = simW * simH * 0.05; // ?붾㈃??5% ?댄븯留??덉슜
+    var maxArea = simW * simH * 0.05; // 화면의 5% 이하만 허용
 
     function onDown(e) {
       if (!e.target.closest('[data-sim]')) return;
@@ -3114,7 +3114,7 @@ function App() {
     return function() { document.removeEventListener('mousedown', onDown); document.removeEventListener('mousemove', onMove); document.removeEventListener('mouseup', onUp); };
   }, [isDrawing]);
 
-  // ?寃?紐⑤뱶 ??3D 酉곗뿉???대┃?쇰줈 誘몄궗??諛쒖궗 (raycasting)
+  // 타겟 모드 — 3D 뷰에서 클릭으로 미사일 발사 (raycasting)
   useEffect(function() {
     if (!targetMode || activeView !== '3d') return;
     var raycaster = new THREE.Raycaster();
@@ -3124,35 +3124,35 @@ function App() {
       if (!e.target.closest('[data-3d]')) return;
       if (!_threeRenderer || !_threeCamera || !_threeScene) return;
 
-      // 留덉슦????NDC 醫뚰몴
+      // 마우스 → NDC 좌표
       var rect = _threeRenderer.domElement.getBoundingClientRect();
       mouse.x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
       mouse.y = -((e.clientY - rect.top) / rect.height) * 2 + 1;
 
-      // Raycasting ??諛붾떏 ?됰㈃(y=0)怨?援먯감??
+      // Raycasting — 바닥 평면(y=0)과 교차점
       raycaster.setFromCamera(mouse, _threeCamera);
       var groundPlane = new THREE.Plane(new THREE.Vector3(0, 1, 0), 0);
       var hitPoint = new THREE.Vector3();
       raycaster.ray.intersectPlane(groundPlane, hitPoint);
       if (!hitPoint) return;
 
-      // 3D ?붾뱶 醫뚰몴 ??2D ?쎌? 醫뚰몴濡??????
+      // 3D 월드 좌표 → 2D 픽셀 좌표로 역변환
       var w = window.innerWidth, h = window.innerHeight - SIM_TOP - SIM_BOTTOM;
       var tx = (hitPoint.x / (1200 / w)) + w / 2;
       var ty = (hitPoint.z / (1200 / h)) + h / 2;
       tx = Math.max(0, Math.min(w, Math.round(tx)));
       ty = Math.max(0, Math.min(h, Math.round(ty)));
 
-      // 3D???寃?留덉빱 異붽?
+      // 3D에 타겟 마커 추가
       var markerGeo = new THREE.CylinderGeometry(0, 12, 30, 4);
       var markerMat = new THREE.MeshBasicMaterial({ color: 0xff4444, transparent: true, opacity: 0.8 });
       var marker = new THREE.Mesh(markerGeo, markerMat);
       marker.position.set(hitPoint.x, 15, hitPoint.z);
       _threeScene.add(marker);
-      // 留덉빱 ?먮룞 ?쒓굅
+      // 마커 자동 제거
       setTimeout(function() { if (_threeScene) _threeScene.remove(marker); }, 3000);
 
-      // 2D ?곗씠?곗뿉 ?寃?+ 誘몄궗??異붽?
+      // 2D 데이터에 타겟 + 미사일 추가
       setTargets(function(p) { return p.concat([{ x: tx, y: ty }]); });
       var newMs = [];
       for (var i = 0; i < 20; i++) {
@@ -3166,16 +3166,16 @@ function App() {
     return function() { document.removeEventListener('click', onClick); };
   }, [targetMode, activeView]);
 
-  // ?? ?꾨룄誘몄궗???ㅽ룿 ?꾩튂 蹂댁젙: ?붾㈃ 理쒖긽???곗륫?먯꽌 ?섏쭅?숉븯 沅ㅼ쟻 ??
+  // ── 탄도미사일 스폰 위치 보정: 화면 최상단 우측에서 수직낙하 궤적 ──
   function _ballisticSpawn(originId, originX, originY, targetX, targetY, w, h) {
-    // ?붾㈃ ?곷떒 洹쇱쿂?먯꽌 吏꾩엯 (?붾㈃ 諛??덈Т 硫由?X)
+    // 화면 상단 근처에서 진입 (화면 밖 너무 멀리 X)
     var topY = 10 + Math.random() * 30;
-    // ?寃잙낫???쎄컙 ?ㅻⅨ履?(?숈そ?먯꽌 吏꾩엯)
+    // 타겟보다 약간 오른쪽 (동쪽에서 진입)
     var topX = Math.min(w - 24, targetX + 40 + Math.random() * 60);
     return { x: topX, y: topY };
   }
 
-  // ?? National: ?섎룞 怨듦꺽 ?⑥닔 ??
+  // ── National: 수동 공격 함수 ──
   function launchNatAttack(originId) {
     var origin = null;
     for (var i = 0; i < THREAT_ORIGINS.length; i++) {
@@ -3186,7 +3186,7 @@ function App() {
     var sp = geoToScreen(origin.lon, origin.lat, w, h);
     sp.x = Math.max(30, Math.min(w - 30, sp.x));
     sp.y = Math.max(30, Math.min(h - 30, sp.y));
-    // ?쒕뜡 ?꾩떆 1~2媛??좏깮
+    // 랜덤 도시 1~2개 선택
     var shuffled = DEFENSE_CITIES.slice().sort(function() { return Math.random() - 0.5; });
     var numCities = 1 + Math.floor(Math.random() * 2);
     var newMs = [];
@@ -3199,7 +3199,7 @@ function App() {
         var spreadX = (Math.random() - 0.5) * 20;
         var spreadY = (Math.random() - 0.5) * 20;
         var targetX = cp.x + spreadX, targetY = cp.y + spreadY;
-        // ?꾨룄誘몄궗?쇱씠硫??ㅽ룿 ?꾩튂瑜??붾㈃ 理쒖긽?⑥쑝濡?蹂寃?
+        // 탄도미사일이면 스폰 위치를 화면 최상단으로 변경
         var launchX = sp.x, launchY = sp.y;
         if (attackType === 'ballistic') {
           var bsp = _ballisticSpawn(originId, sp.x, sp.y, targetX, targetY, w, h);
@@ -3220,7 +3220,7 @@ function App() {
     setNatMissiles(function(p) { return p.concat(newMs); });
   }
 
-  // ?? National: ?쒕굹由ъ삤 ?ъ깮 ??
+  // ── National: 시나리오 재생 ──
   function launchScenario(scenarioId) {
     var sc = SCENARIOS[scenarioId];
     if (!sc) return;
@@ -3259,7 +3259,7 @@ function App() {
               var spreadX = (Math.random() - 0.5) * 20;
               var spreadY = (Math.random() - 0.5) * 20;
               var targetX = cp.x + spreadX, targetY = cp.y + spreadY;
-              // ?꾨룄誘몄궗?쇱씠硫??붾㈃ 理쒖긽?⑥뿉???섏쭅?숉븯
+              // 탄도미사일이면 화면 최상단에서 수직낙하
               var launchSx = sp.x, launchSy = sp.y;
               if (wave.type === 'ballistic') {
                 var bsp = _ballisticSpawn(wave.from, sp.x, sp.y, targetX, targetY, w, h);
@@ -3284,7 +3284,7 @@ function App() {
         timers.push(tid);
       })(sc.waves[wi]);
     }
-    // ?쒕굹由ъ삤 醫낅즺 ??대㉧ ??留덉?留??⑥씠釉?+ ?ъ쑀 ???꾩쟾 ?뺣━
+    // 시나리오 종료 타이머 — 마지막 웨이브 + 여유 후 완전 정리
     var lastTime = sc.waves[sc.waves.length - 1].time;
     var endTid = setTimeout(function() {
       setScenarioRunning(false);
@@ -3295,7 +3295,7 @@ function App() {
         if (flashes[fi].parentNode) flashes[fi].parentNode.removeChild(flashes[fi]);
       }
       setActiveView('national');
-      // multi3d ???꾨? ?뚭눼
+      // multi3d 씬 전부 파괴
       var sceneKeys = Object.keys(_multi3dScenes);
       for (var sk = 0; sk < sceneKeys.length; sk++) destroyMulti3dScene(sceneKeys[sk]);
       setMultiCities(null);
@@ -3304,7 +3304,7 @@ function App() {
     _scenarioTimers = timers;
   }
 
-  // ?? National 誘몄궗???좊땲硫붿씠??猷⑦봽 ??
+  // ── National 미사일 애니메이션 루프 ──
   useEffect(function() {
     var animId, lastTs = 0;
     function natLoop(ts) {
@@ -3333,7 +3333,7 @@ function App() {
         });
         var arrivedIds = Object.keys(arrivedCities);
         if (arrivedIds.length > 0) {
-          // ?붽꺽/愿??移댁슫?????꾩갑??誘몄궗??以?諛⑷났援ъ뿭???우? 寃껋? ?붽꺽
+          // 요격/관통 카운트 — 도착한 미사일 중 방공구역에 닿은 것은 요격
           var intCount = 0, brCount = 0;
           var ballisticIntercepted = false;
           for (var ai = 0; ai < newMissiles.length; ai++) {
@@ -3366,7 +3366,7 @@ function App() {
     return function() { cancelAnimationFrame(animId); };
   }, []);
 
-  // ?쒖꽦 誘몄궗????
+  // 활성 미사일 수
   var activeMissiles = useMemo(function() {
     return missiles.filter(function(m) { return m.active && !m.intercepted; }).length;
   }, [missiles]);
@@ -3399,7 +3399,7 @@ function App() {
     return result;
   }, [trackedThreatCities]);
 
-  // ?? National: ?꾩떆 ?寃?吏곸쟾 癒쇱? multi3d ?뺣? ??
+  // ── National: 도시 타격 직전 먼저 multi3d 확대 ──
   useEffect(function() {
     if (activeView !== 'national' || imminentCities.length === 0) return;
     var delay = Math.max(0, multi3dCooldownUntil - Date.now());
@@ -3416,7 +3416,7 @@ function App() {
     return function() { clearTimeout(tid); };
   }, [imminentCities, trackedThreatCityIds, activeView, multi3dCooldownUntil]);
 
-  // ?? Multi3D 以??ㅻⅨ ?꾩떆 ?꾪삊??遺숈쑝硫?媛숈? 遺꾪븷 ?붾㈃??怨꾩냽 異붽? ??
+  // ── Multi3D 중 다른 도시 위협이 붙으면 같은 분할 화면에 계속 추가 ──
   useEffect(function() {
     if (activeView !== 'multi3d') return;
     var currentCities = multiCities || [];
@@ -3427,7 +3427,7 @@ function App() {
     if (shouldExtendSession) setMulti3dSession(function(n) { return n + 1; });
   }, [activeView, multiCities, trackedThreatCityIds, multi3dSession]);
 
-  // ?? Multi3D 泥대쪟 ??national 蹂듦? ??
+  // ── Multi3D 체류 후 national 복귀 ──
   useEffect(function() {
     if (activeView !== 'multi3d' || multi3dSession === 0) return;
     var tid = setTimeout(function() {
@@ -3446,14 +3446,14 @@ function App() {
     setAlertSirenActive(alertSirenActive);
   }, [alertSirenActive]);
 
-  // 3D ??珥덇린???뚭눼
+  // 3D 씬 초기화/파괴
   useEffect(function() {
     if (activeView === '3d') {
       destroyThreeScene();
       setTimeout(function() {
         var container = document.querySelector('[data-3d]');
         if (container) initThreeScene(container, selectedSimCityId);
-        // ???앹꽦 吏곹썑 湲곗〈 ?곗씠??利됱떆 ?숆린??
+        // 씬 생성 직후 기존 데이터 즉시 동기화
         syncThreeZones(_radarZones);
         syncThreeMissiles(missiles);
         syncThreeBreaches(breaches);
@@ -3463,7 +3463,7 @@ function App() {
     }
   }, [activeView, selectedSimCityId]);
 
-  // 3D ?ㅼ떆媛??숆린????2D ?곗씠?곕? 洹몃?濡?3D??諛섏쁺
+  // 3D 실시간 동기화 — 2D 데이터를 그대로 3D에 반영
   useEffect(function() {
     if (activeView !== '3d' || !_threeScene) return;
     syncThreeZones(radarZones);
@@ -3471,7 +3471,7 @@ function App() {
     syncThreeBreaches(breaches);
   }, [radarZones, missiles, breaches]);
 
-  // ?? Multi3D 酉?珥덇린???뚭눼 ??
+  // ── Multi3D 뷰 초기화/파괴 ──
   useEffect(function() {
     if (activeView !== 'multi3d' || !multiCities || multiCities.length === 0) {
       var keys = Object.keys(_multi3dScenes);
@@ -3516,7 +3516,7 @@ function App() {
     return function() { cancelled = true; clearTimeout(tid); };
   }, [activeView, multiCities, simCityStore, selectedSimCityId, radarZones]);
 
-  // VNode ?몃━
+  // VNode 트리
   var multi3dCells = [];
   if (multiCities && multiCities.length > 0) {
     for (var mci = 0; mci < multiCities.length; mci++) {
@@ -3560,9 +3560,9 @@ function App() {
   ]);
 }
 
-// ?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧
+// ══════════════════════════════════════════════════════════
 // SECTION 10: INIT
-// ?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧
+// ══════════════════════════════════════════════════════════
 var root = new FunctionComponent(App, {});
 root.mount(document.getElementById('root'));
 
