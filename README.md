@@ -19,16 +19,6 @@ flowchart LR
     E --> F["Simulator UI<br/>National / Sector / 3D / Tests"]
 ```
 
-| 구현 요소 | 매우 짧은 역할 |
-|-----------|----------------|
-| `FunctionComponent` | 함수 컴포넌트를 실행하고 hook 순서를 유지 |
-| `useState` | 상태 저장과 리렌더 트리거 |
-| `useEffect` | 이벤트, 루프, 리스너 같은 부수효과 연결 |
-| `useMemo` | 무거운 계산 결과 재사용 |
-| `createVNode` | 가상 화면 구조 생성 |
-| `diff` | 이전 화면과 새 화면 비교 |
-| `applyPatch` | 바뀐 부분만 실제 DOM에 반영 |
-
 ### 2. 하나의 도형 데이터가 여러 역할을 수행합니다
 
 섹터 화면에서 그린 폴리곤은 화면에만 그려지는 것이 아니라, 방어 판정 로직과 3D 방어 형상까지 동시에 결정합니다.
