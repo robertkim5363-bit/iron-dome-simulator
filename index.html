@@ -656,12 +656,76 @@ function getDefaultDronePos() {
   var simH = window.innerHeight - SIM_TOP - SIM_BOTTOM;
   return { x: Math.round(window.innerWidth / 2), y: Math.round(simH / 2) };
 }
+function _generateDefaultZones() {
+  var w = window.innerWidth, h = window.innerHeight - SIM_TOP - SIM_BOTTOM;
+  var cx = Math.round(w / 2), cy = Math.round(h / 2);
+  var zones = [];
+
+  // Zone 1: 좌상단 직사각형 방공망
+  var z1x = Math.round(cx - w * 0.28), z1y = Math.round(cy - h * 0.22);
+  var z1w = Math.round(w * 0.18), z1h = Math.round(h * 0.20);
+  zones.push({
+    id: _zoneId++, capacity: 5000, maxConcurrent: 100, active: 0,
+    points: [
+      {x: z1x, y: z1y}, {x: z1x + z1w, y: z1y},
+      {x: z1x + z1w, y: z1y + z1h}, {x: z1x, y: z1y + z1h}
+    ],
+    center: {x: z1x + Math.round(z1w/2), y: z1y + Math.round(z1h/2)}
+  });
+
+  // Zone 2: 우상단 오각형 방공망
+  var z2x = Math.round(cx + w * 0.08), z2y = Math.round(cy - h * 0.28);
+  var z2w = Math.round(w * 0.20), z2h = Math.round(h * 0.22);
+  zones.push({
+    id: _zoneId++, capacity: 5000, maxConcurrent: 100, active: 0,
+    points: [
+      {x: z2x + Math.round(z2w*0.5), y: z2y},
+      {x: z2x + z2w, y: z2y + Math.round(z2h*0.35)},
+      {x: z2x + Math.round(z2w*0.85), y: z2y + z2h},
+      {x: z2x + Math.round(z2w*0.15), y: z2y + z2h},
+      {x: z2x, y: z2y + Math.round(z2h*0.35)}
+    ],
+    center: {x: z2x + Math.round(z2w/2), y: z2y + Math.round(z2h/2)}
+  });
+
+  // Zone 3: 좌하단 삼각형 방공망
+  var z3x = Math.round(cx - w * 0.22), z3y = Math.round(cy + h * 0.08);
+  var z3w = Math.round(w * 0.16), z3h = Math.round(h * 0.24);
+  zones.push({
+    id: _zoneId++, capacity: 5000, maxConcurrent: 100, active: 0,
+    points: [
+      {x: z3x + Math.round(z3w*0.5), y: z3y},
+      {x: z3x + z3w, y: z3y + z3h},
+      {x: z3x, y: z3y + z3h}
+    ],
+    center: {x: z3x + Math.round(z3w/2), y: z3y + Math.round(z3h*0.6)}
+  });
+
+  // Zone 4: 우하단 L형 방공망
+  var z4x = Math.round(cx + w * 0.06), z4y = Math.round(cy + h * 0.06);
+  var z4w = Math.round(w * 0.22), z4h = Math.round(h * 0.26);
+  var z4hw = Math.round(z4w * 0.5), z4hh = Math.round(z4h * 0.45);
+  zones.push({
+    id: _zoneId++, capacity: 5000, maxConcurrent: 100, active: 0,
+    points: [
+      {x: z4x, y: z4y}, {x: z4x + z4hw, y: z4y},
+      {x: z4x + z4hw, y: z4y + z4hh},
+      {x: z4x + z4w, y: z4y + z4hh},
+      {x: z4x + z4w, y: z4y + z4h},
+      {x: z4x, y: z4y + z4h}
+    ],
+    center: {x: z4x + Math.round(z4w*0.4), y: z4y + Math.round(z4h*0.5)}
+  });
+
+  return zones;
+}
+
 function createDefaultSimState() {
   return {
     dronePos: getDefaultDronePos(),
     droneAlive: true,
     droneAngle: 0,
-    radarZones: [],
+    radarZones: _generateDefaultZones(),
     missiles: [],
     breaches: [],
     targets: [],
@@ -1999,6 +2063,9 @@ function NationalView(props) {
     yemen: -26,
     syria: -36
   };
+  var THREAT_LABEL_EXTRA_X = {
+    gaza: 34
+  };
   function getThreatLabelText(threat) {
     if (threat.id === 'lebanon') return 'South Lebanon';
     if (threat.id === 'syria') return 'Syria / Iraq';
@@ -2032,12 +2099,14 @@ function NationalView(props) {
     for (var li = 0; li < entries.length; li++) {
       var entry = entries[li];
       entry.side = entry.tp.x < midX ? 'left' : 'right';
-      var sideInset = entry.labelWidth + gapX + 18;
+      var extraGapX = THREAT_LABEL_EXTRA_X[entry.threat.id] || 0;
+      var totalGapX = gapX + extraGapX;
+      var sideInset = entry.labelWidth + totalGapX + 18;
       if (entry.side === 'left') entry.tp.x = Math.max(sideInset, entry.tp.x);
       else entry.tp.x = Math.min(w - sideInset, entry.tp.x);
       var rawX = entry.side === 'left'
-        ? entry.tp.x - entry.labelWidth - gapX
-        : entry.tp.x + gapX;
+        ? entry.tp.x - entry.labelWidth - totalGapX
+        : entry.tp.x + totalGapX;
       var rawY = entry.tp.y + entry.dy - boxH / 2;
       entry.labelBox = {
         x: Math.max(minX, Math.min(maxX - entry.labelWidth, rawX)),
@@ -2416,11 +2485,18 @@ function App() {
 
   var s1 = useState('national');    var activeView = s1[0], setActiveView = s1[1];
   var s1a = useState(DEFAULT_SIM_CITY_ID); var selectedSimCityId = s1a[0], setSelectedSimCityId = s1a[1];
-  var s1b = useState({});           var simCityStore = s1b[0], setSimCityStore = s1b[1];
+  var _initialStore = (function() {
+    var store = {};
+    for (var i = 0; i < DEFENSE_CITIES.length; i++) {
+      store[DEFENSE_CITIES[i].id] = createDefaultSimState();
+    }
+    return store;
+  })();
+  var s1b = useState(_initialStore);  var simCityStore = s1b[0], setSimCityStore = s1b[1];
   var s2 = useState({ x: 0, y: 0 }); var dronePos = s2[0], setDronePos = s2[1];
   var s3 = useState(false);        var droneAlive = s3[0], setDroneAlive = s3[1];
   var s4 = useState(0);            var droneAngle = s4[0], setDroneAngle = s4[1];
-  var s5 = useState([]);           var radarZones = s5[0], setRadarZones = s5[1];
+  var s5 = useState((_initialStore[DEFAULT_SIM_CITY_ID] || createDefaultSimState()).radarZones); var radarZones = s5[0], setRadarZones = s5[1];
   var s6 = useState(false);        var isDrawing = s6[0], setIsDrawing = s6[1];
   var s7 = useState([]);           var drawPoints = s7[0], setDrawPoints = s7[1];
   var s8 = useState(null);         var interceptPos = s8[0], setInterceptPos = s8[1];
@@ -3102,13 +3178,18 @@ function App() {
       for (var i = 0; i < keys.length; i++) destroyMulti3dScene(keys[i]);
       return;
     }
-    var tid = setTimeout(function() {
+    var retryCount = 0;
+    var maxRetries = 5;
+    var cancelled = false;
+    function tryInit() {
+      if (cancelled) return;
       var wanted = {};
       for (var ci = 0; ci < multiCities.length; ci++) wanted[multiCities[ci]] = true;
       var keys = Object.keys(_multi3dScenes);
       for (var i = 0; i < keys.length; i++) {
         if (!wanted[keys[i]]) destroyMulti3dScene(keys[i]);
       }
+      var pendingCities = [];
       for (var ci = 0; ci < multiCities.length; ci++) {
         var cid = multiCities[ci];
         var el = document.querySelector('[data-multi3d-cell="' + cid + '"]');
@@ -3117,10 +3198,22 @@ function App() {
         if (_multi3dScenes[cid] && _multi3dScenes[cid].zoneSignature !== zoneSignature) {
           destroyMulti3dScene(cid);
         }
-        if (el && !_multi3dScenes[cid]) initMulti3dScene(cid, el, cityZones);
+        if (!_multi3dScenes[cid]) {
+          if (el && el.clientWidth > 10 && el.clientHeight > 10) {
+            initMulti3dScene(cid, el, cityZones);
+          } else {
+            pendingCities.push(cid);
+          }
+        }
       }
-    }, 100);
-    return function() { clearTimeout(tid); };
+      // Retry for cities whose cells don't have dimensions yet
+      if (pendingCities.length > 0 && retryCount < maxRetries) {
+        retryCount++;
+        setTimeout(tryInit, 150);
+      }
+    }
+    var tid = setTimeout(tryInit, 120);
+    return function() { cancelled = true; clearTimeout(tid); };
   }, [activeView, multiCities, simCityStore, selectedSimCityId, radarZones]);
 
   // VNode 트리
