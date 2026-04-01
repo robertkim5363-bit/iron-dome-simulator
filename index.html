@@ -8,12 +8,12 @@
     * { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --bg: #0f130f;
-      --panel: #181f18;
-      --panel-soft: #202920;
-      --line: #314131;
-      --text: #eef4e4;
-      --muted: #a9b59f;
+      --bg: #172117;
+      --panel: #213021;
+      --panel-soft: #2a3b2a;
+      --line: #405640;
+      --text: #f2f8e8;
+      --muted: #b7c8ad;
       --green: #6bc26d;
       --green-dark: #305e33;
       --yellow: #f0c95f;
@@ -27,9 +27,9 @@
       font-family: 'Noto Sans KR', 'Malgun Gothic', 'Apple SD Gothic Neo', 'Segoe UI', sans-serif;
       min-height: 100vh;
       background:
-        radial-gradient(circle at top left, rgba(107, 194, 109, 0.12), transparent 28%),
-        radial-gradient(circle at bottom right, rgba(240, 201, 95, 0.08), transparent 26%),
-        linear-gradient(180deg, #111612 0%, #0f130f 100%);
+        radial-gradient(circle at top left, rgba(145, 214, 126, 0.18), transparent 30%),
+        radial-gradient(circle at bottom right, rgba(219, 240, 152, 0.12), transparent 28%),
+        linear-gradient(180deg, #1c271b 0%, #172117 100%);
       color: var(--text);
     }
 
@@ -49,7 +49,7 @@
       gap: 14px;
       padding: 14px 18px;
       border-bottom: 1px solid var(--line);
-      background: rgba(17, 24, 17, 0.94);
+      background: rgba(28, 39, 27, 0.94);
       backdrop-filter: blur(12px);
     }
 
@@ -69,7 +69,7 @@
     .top-stage {
       margin-left: auto;
       border: 1px solid rgba(223, 247, 175, 0.24);
-      background: rgba(107, 194, 109, 0.1);
+      background: rgba(145, 214, 126, 0.14);
       color: #f6ffd8;
       padding: 8px 12px;
       border-radius: 999px;
@@ -115,7 +115,7 @@
       flex-direction: column;
       min-width: 0;
       min-height: 0;
-      background: rgba(24, 31, 24, 0.92);
+      background: rgba(33, 48, 33, 0.92);
       border: 1px solid var(--line);
       border-radius: 20px;
       box-shadow: var(--shadow);
@@ -128,7 +128,7 @@
       gap: 8px;
       padding: 12px 16px;
       border-bottom: 1px solid var(--line);
-      background: rgba(32, 41, 32, 0.9);
+      background: rgba(42, 59, 42, 0.9);
       font-size: 0.9rem;
       letter-spacing: 0.12em;
       text-transform: uppercase;
@@ -189,6 +189,14 @@
       color: #d8e3cb;
     }
 
+    .hook-storage {
+      max-height: calc(0.92rem * 1.68 * 12);
+      overflow-y: auto;
+      overflow-x: hidden;
+      padding-right: 6px;
+      margin-bottom: 0;
+    }
+
     .plain-list {
       display: grid;
       gap: 6px;
@@ -223,9 +231,9 @@
       align-items: center;
       justify-content: center;
       background:
-        radial-gradient(circle at 20% 20%, rgba(107, 194, 109, 0.14), transparent 28%),
-        radial-gradient(circle at 80% 15%, rgba(240, 201, 95, 0.1), transparent 26%),
-        linear-gradient(180deg, #192119 0%, #121812 100%);
+        radial-gradient(circle at 20% 20%, rgba(145, 214, 126, 0.18), transparent 30%),
+        radial-gradient(circle at 80% 15%, rgba(240, 229, 140, 0.11), transparent 26%),
+        linear-gradient(180deg, #273626 0%, #1b271b 100%);
     }
 
     .service-card {
@@ -335,7 +343,7 @@
       gap: 10px;
       padding: 12px 14px 16px;
       border-top: 1px solid var(--line);
-      background: rgba(17, 24, 17, 0.96);
+      background: rgba(28, 39, 27, 0.96);
     }
 
     .action-button {

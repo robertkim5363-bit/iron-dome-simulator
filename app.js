@@ -185,17 +185,6 @@ function snapshotHooks(hooks) {
     }
 
     if (hook.kind === 'memo') {
-      if (hook.value && typeof hook.value === 'object') {
-        const keys = Object.keys(hook.value);
-        const hasFunctionValue = keys.some(function (key) {
-          return typeof hook.value[key] === 'function';
-        });
-
-        if (hasFunctionValue) {
-          return 'hook[' + index + '] memo = actionHandlers(' + keys.join(', ') + ')';
-        }
-      }
-
       return 'hook[' + index + '] memo = ' + JSON.stringify(hook.value);
     }
 
@@ -254,49 +243,49 @@ function App() {
     return getHealthSummary(beanState);
   }, [beanState.water, beanState.sunlight, beanState.nutrition]);
 
-  const actionHandlers = useMemo(function () {
-    return {
-      water: function () {
-        setBeanState(function (previousState) {
-          return applyBeanAction(previousState, 'water');
-        });
-      },
-      sunlight: function () {
-        setBeanState(function (previousState) {
-          return applyBeanAction(previousState, 'sunlight');
-        });
-      },
-      nutrition: function () {
-        setBeanState(function (previousState) {
-          return applyBeanAction(previousState, 'nutrition');
-        });
-      },
-      day: function () {
-        setBeanState(function (previousState) {
-          return applyBeanAction(previousState, 'day');
-        });
-      },
-      harvest: function () {
-        setBeanState(function (previousState) {
-          return applyBeanAction(previousState, 'harvest');
-        });
-      },
-      probe: function () {
-        setBeanState(function (previousState) {
-          return applyBeanAction(previousState, 'probe');
-        });
-      }
-    };
-  }, []);
+  function handleWater() {
+    setBeanState(function (previousState) {
+      return applyBeanAction(previousState, 'water');
+    });
+  }
+
+  function handleSunlight() {
+    setBeanState(function (previousState) {
+      return applyBeanAction(previousState, 'sunlight');
+    });
+  }
+
+  function handleNutrition() {
+    setBeanState(function (previousState) {
+      return applyBeanAction(previousState, 'nutrition');
+    });
+  }
+
+  function handleDay() {
+    setBeanState(function (previousState) {
+      return applyBeanAction(previousState, 'day');
+    });
+  }
+
+  function handleHarvest() {
+    setBeanState(function (previousState) {
+      return applyBeanAction(previousState, 'harvest');
+    });
+  }
+
+  function handleProbe() {
+    setBeanState(function (previousState) {
+      return applyBeanAction(previousState, 'probe');
+    });
+  }
 
   useEffect(function () {
     document.title = 'Day ' + beanState.day + ' · ' + stageInfo.name + ' · Bean Lab';
   }, [beanState.day, stageInfo.name]);
 
   const runtimeDebug = currentComponent.debug;
-  const liveHookSnapshot = snapshotHooks(currentComponent.hooks);
   const runtimeDebugView = Object.assign({}, runtimeDebug, {
-    hookSnapshot: liveHookSnapshot
+    hookSnapshot: snapshotHooks(currentComponent.hooks)
   });
   const checks = buildWhiteBoxChecks(beanState, runtimeDebugView, stageInfo, healthSummary);
 
@@ -322,7 +311,7 @@ function App() {
           h(
             'div',
             { className: 'panel-header' },
-            h('span', { className: 'panel-icon' }, '✎'),
+            h('span', { className: 'panel-icon' }, 'DEBUG'),
             '런타임 디버그'
           ),
           h(
@@ -340,7 +329,7 @@ function App() {
           h(
             'div',
             { className: 'panel-header' },
-            h('span', { className: 'panel-icon' }, '⚗'),
+            h('span', { className: 'panel-icon' }, 'BEAN'),
             '강낭콩 서비스 화면',
             h('span', { className: 'live-badge' }, 'LIVE')
           ),
@@ -361,7 +350,7 @@ function App() {
         h(
           'div',
           { className: 'panel-header' },
-          h('span', { className: 'panel-icon' }, '⚗'),
+          h('span', { className: 'panel-icon' }, 'TEST'),
           '화이트박스 테스트'
         ),
         h(
@@ -377,12 +366,12 @@ function App() {
     h(
       'footer',
       { className: 'action-bar' },
-      h(ActionButton, { label: '물 주기', variant: 'water', onClick: actionHandlers.water }),
-      h(ActionButton, { label: '햇빛 쬐기', variant: 'sunlight', onClick: actionHandlers.sunlight }),
-      h(ActionButton, { label: '영양 공급', variant: 'nutrition', onClick: actionHandlers.nutrition }),
-      h(ActionButton, { label: '하루 보내기', variant: 'day', onClick: actionHandlers.day }),
-      h(ActionButton, { label: '수확하기', variant: 'harvest', onClick: actionHandlers.harvest }),
-      h(ActionButton, { label: '테스트하기', variant: 'probe', onClick: actionHandlers.probe })
+      h(ActionButton, { label: '물 주기 💧', variant: 'water', onClick: handleWater }),
+      h(ActionButton, { label: '햇빛 쬐기 ☀️', variant: 'sunlight', onClick: handleSunlight }),
+      h(ActionButton, { label: '영양 공급 🌿', variant: 'nutrition', onClick: handleNutrition }),
+      h(ActionButton, { label: '하루 보내기 📆', variant: 'day', onClick: handleDay }),
+      h(ActionButton, { label: '수확하기 🧺', variant: 'harvest', onClick: handleHarvest }),
+      h(ActionButton, { label: '테스트하기 🧪', variant: 'probe', onClick: handleProbe })
     )
   );
 }

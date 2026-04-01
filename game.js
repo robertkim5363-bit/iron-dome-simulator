@@ -94,7 +94,6 @@ function applyBeanAction(beanState, actionType) {
   if (actionType === 'water') {
     return Object.assign({}, beanState, {
       water: clamp(beanState.water + 22, 0, 100),
-      growth: clamp(beanState.growth + 6, 0, 100),
       healthNote: '촉촉하게 수분을 머금음',
       lastAction: '물 주기',
       log: appendLog(beanState, '물을 충분히 주어 뿌리가 촉촉해졌습니다.')
@@ -105,7 +104,6 @@ function applyBeanAction(beanState, actionType) {
     return Object.assign({}, beanState, {
       sunlight: clamp(beanState.sunlight + 20, 0, 100),
       water: clamp(beanState.water - 5, 0, 100),
-      growth: clamp(beanState.growth + 5, 0, 100),
       healthNote: '햇빛을 받아 잎이 반짝임',
       lastAction: '햇빛 쬐기',
       log: appendLog(beanState, '창가로 옮겨 햇빛을 충분히 받게 했습니다.')
@@ -115,7 +113,6 @@ function applyBeanAction(beanState, actionType) {
   if (actionType === 'nutrition') {
     return Object.assign({}, beanState, {
       nutrition: clamp(beanState.nutrition + 18, 0, 100),
-      growth: clamp(beanState.growth + 7, 0, 100),
       healthNote: '영양을 먹고 줄기가 단단해짐',
       lastAction: '영양 공급',
       log: appendLog(beanState, '영양제를 보충해 성장 에너지를 채웠습니다.')
@@ -322,7 +319,7 @@ function RuntimePanel(props) {
       'div',
       { className: 'runtime-card' },
       h('h3', null, 'Hook 저장소'),
-      h('pre', null, props.runtimeDebug.hookSnapshot.join('\n'))
+      h('pre', { className: 'hook-storage' }, props.runtimeDebug.hookSnapshot.join('\n'))
     ),
   );
 }
