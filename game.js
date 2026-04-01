@@ -26,7 +26,7 @@ const STAGE_DEFINITIONS = [
   {
     threshold: 90,
     name: '수확 직전',
-    emoji: '🫘',
+    emoji: '🍃',
     hint: '이제 수확 버튼으로 잘 자란 강낭콩을 마무리할 수 있습니다.'
   }
 ];
@@ -385,7 +385,31 @@ function RuntimePanel(props) {
       'div',
       { className: 'runtime-card' },
       h('h3', null, 'Hook 저장소'),
-      h('pre', { className: 'hook-storage' }, props.runtimeDebug.hookSnapshot.join('\n'))
+      h(
+        'div',
+        { className: 'hook-storage' },
+        props.runtimeDebug.hookSnapshot.map(function (entry, index) {
+          const separatorIndex = entry.indexOf(' = ');
+          const prefix = separatorIndex === -1 ? entry : entry.slice(0, separatorIndex);
+          const suffix = separatorIndex === -1 ? '' : entry.slice(separatorIndex);
+          let prefixClass = 'hook-prefix hook-prefix-default';
+
+          if (entry.indexOf(' state ') !== -1) {
+            prefixClass = 'hook-prefix hook-prefix-state';
+          } else if (entry.indexOf(' memo ') !== -1) {
+            prefixClass = 'hook-prefix hook-prefix-memo';
+          } else if (entry.indexOf(' effect ') !== -1) {
+            prefixClass = 'hook-prefix hook-prefix-effect';
+          }
+
+          return h(
+            'div',
+            { className: 'hook-line', key: 'hook-line-' + index },
+            h('span', { className: prefixClass }, prefix),
+            h('span', { className: 'hook-value' }, suffix)
+          );
+        })
+      )
     )
   );
 }

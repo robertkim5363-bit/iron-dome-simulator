@@ -619,10 +619,10 @@ function App() {
       { className: 'action-bar' },
       h(ActionButton, { label: '물 주기 💧', variant: 'water', onClick: actionHandlers.water }),
       h(ActionButton, { label: '햇빛 쬐기 ☀️', variant: 'sunlight', onClick: actionHandlers.sunlight }),
-      h(ActionButton, { label: '영양 공급 🌿', variant: 'nutrition', onClick: actionHandlers.nutrition }),
-      h(ActionButton, { label: '하루 보내기 📆', variant: 'day', onClick: actionHandlers.day }),
-      h(ActionButton, { label: '수확하기 🧺', variant: 'harvest', onClick: actionHandlers.harvest }),
-      h(ActionButton, { label: '테스트하기 🧪', variant: 'probe', onClick: actionHandlers.probe })
+      h(ActionButton, { label: '영양 공급 🍀', variant: 'nutrition', onClick: actionHandlers.nutrition }),
+      h(ActionButton, { label: '하루 보내기 ⏳', variant: 'day', onClick: actionHandlers.day }),
+      h(ActionButton, { label: '수확하기 🌾', variant: 'harvest', onClick: actionHandlers.harvest }),
+      h(ActionButton, { label: '테스트하기 🔍', variant: 'probe', onClick: actionHandlers.probe })
     )
   );
 }
