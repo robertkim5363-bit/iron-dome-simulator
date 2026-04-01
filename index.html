@@ -912,16 +912,14 @@ var SCENARIOS = {
     name: 'Operation True Promise — April 13, 2024',
     desc: 'Iran launches 300+ drones & missiles at Israel',
     waves: [
-      { time: 0,     from: 'iran',    targets: ['telaviv', 'jerusalem', 'haifa'], count: 12, type: 'ballistic' },
-      { time: 5000,  from: 'yemen',   targets: ['ashkelon', 'sderot'],            count: 8,  type: 'drone' },
-      { time: 10000, from: 'lebanon', targets: ['haifa', 'telaviv'],              count: 10, type: 'rocket' },
-      { time: 15000, from: 'gaza',    targets: ['sderot', 'ashkelon', 'telaviv'], count: 12, type: 'rocket' },
-      { time: 20000, from: 'syria',   targets: ['haifa', 'jerusalem'],            count: 8,  type: 'cruise' },
-      { time: 25000, from: 'iran',    targets: ['telaviv', 'jerusalem', 'haifa'], count: 15, type: 'ballistic' },
-      { time: 30000, from: 'lebanon', targets: ['haifa', 'telaviv'],              count: 8,  type: 'rocket' },
-      { time: 35000, from: 'iran',    targets: ['jerusalem', 'telaviv'],          count: 15, type: 'ballistic' },
-      { time: 38000, from: 'yemen',   targets: ['ashkelon', 'sderot', 'telaviv'], count: 10, type: 'drone' },
-      { time: 42000, from: 'gaza',    targets: ['sderot', 'ashkelon'],            count: 10, type: 'rocket' }
+      { time: 0,     from: 'iran',    targets: ['telaviv', 'jerusalem', 'haifa'], count: 10, type: 'ballistic' },
+      { time: 2500,  from: 'yemen',   targets: ['ashkelon', 'sderot'],            count: 6,  type: 'drone' },
+      { time: 5000,  from: 'lebanon', targets: ['haifa', 'telaviv'],              count: 8,  type: 'rocket' },
+      { time: 7500,  from: 'gaza',    targets: ['sderot', 'ashkelon', 'telaviv'], count: 8,  type: 'rocket' },
+      { time: 10000, from: 'syria',   targets: ['haifa', 'jerusalem'],            count: 6,  type: 'cruise' },
+      { time: 12500, from: 'iran',    targets: ['telaviv', 'jerusalem'],          count: 10, type: 'ballistic' },
+      { time: 15000, from: 'lebanon', targets: ['haifa'],                         count: 6,  type: 'rocket' },
+      { time: 17000, from: 'iran',    targets: ['jerusalem', 'telaviv', 'haifa'], count: 8,  type: 'ballistic' }
     ]
   }
 };
@@ -2064,7 +2062,7 @@ function NationalView(props) {
     syria: -36
   };
   var THREAT_LABEL_EXTRA_X = {
-    gaza: 34
+    gaza: 92
   };
   function getThreatLabelText(threat) {
     if (threat.id === 'lebanon') return 'South Lebanon';
@@ -3012,9 +3010,18 @@ function App() {
         timers.push(tid);
       })(sc.waves[wi]);
     }
-    // 시나리오 종료 타이머
+    // 시나리오 종료 타이머 — 마지막 웨이브 + 여유 후 완전 정리
     var lastTime = sc.waves[sc.waves.length - 1].time;
-    var endTid = setTimeout(function() { setScenarioRunning(false); }, lastTime + 8000);
+    var endTid = setTimeout(function() {
+      setScenarioRunning(false);
+      setNatMissiles([]);
+      setAttackedCities([]);
+      setActiveView('national');
+      // multi3d 씬 전부 파괴
+      var sceneKeys = Object.keys(_multi3dScenes);
+      for (var sk = 0; sk < sceneKeys.length; sk++) destroyMulti3dScene(sceneKeys[sk]);
+      setMultiCities(null);
+    }, lastTime + 7000);
     timers.push(endTid);
     _scenarioTimers = timers;
   }
