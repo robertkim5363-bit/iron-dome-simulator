@@ -58,13 +58,6 @@ flowchart LR
     A --> C["3D 돔 / 기둥 형상"]
     A --> D["용량 및 breach 계산"]
 ```
-
-## 구현 포인트
-
-- **Virtual DOM**: `createVNode`, `renderVNode`, `diff`, `applyPatch`
-- **Component 구조**: 루트 `App` 중심 상태 관리, 하위 뷰는 props 기반 렌더링
-- **Hooks 직접 구현**: `useState`, `useEffect`, `useMemo`
-- **단일 데이터 재사용**: 동일한 섹터 폴리곤이 입력, 방어 로직, 3D 형상에 재사용
 - **복합 뷰 동기화**: National / Sector / 3D / Tests / Briefing이 하나의 시뮬레이션 흐름을 공유
 
 ```
