@@ -97,6 +97,8 @@ function appendLog(beanState, message) {
 // 사용자의 액션을 받아 "다음 상태"를 계산하는 순수 함수입니다.
 // 자식 컴포넌트는 상태를 바꾸지 않고, 루트에서만 이 함수를 통해 state를 갱신합니다.
 function applyBeanAction(beanState, actionType) {
+  // beanState를 객체 하나로 관리하므로, 한 액션에서 water/sunlight/growth처럼
+  // 여러 필드가 함께 바뀌어도 "새 상태 객체 1개"를 반환하는 한 번의 전이로 표현할 수 있습니다.
   if (actionType === 'water') {
     return Object.assign({}, beanState, {
       water: clamp(beanState.water + 22, 0, 100),
@@ -128,6 +130,7 @@ function applyBeanAction(beanState, actionType) {
   if (actionType === 'day') {
     // 성장도는 하루가 지날 때만 증가합니다.
     // 물/햇빛/영양은 성장량을 결정하는 조건으로만 사용합니다.
+    // 즉 여러 필드를 따로 setState하지 않고, 다음 상태를 한 번에 계산해서 반환합니다.
     const growthGain =
       (beanState.water >= 45 ? 7 : 2) +
       (beanState.sunlight >= 45 ? 7 : 2) +

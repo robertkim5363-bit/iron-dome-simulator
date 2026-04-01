@@ -7,6 +7,7 @@ function diff(oldNode, newNode, parentEl, existingEl) {
   }
 
   if (oldNode == null) {
+    // 이전 노드가 없으면 새 노드를 만들라는 patch 하나만 있으면 됩니다.
     patches.push({
       type: 'create',
       parentEl: parentEl,
@@ -18,6 +19,7 @@ function diff(oldNode, newNode, parentEl, existingEl) {
   const el = existingEl !== undefined ? existingEl : parentEl.firstChild;
 
   if (newNode == null) {
+    // 새 노드가 사라졌다면 현재 DOM 노드를 제거 대상으로 기록합니다.
     patches.push({
       type: 'remove',
       el: el
@@ -30,6 +32,7 @@ function diff(oldNode, newNode, parentEl, existingEl) {
 
   if (isOldText || isNewText) {
     if (isOldText && isNewText) {
+      // 둘 다 text라면 노드 자체를 바꾸지 않고 nodeValue만 바꾸는 편이 가장 저렴합니다.
       if (oldNode !== newNode) {
         patches.push({
           type: 'text',
@@ -49,6 +52,7 @@ function diff(oldNode, newNode, parentEl, existingEl) {
   }
 
   if (oldNode.type !== newNode.type) {
+    // 태그 종류가 다르면 세부 비교보다 통째 교체가 더 단순합니다.
     patches.push({
       type: 'replace',
       el: el,
@@ -71,7 +75,8 @@ function diff(oldNode, newNode, parentEl, existingEl) {
   const maxLength = Math.max(oldChildren.length, newChildren.length);
 
   for (let index = 0; index < maxLength; index += 1) {
-    // 자식 노드도 같은 방식으로 재귀 비교합니다.
+    // 자식도 같은 규칙으로 재귀 비교합니다.
+    // key 기반 재배치는 없으므로 같은 index끼리 비교하는 단순한 학습용 전략입니다.
     const childPatches = diff(
       oldChildren[index],
       newChildren[index],
@@ -110,6 +115,7 @@ function patch(patches) {
   patches.forEach(function (patchItem) {
     switch (patchItem.type) {
       case 'create':
+        // create는 새 DOM subtree를 만들어 부모 아래에 붙입니다.
         patchItem.parentEl.appendChild(createNode(patchItem.vNode));
         break;
       case 'remove':
@@ -119,6 +125,7 @@ function patch(patches) {
         break;
       case 'replace':
         if (patchItem.el && patchItem.el.parentNode) {
+          // replace는 기존 subtree를 버리고 새 subtree로 교체합니다.
           patchItem.el.parentNode.replaceChild(createNode(patchItem.vNode), patchItem.el);
         }
         break;
@@ -129,6 +136,7 @@ function patch(patches) {
         break;
       case 'props':
         if (patchItem.el) {
+          // props patch는 DOM 노드를 재사용한 채 속성과 이벤트만 다시 동기화합니다.
           applyPropsToElement(patchItem.el, patchItem.oldProps, patchItem.newProps);
         }
         break;

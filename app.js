@@ -29,13 +29,17 @@ class FunctionComponent {
   }
 
   scheduleUpdate() {
+    // 이미 이번 이벤트 루프에서 update 예약이 끝났다면,
+    // 이후 setState들은 hook 값만 갱신하고 실제 렌더는 기존 예약 한 번에 합칩니다.
     if (this.isUpdateScheduled) {
       return;
     }
 
     this.isUpdateScheduled = true;
 
-    // 같은 이벤트 루프 안에서 여러 setState가 호출돼도 update는 한 번만 실행되게 합니다.
+    // queueMicrotask를 쓰면 현재 call stack이 모두 끝난 뒤 update가 실행됩니다.
+    // 그래서 같은 클릭 핸들러 안의 여러 setState를 "즉시 n번 렌더"하지 않고
+    // 마지막 hook 값들을 모아 한 번의 rerender로 처리하는 단순 batching 효과를 얻습니다.
     queueMicrotask(() => {
       this.isUpdateScheduled = false;
       this.update();
@@ -44,7 +48,10 @@ class FunctionComponent {
 
   update() {
     const previousVNode = this.vNode;
+    // 렌더를 시작할 때마다 hook 포인터를 0으로 되돌려
+    // 이번 렌더의 useState/useMemo/useEffect가 다시 같은 슬롯을 읽게 만듭니다.
     this.hookIndex = 0;
+    // useEffect는 render 중 바로 실행하지 않고, 이번 렌더에서 새로 예약된 작업만 비워서 다시 모읍니다.
     this.pendingEffects = [];
 
     // 훅은 "지금 어떤 컴포넌트가 렌더 중인지" 알아야 하므로 전역 포인터를 잠시 연결합니다.
@@ -52,7 +59,8 @@ class FunctionComponent {
     const nextVNode = this.renderFn(this.props);
     currentComponent = null;
 
-    // 새 VDOM을 만들고 이전 VDOM과 비교한 뒤, 실제 DOM에는 필요한 patch만 반영합니다.
+    // renderFn은 "화면이 어떻게 보여야 하는지"를 VDOM으로 계산만 합니다.
+    // 실제 DOM 변경은 diff/patch 단계에 위임해 React의 render -> commit 분리를 흉내 냅니다.
     const patches = diff(previousVNode, nextVNode, this.container, this.container.firstChild);
     patch(patches);
 
@@ -109,6 +117,8 @@ function useState(initialValue) {
     };
 
     hook.setState = function (nextValue) {
+      // 함수형 updater를 지원하면 batching 상황에서도 가장 최신 hook.value를 기준으로
+      // 다음 상태를 계산할 수 있어 여러 연속 업데이트를 안전하게 합칠 수 있습니다.
       const resolvedValue = typeof nextValue === 'function' ? nextValue(hook.value) : nextValue;
 
       if (Object.is(resolvedValue, hook.value)) {
@@ -116,7 +126,8 @@ function useState(initialValue) {
       }
 
       hook.value = resolvedValue;
-      // 상태 변경 후 자동 재렌더가 일어나도록 update를 예약합니다.
+      // 값은 즉시 hook 슬롯에 반영하지만, 화면 갱신은 scheduleUpdate로 미뤄
+      // 같은 틱 안의 여러 상태 변경을 한 번의 update로 모읍니다.
       component.scheduleUpdate();
     };
 
@@ -164,6 +175,7 @@ function useEffect(effect, deps) {
   };
 
   if (shouldRun) {
+    // effect 자체는 나중에 실행하되, 어느 hook 슬롯의 cleanup/effect인지 함께 저장합니다.
     component.pendingEffects.push({
       index: hookIndex,
       effect: effect
