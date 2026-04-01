@@ -57,29 +57,6 @@ flowchart LR
 - **단일 데이터 재사용**: 동일한 섹터 폴리곤이 입력, 방어 로직, 3D 형상에 재사용
 - **복합 뷰 동기화**: National / Sector / 3D / Tests / Briefing이 하나의 시뮬레이션 흐름을 공유
 
-## 실행 방법
-
-가장 간단한 실행 방법은 [index.html](./index.html)을 브라우저에서 여는 것입니다.
-
-로컬 서버로 볼 때는 예를 들어 아래처럼 실행할 수 있습니다.
-
-```bash
-cd domproject
-python3 -m http.server 8000
-```
-
-그 다음 브라우저에서 `http://127.0.0.1:8000/index.html` 로 접속하면 됩니다.
-
-## 파일 구성
-
-```text
-README.md
-index.html
-index2.html
-week3-camp-david.html
-week3-norfolk.html
-```
-
 ## 핵심 메시지
 
 > 이 프로젝트의 포인트는 “시뮬레이터를 만들었다”가 아니라,
