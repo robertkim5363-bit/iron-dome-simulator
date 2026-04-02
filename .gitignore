@@ -6,3 +6,8 @@ Thumbs.db
 .vscode/
 .idea/
 node_modules/
+backups/
+index-backup-*.html
+index-v1-backup.html
+index2-backup-*.html
+index-briefing-from-*.html
